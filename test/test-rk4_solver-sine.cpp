@@ -42,7 +42,7 @@ main()
 	//*****************
 	//* read test data
 	//*****************
-	matrix_io::read<t_dim, 1>(dir_prefix + t_arr_fname, t_arr);
+	matrix_io::read<t_dim, 1>(test_dat_prefix + t_arr_fname, t_arr);
 	matrix_io::read<t_dim, 1>(test_dat_prefix + x_arr_chk_fname, x_arr_chk);
 
 	//*******
