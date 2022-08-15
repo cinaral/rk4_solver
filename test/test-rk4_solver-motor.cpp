@@ -78,7 +78,7 @@ main()
 	//*******
 	//* test
 	//*******
-	rk4_solver::loop<ode_fun, t_dim, x_dim>(t_arr, x_arr);
+	rk4_solver::cum_loop<ode_fun, t_dim, x_dim>(t_arr, x_arr);
 
 	//******************
 	//* write test data

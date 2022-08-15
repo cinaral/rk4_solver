@@ -85,6 +85,11 @@ int main()
 }
 ```
 
+
+# To do
+
+1. Vectorized instructions benchmark
+
 # Testing
 Reference data is required for some of the tests, which can be found in ```test/dat/```. 
 

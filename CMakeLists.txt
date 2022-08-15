@@ -13,7 +13,7 @@ add_compile_options(
 	-fmessage-length=0
 	-Wall #* all warnings
 	-Wextra
-	-Wpedantic
+	-Wpedantic 
 	#-fmax-errors=5 #* max number of errors
 	#-Wno-unused-variable
 	#-Wno-unused-parameter
@@ -64,8 +64,20 @@ enable_testing()
 
 project(rk4_solver VERSION 1.0.0 LANGUAGES CXX)
 
+add_executable(rk4_solver-benchmark ${SRC_DIR}/rk4_solver-benchmark.cpp)
 
-#***********#
+target_include_directories(rk4_solver-benchmark
+	PUBLIC 
+		${INCLUDE_DIR}	
+)
+
+target_compile_options(rk4_solver-benchmark
+	PUBLIC
+		-O3
+)
+
+ 
+#***********# 
 #* Testing *#
 #***********#
 
@@ -91,7 +103,6 @@ endforeach(ELEMENT ${TEST_NAMES})
 #************#
 #* Examples *#
 #************#
-
 
 set(EXAMPLE_NAMES
 	example_step

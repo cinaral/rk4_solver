@@ -3,3 +3,4 @@ if ~exist('../../build/bin', 'dir')
 end
 
 test__rk4_solver__sine
+test__rk4_solver__motor

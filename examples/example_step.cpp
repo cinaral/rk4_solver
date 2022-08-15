@@ -16,7 +16,6 @@ ode_fun(const real_t, const real_t x[], const uint_t, real_t OUT_dt__x[])
 	OUT_dt__x[1] = u;
 }
 
-
 int
 main()
 {

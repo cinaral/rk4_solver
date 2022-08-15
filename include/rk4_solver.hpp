@@ -60,6 +60,26 @@ step(const real_t t, const real_t x[], const uint_t i, const real_t h, real_t OU
 //* loops Runge-Kutta 4th Order step T_DIM times
 //*
 //* inputs:
+//* 1. h - time step
+//* 2. t - time
+//* 3. x - state
+template <ode_fun_t ODE_FUN, uint_t T_DIM, uint_t X_DIM>
+void
+loop(const real_t h, real_t *t, real_t x[])
+{
+	for (uint_t i = 0; i < T_DIM - 1; i++) {
+		*t = i * h;
+
+		step<ODE_FUN, X_DIM>(*t, x, i, h, x);
+	}
+
+	*t = (T_DIM - 1) * h;
+}
+
+//* loops Runge-Kutta 4th Order step T_DIM times
+//* cumulatively saves all data points
+//*
+//* inputs:
 //* 1. t_arr[T_DIM] - time array
 //* 2. x_arr[T_DIM x X_DIM] - state array
 //*
@@ -68,7 +88,7 @@ step(const real_t t, const real_t x[], const uint_t i, const real_t h, real_t OU
 //*	x_arr[0, X_DIM] = x_0
 template <ode_fun_t ODE_FUN, uint_t T_DIM, uint_t X_DIM>
 void
-loop(const real_t t_arr[], real_t x_arr[])
+cum_loop(const real_t t_arr[], real_t x_arr[])
 {
 	for (uint_t i = 0; i < T_DIM - 1; i++) {
 		const real_t t = t_arr[i];
@@ -84,7 +104,35 @@ loop(const real_t t_arr[], real_t x_arr[])
 }
 
 //* loops Runge-Kutta 4th Order step T_DIM times or until EVENT_FUN returns true.
-//* EVENT_FUN can be used to modify x_arr when certain conditions are met.
+//* EVENT_FUN can be used to modify x when certain conditions are met.
+//*
+//* inputs:
+//* 1. h - time step
+//* 2. t - time
+//* 3. x - state
+template <ode_fun_t ODE_FUN, uint_t T_DIM, uint_t X_DIM, event_fun_t EVENT_FUN>
+uint_t
+loop(const real_t h, real_t *t, real_t x[])
+{
+	uint_t i = 0;
+	bool stop_flag = EVENT_FUN(i, x);
+
+	for (; i < T_DIM - 1 && !stop_flag; i++) {
+		*t = i * h;
+
+		step<ODE_FUN, X_DIM>(*t, x, i, h, x);
+		stop_flag = EVENT_FUN(i, x);
+	}
+
+	*t = (T_DIM - 1) * h;
+
+	return i;
+}
+
+
+//* loops Runge-Kutta 4th Order step T_DIM times or until EVENT_FUN returns true.
+//* EVENT_FUN can be used to modify x when certain conditions are met.
+//* cumulatively saves all data points
 //*
 //* inputs:
 //* 1. t_arr[T_DIM] - time array
@@ -100,7 +148,7 @@ loop(const real_t t_arr[], real_t x_arr[])
 //*
 template <ode_fun_t ODE_FUN, uint_t T_DIM, uint_t X_DIM, event_fun_t EVENT_FUN>
 uint_t
-loop(const real_t t_arr[], real_t x_arr[])
+cum_loop(const real_t t_arr[], real_t x_arr[])
 {
 	uint_t i = 0;
 	real_t x[X_DIM];

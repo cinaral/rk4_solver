@@ -17,6 +17,8 @@ constexpr uint_t t_dim = 1e3;
 constexpr uint_t x_dim = 1;
 constexpr real_t error_thres = 1e-9;
 
+real_t t = 0;
+real_t x[x_dim] = { 0 };
 real_t t_arr[t_dim];
 real_t x_arr[t_dim * x_dim];
 real_t x_arr_chk[t_dim * x_dim];
@@ -41,7 +43,9 @@ main()
 	//*******
 	//* test
 	//*******
-	rk4_solver::loop<ode_fun, t_dim, x_dim>(t_arr, x_arr);
+	const real_t h = 1. / (t_dim - 1);
+	rk4_solver::loop<ode_fun, t_dim, x_dim>(h, &t, x);
+	rk4_solver::cum_loop<ode_fun, t_dim, x_dim>(t_arr, x_arr);
 
 	//******************
 	//* write test data
@@ -66,7 +70,9 @@ main()
 		}
 	}
 
-	if (max_error < error_thres) {
+	real_t loop_v_cum_loop_error = std::abs(x_arr[t_dim - 1] - x[0]);
+
+	if (max_error < error_thres && loop_v_cum_loop_error < error_thres) {
 		return 0;
 	} else {
 		return 1;
