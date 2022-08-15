@@ -1,8 +1,7 @@
 # ```rk4_solver```: Runge-Kutta 4th Order Solver
 Runge-Kutta 4th Order Method ODE Solver with events. This is a header-only library.
 
-It numerically solves a system of ordinary differential equations (ODE) given as,
-$$	\dot{\mathbf{x}} = \mathbf{f}(t, \mathbf{x}(t)),\quad \mathbf{x}(0)=\mathbf{x}_0. $$
+It numerically solves a system of ordinary differential equations (ODE) given as $\dot{\mathbf{x}} = \mathbf{f}(t, \mathbf{x}(t)),\quad \mathbf{x}(0)=\mathbf{x}_0.$
 
 
 # Usage
