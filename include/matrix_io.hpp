@@ -3,11 +3,12 @@
 
 #include "types.hpp"
 #include <fstream>
-#include <iostream>
-#include <string>
 #include <iomanip>
+#include <iostream>
 #include <limits>
+#include <string>
 #include <vector>
+
 
 namespace matrix_io
 {
@@ -17,7 +18,9 @@ const std::string data_dir = "../../dat";
 const std::string delimiter = ",";
 
 template <uint_t N_ROW, uint_t M_COL>
-void write(const std::string file_name, const real_t matrix[]) {
+void
+write(const std::string file_name, const real_t matrix[])
+{
 	std::ofstream file;
 	file.open(file_name);
 
@@ -26,8 +29,7 @@ void write(const std::string file_name, const real_t matrix[]) {
 		for (uint_t i = 0; i < N_ROW; i++) {
 
 			for (uint_t j = 0; j < M_COL; j++) {
-				file << std::setprecision(precision) << std::scientific
-					 << matrix[i * M_COL + j];
+				file << std::setprecision(precision) << std::scientific << matrix[i * M_COL + j];
 
 				if (j < M_COL - 1) {
 					file << delimiter;
@@ -45,15 +47,17 @@ void write(const std::string file_name, const real_t matrix[]) {
 }
 
 template <uint_t N_ROW, uint_t M_COL>
-void read(const std::string file_name, real_t matrix[]) {
+void
+read(const std::string file_name, real_t matrix[])
+{
 	std::ifstream file;
 	file.open(file_name);
 
 	if (file.is_open()) {
 		std::string line;
 		std::string entry;
-		//uint_t i = 0;
-		//uint_t j = 0;
+		// uint_t i = 0;
+		// uint_t j = 0;
 		size_t str_pos = 0;
 
 		for (uint_t i = 0; i < N_ROW && std::getline(file, line); i++) {
@@ -63,7 +67,7 @@ void read(const std::string file_name, real_t matrix[]) {
 			for (uint_t j = 0; j < M_COL && (str_pos = line.find(delimiter)) != std::string::npos; j++) {
 				entry = line.substr(0, str_pos);
 				line.erase(0, str_pos + delimiter.length());
-				matrix[i * M_COL + j + 1 ] = std::stof(entry);
+				matrix[i * M_COL + j + 1] = std::stof(entry);
 			}
 			matrix[i * M_COL + M_COL - 1] = std::stof(line);
 		}

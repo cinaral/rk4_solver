@@ -64,6 +64,7 @@ enable_testing()
 
 project(rk4_solver VERSION 1.0.0 LANGUAGES CXX)
 
+
 #***********#
 #* Testing *#
 #***********#
@@ -88,5 +89,20 @@ foreach(ELEMENT ${TEST_NAMES})
 endforeach(ELEMENT ${TEST_NAMES})
 
 #************#
-#* External *#
+#* Examples *#
 #************#
+
+
+set(EXAMPLE_NAMES
+	example_step
+	example_loop
+)
+
+foreach(ELEMENT ${EXAMPLE_NAMES})
+	add_executable(${ELEMENT} examples/${ELEMENT}.cpp)
+
+	target_include_directories(${ELEMENT}
+		PUBLIC 
+			${INCLUDE_DIR}	
+	)
+endforeach(ELEMENT ${EXAMPLE_NAMES})

@@ -11,15 +11,12 @@ x_arr_chk_fname = 'x_arr_chk.dat';
 
 t_dim = 1e3;
 x_dim = 1;
-error_thres = 2e-7;
+error_thres = 1e-9;
+f = 5;
 
-%*******************
-%* create test data 
-%*******************
-t_arr = linspace(0, 1, t_dim).';
-x_arr_chk = sin(t_arr*2*pi);
-writematrix(t_arr, append(prefix, t_arr_fname), 'Delimiter', delimiter);  
-writematrix(x_arr_chk, append(prefix, x_arr_chk_fname), 'Delimiter', delimiter);  
+
+%writematrix(t_arr, append(prefix, t_arr_fname), 'Delimiter', delimiter);  
+%writematrix(x_arr_chk, append(prefix, x_arr_chk_fname), 'Delimiter', delimiter);  
 
 %***************************
 %* call the test executable
@@ -40,7 +37,13 @@ cd(prev_pwd);
 %******************************************
 %* read output (created by the executable)
 %******************************************
+t_arr = readmatrix(append(prefix, t_arr_fname));
 x_arr = readmatrix(append(prefix, x_arr_fname));
+
+%*******************
+%* create test data 
+%*******************
+x_arr_chk = sin(t_arr*2*pi*f);
 
 %*********
 %* verify

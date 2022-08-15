@@ -1,10 +1,79 @@
 # ```rk4_solver```: Runge-Kutta 4th Order Solver
 Runge-Kutta 4th Order Method ODE Solver with events. This is a header-only library.
 
-## Testing
-Reference data is needed for the tests. By default they can be found in ```test/dat/```. 
+It numerically solves a system of ordinary differential equations (ODE),
+$$	\dot{\mathbf{x}} = \mathbf{f}(t, \mathbf{x}(t)),\quad \mathbf{x}(0)=\mathbf{x}_0. $$
 
-You may need to generate new reference data in order to update the existing tests or to add new tests. ```test/matlab/run_all_tests.m``` will generate reference data in ```dat/``` if you have access to MATLAB. Then the generated data (```*.dat```) can be copied into ```test/dat/```. 
+
+## Usage
+
+Include the headers in the ```include/``` folder into your project. ```matrix_io.hpp``` is optional.
+
+For a single integration step, call ```rk4_solver::step(...)```:
+```Cpp
+template <ode_fun_t ODE_FUN, uint_t T_DIM, uint_t X_DIM>
+void
+step(const real_t t, const real_t x[], const uint_t i, const real_t h, real_t OUT_x_next[])
+```
+
+For an integration loop, call ```rk4_solver::loop(...)```:
+```Cpp
+template <ode_fun_t ODE_FUN, uint_t T_DIM, uint_t X_DIM>
+void
+loop(const real_t t_arr[], real_t x_arr[])
+```
+
+If you want to use events with your integration loop, you may do so:
+```Cpp
+template <ode_fun_t ODE_FUN, uint_t T_DIM, uint_t X_DIM, event_fun_t EVENT_FUN>
+uint_t
+loop(const real_t t_arr[], real_t x_arr[])
+```
+
+```uint_t```, ```real_t```, ```ode_fun_t``` and ```event_fun_t``` are defined in ```types.hpp```.  By default, ```uint_t``` is a 32-bit unsigned integer and ```real_t``` is double. ```ode_fun_t``` and ```event_fun_t``` are function pointers defined as:
+```Cpp
+using ode_fun_t = void (*)(const real_t t, const real_t x[], const uint_t i, real_t OUT_dt__x[]);
+using event_fun_t = bool (*)(const uint_t i, real_t x[]);
+```
+
+### Example 1: Single integration step
+```Cpp
+int main()
+{
+	//...
+	rk4_solver::step<ode_fun, x_dim>(0, x, 0, h, OUT_x_next);
+	//...
+}
+```
+See [example_step.cpp](./examples/example_step.cpp) for details.
+
+
+### Example 2: Integration loop
+```Cpp
+int main()
+{
+	//...
+	rk4_solver::loop<ode_fun, t_dim, x_dim>(t_arr, x_arr);
+	//...
+}
+```
+See [example_loop.cpp](./examples/example_loop.cpp) for details.
+
+### Example 3: Event example
+<!--See ```examples/example_loop.cpp``` for details.-->
+```Cpp
+int main()
+{
+	//...
+	rk4_solver::loop<ode_fun, t_dim, x_dim, event_fun>(t_arr, x_arr);
+	//...
+}
+```
+
+## Testing
+Reference data is required for some of the tests, which can be found in ```test/dat/```. 
+
+You may need to generate new data in order to update the existing tests or to add new tests. [run_all_tests.m](./test/matlab/run_all_tests.m) can be used to generate reference data if you have access to MATLAB. By default the data files are put in ```dat/```, which you may copy into ```test/dat/```. 
 
 The ```*.dat``` files are comma and newline delimited. If you have access to MATLAB, the formatting is compatible with ```writematrix``` and ```readmatrix```.
 ```MATLAB

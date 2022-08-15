@@ -2,8 +2,6 @@
 
 #* specifytest data
 test_data_list=(
-	'./dat/test-rk4_solver-sine-t_arr.dat' 
-	'./dat/test-rk4_solver-sine-x_arr_chk.dat'
 	)
 
 #* remove existing test data

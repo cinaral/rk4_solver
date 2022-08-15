@@ -7,7 +7,7 @@
 
 namespace matrix
 {
-	
+
 //* selects a row from an N_ROW by M_COL matrix
 template <uint_t M_COL>
 static void

@@ -18,7 +18,7 @@ namespace rk4_solver
 //* 3. i - row index
 //*
 //* ODE_FUN can be parametrized using i (row_index), but zero-order hold will be used for the parameters during the step
-template <ode_fun_t ODE_FUN, uint_t T_DIM, uint_t X_DIM>
+template <ode_fun_t ODE_FUN, uint_t X_DIM>
 void
 step(const real_t t, const real_t x[], const uint_t i, const real_t h, real_t OUT_x_next[])
 {
@@ -78,7 +78,7 @@ loop(const real_t t_arr[], real_t x_arr[])
 		real_t x_next[X_DIM];
 
 		matrix::select_row<X_DIM>(x_arr, i, x);
-		step<ODE_FUN, T_DIM, X_DIM>(t, x, i, h, x_next);
+		step<ODE_FUN, X_DIM>(t, x, i, h, x_next);
 		matrix::replace_row<X_DIM>(x_next, i + 1, x_arr);
 	}
 }
