@@ -1,0 +1,55 @@
+{
+	"tasks": [
+		{
+			"label": "Build",
+			"type": "cmake",
+			"group": "build",
+			"command": "build",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": {
+				"owner": "cpp",
+				"fileLocation": [
+					"absolute"
+				],
+				"pattern": {
+					"regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+					"file": 1,
+					"line": 2,
+					"column": 3,
+					"severity": 4,
+					"message": 5
+				}
+			}
+		},
+		{
+			"label": "Clean build",
+			"type": "shell",
+			"group": "build",
+			"command": "./scripts/clean_build.sh",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+		},
+		{
+			"label": "Update test data",
+			"type": "shell",
+			"group": "build",
+			"command": "./scripts/update_test_data.sh",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+		}
+	],
+	"version": "2.0.0",
+	"type": "shell",
+	"presentation": {
+		"echo": true,
+		"clear": true,
+		"reveal": "always",
+		"focus": false,
+		"panel": "shared",
+		"showReuseMessage": false
+	}
+}

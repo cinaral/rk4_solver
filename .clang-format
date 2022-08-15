@@ -1,0 +1,12 @@
+Standard: c++17 
+BasedOnStyle: llvm
+IndentWidth: 8
+UseTab: AlignWithSpaces 
+BreakBeforeBraces: Linux
+AllowShortFunctionsOnASingleLine: None
+AlwaysBreakAfterReturnType: AllDefinitions
+AlignOperands: DontAlign
+AccessModifierOffset: -6
+BreakBeforeConceptDeclarations: false
+ColumnLimit: 120
+AlignEscapedNewlines: DontAlign

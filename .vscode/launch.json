@@ -1,0 +1,17 @@
+{
+	"configurations": [
+		{
+			"name": "lldb",
+			"request": "launch",
+			"type": "lldb",
+			"program": "${workspaceFolder}\\build\\bin\\${fileBasenameNoExtension}.exe",
+			"args": [],
+			"cwd": "${workspaceFolder}\\build\\bin",
+			"environment": [],
+			"externalConsole": false,
+			"MIMode": "lldb",
+			"preLaunchTask": "Build"
+		}
+	],
+	"version": "0.2.0"
+}
