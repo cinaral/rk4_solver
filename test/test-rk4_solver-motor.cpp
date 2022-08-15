@@ -71,7 +71,6 @@ ode_fun(const real_t, const real_t x[], const uint_t i, real_t OUT_dt__x[])
 int
 main()
 {
-
 	//*****************
 	//* read test data
 	//*****************
@@ -112,6 +111,7 @@ main()
 		}
 	}
 
+	//* the error is due to numerical error on h
 	real_t max_loop_v_cum_loop_error = 0.;
 	for (uint_t i = 0; i < x_dim; i++) {
 		real_t error = std::abs(x_arr[x_dim*(t_dim - 1) + i] - x[i]);
