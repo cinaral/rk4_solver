@@ -36,9 +36,9 @@
 			"label": "Update test data",
 			"type": "shell",
 			"group": "build",
-			"command": "./scripts/update_test_data.sh",
+			"command": "../scripts/update_test_data.sh",
 			"options": {
-				"cwd": "${workspaceFolder}"
+				"cwd": "${workspaceFolder}/dat"
 			},
 		}
 	],

@@ -1,6 +1,8 @@
 %********
 %* setup
 %********
+addpath('..\..\matlab');
+
 io_config;
 test_name = 'test-rk4_solver-motor';
 prefix = append(dat_dir, '/', test_name, '-');
@@ -12,8 +14,9 @@ x_arr_chk_fname = 'x_arr_chk.dat';
 
 t_dim = 1e3;
 x_dim = 3;
-error_thres = 1e-9;
-f = 5;
+u_dim = 1;
+error_thres = 1e-5;
+f = 10;
 
 %*******************
 %* create test data 
@@ -35,11 +38,27 @@ C = [1, 0, 0];
 D = 0;
 
 t_arr = linspace(0, 1, t_dim).';
-u_arr = sin(t_arr*2*pi*f);
+motor_system = @(x, u) A*x + B*u;
 
-%! need x_arr_chk
-%sys = idss(A, B, C, D);
-%y = sim(sys, u_arr);
+x_arr_chk = zeros(t_dim, x_dim);
+u_arr = zeros(t_dim, u_dim);
+
+for i = 1:t_dim 
+	t = t_arr(i, :).';
+	x = x_arr_chk(i, :).';
+	u = sin(t_arr(i)*2*pi*f);
+
+	if i < t_dim
+		h = t_arr(i + 1) - t;	
+		x_arr_chk(i + 1, :) = step_rk4(t, x, h, @(t, x) motor_system(x, u)).';
+	end
+	u_arr(i, :) = u.';
+end
+
+%figure('Name', 'u');
+%plot(t_arr, u_arr)
+%figure('Name', 'x_arr_chk');
+%plot(t_arr, x_arr_chk(:, 1))
 
 %************************************
 %* write input (for test executable)
@@ -81,7 +100,7 @@ else
     disp(append(test_name, '	fail'));
 end
 
-figure('Name', 'x');
-hold on;
-plot(t_arr, x_arr);
-plot(t_arr, x_arr_chk, '--');
+%figure('Name', 'x');
+%hold on;
+%plot(t_arr, x_arr(:, 1));
+%plot(t_arr, x_arr_chk(:, 1), '--');

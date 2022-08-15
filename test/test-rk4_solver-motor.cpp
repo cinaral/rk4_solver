@@ -18,8 +18,7 @@ const std::string x_arr_chk_fname = "x_arr_chk.dat";
 constexpr uint_t t_dim = 1e3;
 constexpr uint_t x_dim = 3;
 constexpr uint_t u_dim = 1;
-constexpr real_t f = 5.;
-constexpr real_t error_thres = 1e-6;
+constexpr real_t error_thres = 1e-5;
 
 //* Motor equations:
 //* dt2__th = -b/J*dt__th + K_t/J*i
@@ -59,7 +58,7 @@ ode_fun(const real_t, const real_t x[], const uint_t i, real_t OUT_dt__x[])
 	real_t temp0[x_dim];
 	real_t temp1[x_dim];
 	real_t u[u_dim];
-	matrix::select_row<x_dim>(u_arr, i, u);
+	matrix::select_row<u_dim>(u_arr, i, u);
 	matrix::right_multiply<x_dim, x_dim>(A, x, temp0);
 	matrix::right_multiply<x_dim, u_dim>(B, u, temp1);
 	matrix::sum<x_dim>(temp0, temp1, OUT_dt__x);

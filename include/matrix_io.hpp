@@ -9,7 +9,6 @@
 #include <string>
 #include <vector>
 
-
 namespace matrix_io
 {
 
@@ -56,20 +55,25 @@ read(const std::string file_name, real_t matrix[])
 	if (file.is_open()) {
 		std::string line;
 		std::string entry;
-		// uint_t i = 0;
-		// uint_t j = 0;
 		size_t str_pos = 0;
 
-		for (uint_t i = 0; i < N_ROW && std::getline(file, line); i++) {
-			entry = line.substr(0, line.find(delimiter));
+		for (uint_t i = 0; i < N_ROW; i++) {
+			if (std::getline(file, line)) {
+				entry = line.substr(0, line.find(delimiter));
 
-			//* parse the line by splitting at the delimiters
-			for (uint_t j = 0; j < M_COL && (str_pos = line.find(delimiter)) != std::string::npos; j++) {
-				entry = line.substr(0, str_pos);
-				line.erase(0, str_pos + delimiter.length());
-				matrix[i * M_COL + j + 1] = std::stof(entry);
+				//* parse the line by splitting at the delimiters
+				for (uint_t j = 0; j < M_COL; j++) {
+					if ((str_pos = line.find(delimiter)) != std::string::npos) {
+						entry = line.substr(0, str_pos);
+						line.erase(0, str_pos + delimiter.length());
+						matrix[i * M_COL + j] = std::stof(entry);
+					} else {
+						matrix[i * M_COL + j] = std::stof(line);
+					}
+				}
+			} else {
+				break;
 			}
-			matrix[i * M_COL + M_COL - 1] = std::stof(line);
 		}
 	} else {
 		std::cout << "Could not open the input file " << file_name << std::endl;
