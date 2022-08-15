@@ -5,7 +5,7 @@
 //********
 //* setup
 //********
-constexpr uint_t t_dim = 1e8;
+constexpr uint_t t_dim = 1e9;
 constexpr uint_t x_dim = 1;
 real_t t = 0;
 real_t x[x_dim] = { 0 };

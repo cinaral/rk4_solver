@@ -67,10 +67,13 @@ template <ode_fun_t ODE_FUN, uint_t T_DIM, uint_t X_DIM>
 void
 loop(const real_t h, real_t *t, real_t x[])
 {
+	real_t x_next[X_DIM] = {0};
+
 	for (uint_t i = 0; i < T_DIM - 1; i++) {
 		*t = i * h;
 
-		step<ODE_FUN, X_DIM>(*t, x, i, h, x);
+		step<ODE_FUN, X_DIM>(*t, x, i, h, x_next);
+		matrix::replace_row<X_DIM>(x_next, 0, x);
 	}
 
 	*t = (T_DIM - 1) * h;
@@ -90,12 +93,13 @@ template <ode_fun_t ODE_FUN, uint_t T_DIM, uint_t X_DIM>
 void
 cum_loop(const real_t t_arr[], real_t x_arr[])
 {
+	real_t x[X_DIM] = {0};
+	real_t x_next[X_DIM] = {0};
+
 	for (uint_t i = 0; i < T_DIM - 1; i++) {
 		const real_t t = t_arr[i];
 		const real_t h = t_arr[i + 1] - t_arr[i];
 
-		real_t x[X_DIM];
-		real_t x_next[X_DIM];
 
 		matrix::select_row<X_DIM>(x_arr, i, x);
 		step<ODE_FUN, X_DIM>(t, x, i, h, x_next);

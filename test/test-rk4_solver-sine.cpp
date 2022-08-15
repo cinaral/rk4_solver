@@ -16,6 +16,8 @@ const std::string x_arr_fname = "x_arr.dat";
 constexpr uint_t t_dim = 1e3;
 constexpr uint_t x_dim = 1;
 constexpr real_t error_thres = 1e-9;
+constexpr real_t h = 1. / (t_dim - 1);
+constexpr real_t f = 5.;
 
 real_t t = 0;
 real_t x[x_dim] = { 0 };
@@ -25,8 +27,6 @@ real_t x_arr_chk[t_dim * x_dim];
 
 //* dt__x = f(t, x) = 2*pi*f*cos(t*2*pi*f)
 //* x = sin(t*2*pi*f)
-constexpr real_t f = 5.;
-
 void
 ode_fun(const real_t t, const real_t[], const uint_t, real_t OUT_dt__x[])
 {
@@ -43,7 +43,6 @@ main()
 	//*******
 	//* test
 	//*******
-	const real_t h = 1. / (t_dim - 1);
 	rk4_solver::loop<ode_fun, t_dim, x_dim>(h, &t, x);
 	rk4_solver::cum_loop<ode_fun, t_dim, x_dim>(t_arr, x_arr);
 
@@ -70,9 +69,15 @@ main()
 		}
 	}
 
-	real_t loop_v_cum_loop_error = std::abs(x_arr[t_dim - 1] - x[0]);
+	real_t max_loop_v_cum_loop_error = 0.;
+	for (uint_t i = 0; i < x_dim; i++) {
+		real_t error = std::abs(x_arr[x_dim*(t_dim - 1) + i] - x[i]);
+		if (error > max_loop_v_cum_loop_error) {
+			max_loop_v_cum_loop_error = error;
+		}
+	}
 
-	if (max_error < error_thres && loop_v_cum_loop_error < error_thres) {
+	if (max_error < error_thres && max_loop_v_cum_loop_error < error_thres) {
 		return 0;
 	} else {
 		return 1;
