@@ -71,7 +71,7 @@ project(rk4_solver VERSION 1.0.0 LANGUAGES CXX)
 
 set(TEST_NAMES
 	test-rk4_solver-sine
-	#test-rk4_solver-motor
+	test-rk4_solver-motor
 	#test-rk4_solver-bouncing_ball
 )
 
@@ -96,6 +96,7 @@ endforeach(ELEMENT ${TEST_NAMES})
 set(EXAMPLE_NAMES
 	example_step
 	example_loop
+	#example_event
 )
 
 foreach(ELEMENT ${EXAMPLE_NAMES})

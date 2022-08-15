@@ -4,6 +4,9 @@
 constexpr uint_t t_dim = 1e3;
 constexpr uint_t x_dim = 1;
 
+real_t t_arr[t_dim];
+real_t x_arr[t_dim * x_dim];
+
 //* dt__x = f(t, x) = t, x(0) = 0
 //* x = 1/2*t^2
 void
@@ -11,9 +14,6 @@ ode_fun(const real_t t, const real_t[], const uint_t, real_t OUT_dt__x[])
 {
 	OUT_dt__x[0] = t;
 }
-
-real_t t_arr[t_dim];
-real_t x_arr[t_dim * x_dim];
 
 int
 main()

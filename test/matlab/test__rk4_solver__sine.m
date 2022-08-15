@@ -14,10 +14,6 @@ x_dim = 1;
 error_thres = 1e-9;
 f = 5;
 
-
-%writematrix(t_arr, append(prefix, t_arr_fname), 'Delimiter', delimiter);  
-%writematrix(x_arr_chk, append(prefix, x_arr_chk_fname), 'Delimiter', delimiter);  
-
 %***************************
 %* call the test executable
 %***************************

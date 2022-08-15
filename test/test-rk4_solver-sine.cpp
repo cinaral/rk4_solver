@@ -1,6 +1,5 @@
 #include "matrix_io.hpp"
 #include "rk4_solver.hpp"
-#include "types.hpp"
 #include <cmath>
 
 constexpr real_t M_PI = 3.1415926535897932;
@@ -9,7 +8,6 @@ constexpr real_t M_PI = 3.1415926535897932;
 //* setup
 //********
 const std::string dat_dir = "../../dat";
-
 const std::string test_name = "test-rk4_solver-sine";
 const std::string dir_prefix = dat_dir + "/" + test_name + "-";
 const std::string t_arr_fname = "t_arr.dat";
@@ -37,7 +35,7 @@ int
 main()
 {
 	for (uint_t i = 0; i < t_dim; i++) {
-		t_arr[i] =  1. * i / (t_dim - 1);
+		t_arr[i] = 1. * i / (t_dim - 1);
 	}
 
 	//*******
