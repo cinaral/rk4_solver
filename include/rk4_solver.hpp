@@ -22,10 +22,8 @@ template <ode_fun_t ODE_FUN, uint_t X_DIM>
 void
 step(const real_t t, const real_t x[], const uint_t i, const real_t h, real_t OUT_x_next[])
 {
-	const real_t rk4_weight_0 = 1. / 6.;
-	const real_t rk4_weight_1 = 1. / 3.;
-	const real_t rk4_weight_2 = 1. / 3.;
-	const real_t rk4_weight_3 = 1. / 6.;
+	constexpr real_t rk4_weight_0 = 1. / 6.;
+	constexpr real_t rk4_weight_1 = 1. / 3.;
 	const real_t t_next_0 = t + h / 2;
 	const real_t t_next_1 = t + h;
 
@@ -33,43 +31,24 @@ step(const real_t t, const real_t x[], const uint_t i, const real_t h, real_t OU
 	real_t k_1[X_DIM];
 	real_t k_2[X_DIM];
 	real_t k_3[X_DIM];
-	real_t k_temp[X_DIM];
 	real_t x_temp[X_DIM];
-	// real_t k_temp_0[X_DIM];
-	// real_t k_temp_1[X_DIM];
-	// real_t k_temp_2[X_DIM];
-	// real_t k_temp_3[X_DIM];
 
 	ODE_FUN(t, x, i, k_0); //* ode_fun(ti, xi)
 
 	//* zero-order hold, i.e. no ODE_FUN(,, i+.5), ODE_FUN(,, i+1,) etc.
-	matrix::scale<X_DIM>(h / 2, k_0, k_temp);
-	matrix::sum<X_DIM>(x, k_temp, x_temp);
+	matrix::weighted_sum<X_DIM>(h / 2, k_0, 1., x, x_temp);
 	ODE_FUN(t_next_0, x_temp, i, k_1); //* ode_fun(ti + h/2, xi + h/2*k_0)
 
-	matrix::scale<X_DIM>(h / 2, k_1, k_temp);
-	matrix::sum<X_DIM>(x, k_temp, x_temp);
+	matrix::weighted_sum<X_DIM>(h / 2, k_1, 1., x, x_temp);
 	ODE_FUN(t_next_0, x_temp, i, k_2); //* ode_fun(ti + h/2, xi + h/2*k_1)
 
-	matrix::scale<X_DIM>(h, k_2, k_temp);
-	matrix::sum<X_DIM>(x, k_temp, x_temp);
+	matrix::weighted_sum<X_DIM>(h, k_2, 1., x, x_temp);
 	ODE_FUN(t_next_1, x_temp, i, k_3); //* ode_fun(ti + h, xi + k_2)
 
-	for (uint_t i = 0; i < X_DIM; i++) {
+	for (uint_t i = 0; i < X_DIM; ++i) {
 		OUT_x_next[i] = x[i] +
-		    h * (rk4_weight_0 * k_0[i] + rk4_weight_1 * k_1[i] + rk4_weight_2 * k_2[i] + rk4_weight_3 * k_3[i]);
+		    h * (rk4_weight_0 * k_0[i] + rk4_weight_1 * k_1[i] + rk4_weight_1 * k_2[i] + rk4_weight_0 * k_3[i]);
 	}
-	// matrix::scale<X_DIM>(rk4_weight_0, k_0, k_temp_0);
-	// matrix::scale<X_DIM>(rk4_weight_1, k_1, k_temp_1);
-	// matrix::sum<X_DIM>(k_temp_0, k_temp_1, k_temp_2);
-
-	// matrix::scale<X_DIM>(rk4_weight_2, k_2, k_temp_0);
-	// matrix::scale<X_DIM>(rk4_weight_3, k_3, k_temp_1);
-	// matrix::sum<X_DIM>(k_temp_0, k_temp_1, k_temp_3);
-
-	// matrix::sum<X_DIM>(k_temp_2, k_temp_3, k_temp);
-	// matrix::scale<X_DIM>(h, k_temp, k_temp);
-	// matrix::sum<X_DIM>(x, k_temp, OUT_x_next);
 }
 
 //* loops Runge-Kutta 4th Order step T_DIM times
@@ -84,7 +63,7 @@ loop(const real_t h, real_t *t, real_t x[])
 {
 	real_t x_next[X_DIM] = {0};
 
-	for (uint_t i = 0; i < T_DIM - 1; i++) {
+	for (uint_t i = 0; i < T_DIM - 1; ++i) {
 		*t = i * h;
 
 		step<ODE_FUN, X_DIM>(*t, x, i, h, x_next);
@@ -111,7 +90,7 @@ cum_loop(const real_t t_arr[], real_t x_arr[])
 	real_t x[X_DIM] = {0};
 	real_t x_next[X_DIM] = {0};
 
-	for (uint_t i = 0; i < T_DIM - 1; i++) {
+	for (uint_t i = 0; i < T_DIM - 1; ++i) {
 		const real_t t = t_arr[i];
 		const real_t h = t_arr[i + 1] - t_arr[i];
 
@@ -135,7 +114,7 @@ loop(const real_t h, real_t *t, real_t x[])
 	uint_t i = 0;
 	bool stop_flag = EVENT_FUN(i, x);
 
-	for (; i < T_DIM - 1 && !stop_flag; i++) {
+	for (; i < T_DIM - 1 && !stop_flag; ++i) {
 		*t = i * h;
 
 		step<ODE_FUN, X_DIM>(*t, x, i, h, x);
@@ -175,13 +154,7 @@ cum_loop(const real_t t_arr[], real_t x_arr[])
 	bool stop_flag = EVENT_FUN(i, x);
 	matrix::replace_row<X_DIM>(0, x, x_arr);
 
-	if (i == T_DIM - 1) {
-		matrix::select_row<X_DIM>(x_arr, i, x);
-
-		matrix::replace_row<X_DIM>(x, i + 1, x_arr);
-	}
-
-	for (; i < T_DIM - 1 && !stop_flag; i++) {
+	for (; i < T_DIM - 1 && !stop_flag; ++i) {
 		const real_t t = t_arr[i];
 		const real_t h = t_arr[i + 1] - i;
 

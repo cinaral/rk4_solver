@@ -38,6 +38,16 @@ sum(const real_t x[], const real_t y[], real_t OUT_sum[])
 	}
 }
 
+//* sums two arrays of DIM size
+template <uint_t DIM>
+static void
+weighted_sum(const real_t x_weight, const real_t x[], const real_t y_weight, const real_t y[], real_t OUT_sum[])
+{
+	for (uint_t i = 0; i < DIM; ++i) {
+		OUT_sum[i] = x_weight*x[i] + y_weight*y[i];
+	}
+}
+
 //* scales an array of DIM with a scalar
 template <uint_t DIM>
 static void
