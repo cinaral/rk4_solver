@@ -95,7 +95,7 @@ main()
 	//*********
 	real_t max_error = 0.;
 
-	for (uint_t i = 0; i < t_dim; i++) {
+	for (uint_t i = 0; i < t_dim; ++i) {
 
 		real_t x[x_dim];
 		real_t x_chk[x_dim];
@@ -103,7 +103,7 @@ main()
 		matrix::select_row<x_dim>(x_arr, i, x);
 		matrix::select_row<x_dim>(x_arr_chk, i, x_chk);
 
-		for (uint_t j = 0; j < x_dim; j++) {
+		for (uint_t j = 0; j < x_dim; ++j) {
 			real_t error = std::abs(x[j] - x_chk[j]);
 			if (error > max_error) {
 				max_error = error;
@@ -113,7 +113,7 @@ main()
 
 	//* the error is due to numerical error on h
 	real_t max_loop_v_cum_loop_error = 0.;
-	for (uint_t i = 0; i < x_dim; i++) {
+	for (uint_t i = 0; i < x_dim; ++i) {
 		real_t error = std::abs(x_arr[x_dim*(t_dim - 1) + i] - x[i]);
 		if (error > max_loop_v_cum_loop_error) {
 			max_loop_v_cum_loop_error = error;

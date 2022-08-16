@@ -15,7 +15,11 @@ const std::string x_arr_fname = "x_arr.dat";
 
 constexpr uint_t t_dim = 1e3;
 constexpr uint_t x_dim = 1;
+#ifdef __USE_SINGLE_PRECISION__
+constexpr real_t error_thres = 1e-5;
+#else
 constexpr real_t error_thres = 1e-9;
+#endif
 constexpr real_t h = 1. / (t_dim - 1);
 constexpr real_t f = 5.;
 
@@ -36,7 +40,7 @@ ode_fun(const real_t t, const real_t[], const uint_t, real_t OUT_dt__x[])
 int
 main()
 {
-	for (uint_t i = 0; i < t_dim; i++) {
+	for (uint_t i = 0; i < t_dim; ++i) {
 		t_arr[i] = 1. * i / (t_dim - 1);
 	}
 
@@ -57,7 +61,7 @@ main()
 	//*********
 	real_t max_error = 0.;
 
-	for (uint_t i = 0; i < t_dim; i++) {
+	for (uint_t i = 0; i < t_dim; ++i) {
 
 		real_t x[x_dim];
 
@@ -70,7 +74,7 @@ main()
 	}
 
 	real_t max_loop_v_cum_loop_error = 0.;
-	for (uint_t i = 0; i < x_dim; i++) {
+	for (uint_t i = 0; i < x_dim; ++i) {
 		real_t error = std::abs(x_arr[x_dim*(t_dim - 1) + i] - x[i]);
 		if (error > max_loop_v_cum_loop_error) {
 			max_loop_v_cum_loop_error = error;

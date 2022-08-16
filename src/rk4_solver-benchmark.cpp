@@ -6,7 +6,7 @@
 //* setup
 //********
 constexpr uint_t t_dim = 1e9;
-constexpr uint_t x_dim = 1;
+constexpr uint_t x_dim = 4;
 real_t t = 0;
 real_t x[x_dim] = { 0 };
 uint_t i;
@@ -17,6 +17,9 @@ void
 ode_fun(const real_t t, const real_t[], const uint_t, real_t OUT_dt__x[])
 {
 	OUT_dt__x[0] = t;
+	OUT_dt__x[1] = 2*t;
+	OUT_dt__x[2] = 3*t;
+	OUT_dt__x[3] = 4*t;
 }
 
 int

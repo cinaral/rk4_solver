@@ -8,23 +8,47 @@
 namespace matrix
 {
 
+////* selects a row from an N_ROW by M_COL matrix
+//template <uint_t M_COL>
+//static void
+//select_row(const real_t arr[], const uint_t row_idx, real_t sel[])
+//{
+//	//* faster than // std::memmove(sel, arr + row_idx * M_COL, M_COL * sizeof(real_t));
+//	for (uint_t i = 0; i < M_COL; ++i) {
+//		sel[i] = arr[row_idx * M_COL + i];
+//	}
+//}
+
+////* replaces a row of an N_ROW by M_COL matrix
+//template <uint_t M_COL>
+//static void
+//replace_row(const real_t sel[], const uint_t row_idx, real_t arr[])
+//{
+//	//* faster than // std::memmove(arr + row_idx * M_COL, sel, M_COL * sizeof(real_t));
+//	for (uint_t i = 0; i < M_COL; ++i) {
+//		arr[row_idx * M_COL + i] = sel[i];
+//	}
+// }
+
 //* selects a row from an N_ROW by M_COL matrix
 template <uint_t M_COL>
 static void
 select_row(const real_t arr[], const uint_t row_idx, real_t sel[])
 {
+	//* faster than // std::memmove(sel, arr + row_idx * M_COL, M_COL * sizeof(real_t));
 	for (uint_t i = 0; i < M_COL; ++i) {
-		sel[i] = arr[row_idx * M_COL + i];
+		*(sel + i) = *(arr + row_idx * M_COL + i);
 	}
 }
 
-//* selects a row from an N_ROW by M_COL matrix
+//* replaces a row of an N_ROW by M_COL matrix
 template <uint_t M_COL>
 static void
 replace_row(const real_t sel[], const uint_t row_idx, real_t arr[])
 {
+	//* faster than // std::memmove(arr + row_idx * M_COL, sel, M_COL * sizeof(real_t));
 	for (uint_t i = 0; i < M_COL; ++i) {
-		arr[row_idx * M_COL + i] = sel[i];
+		*(arr + row_idx * M_COL + i) = *(sel + i);
 	}
 }
 
@@ -39,12 +63,13 @@ sum(const real_t x[], const real_t y[], real_t OUT_sum[])
 }
 
 //* sums two arrays of DIM size
+
 template <uint_t DIM>
 static void
 weighted_sum(const real_t x_weight, const real_t x[], const real_t y_weight, const real_t y[], real_t OUT_sum[])
 {
 	for (uint_t i = 0; i < DIM; ++i) {
-		OUT_sum[i] = x_weight*x[i] + y_weight*y[i];
+		OUT_sum[i] = x_weight * x[i] + y_weight * y[i];
 	}
 }
 
@@ -68,6 +93,7 @@ dot_product(const real_t x[], const real_t y[])
 	for (uint_t i = 0; i < DIM; ++i) {
 		res += x[i] * y[i];
 	}
+
 	return res;
 }
 

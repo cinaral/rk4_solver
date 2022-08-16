@@ -20,7 +20,7 @@ int
 main()
 {
 	//* initialize t_arr
-	for (uint_t i = 0; i < t_dim; i++) {
+	for (uint_t i = 0; i < t_dim; ++i) {
 		t_arr[i] = 1. * i / (t_dim - 1);
 	}
 

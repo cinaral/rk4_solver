@@ -89,7 +89,9 @@ int main()
 # To do
 
 1. Bouncing ball test
-2. Vectorized instructions benchmark
+2. Change array access to pointer iteration: (for int* p = ARR; p < DIM; ++p) *p = x;
+3. Functions to operate on forward iterators, no more temp arrays, same idea as above but "p = BEGIN; p < END"
+4. Reduce logical structures, function calls
 
 # Testing
 Reference data is required for some of the tests, which can be found in ```test/dat/```. 

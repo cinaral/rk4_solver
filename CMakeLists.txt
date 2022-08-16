@@ -9,6 +9,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_compile_options(
+	#-m64
+	-mavx2
 	-fdiagnostics-color=always 
 	-fmessage-length=0
 	-Wall #* all warnings
@@ -18,13 +20,15 @@ add_compile_options(
 	#-Wno-unused-variable
 	#-Wno-unused-parameter
 	#-Wno-unused-but-set-parameter
+	-fno-math-errno #* disable errno
 	-fno-rtti #* disable RTTI 
-	-fno-exceptions #* disable exceptions
+	-fno-exceptions #* disable exceptions 
 	-fno-non-call-exceptions 
 	-fno-use-cxa-atexit #* disable destructors
 	-fno-common #* declare globals once
 	-ffreestanding #* standard library may be unavailable
 	#-fstack-protector-strong #* stack guard, costs one write and read per function, needs canary
+	#-D__USE_SINGLE_PRECISION__
 )
 
 if(NOT CMAKE_BUILD_TYPE)
@@ -74,6 +78,7 @@ target_include_directories(rk4_solver-benchmark
 target_compile_options(rk4_solver-benchmark
 	PUBLIC
 		-O3
+		#-ffast-math #* feeling brave?
 )
 
  
