@@ -10,13 +10,11 @@ namespace matrix
 
 //* selects a row from an N_ROW by M_COL matrix
 template <uint_t M_COL>
-static real_t *
-select_row(const uint_t row_idx, const real_t arr[], real_t sel[])
+static const real_t *
+select_row(const uint_t row_idx, const real_t arr[])
 {
-	//* faster than // std::memmove(sel, arr + row_idx * M_COL, M_COL * sizeof(real_t));
-	for (uint_t i = 0; i < M_COL; ++i) {
-		sel[i] = arr[row_idx * M_COL + i];
-	}
+	const real_t *row_ptr = arr + row_idx * M_COL;
+	return row_ptr;
 }
 
 //* replaces a row of an N_ROW by M_COL matrix
@@ -24,11 +22,12 @@ template <uint_t M_COL>
 static void
 replace_row(const uint_t row_idx, const real_t sel[], real_t arr[])
 {
-	//* faster than // std::memmove(arr + row_idx * M_COL, sel, M_COL * sizeof(real_t));
+	//* faster than std::memmove(arr + row_idx * M_COL, sel, M_COL * sizeof(real_t));
+	//* identical to: *arr + row_idx * M_COL + i = *sel + i
 	for (uint_t i = 0; i < M_COL; ++i) {
 		arr[row_idx * M_COL + i] = sel[i];
 	}
- }
+}
 
 //* sums two arrays of DIM size
 template <uint_t DIM>
@@ -41,7 +40,6 @@ sum(const real_t x[], const real_t y[], real_t sum[])
 }
 
 //* sums two arrays of DIM size
-
 template <uint_t DIM>
 static void
 weighted_sum(const real_t x_weight, const real_t x[], const real_t y_weight, const real_t y[], real_t sum[])
@@ -71,7 +69,6 @@ dot_product(const real_t x[], const real_t y[])
 	for (uint_t i = 0; i < DIM; ++i) {
 		res += x[i] * y[i];
 	}
-
 	return res;
 }
 
@@ -80,11 +77,9 @@ template <uint_t N_ROW, uint_t M_COL>
 static void
 right_multiply(const real_t A[], const real_t x[], real_t res[])
 {
-	real_t row[M_COL];
-
 	for (uint_t i = 0; i < N_ROW; ++i) {
-		select_row<M_COL>(i, A, row);
-		res[i] = dot_product<M_COL>(row, x);
+		const real_t *a = select_row<M_COL>(i, A);
+		res[i] = dot_product<M_COL>(a, x);
 	}
 }
 

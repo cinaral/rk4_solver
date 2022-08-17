@@ -59,10 +59,7 @@ main()
 	real_t max_error = 0.;
 
 	for (uint_t i = 0; i < t_dim; ++i) {
-
-		real_t x[x_dim];
-
-		matrix::select_row<x_dim>(i, x_arr, x);
+		const real_t *x = matrix::select_row<x_dim>(i, x_arr);
 
 		real_t error = std::abs(x[0] - sin(t_arr[i] * 2 * M_PI * f));
 		if (error > max_error) {

@@ -66,8 +66,8 @@ ode_fun(const real_t, const real_t x[], const uint_t i, real_t OUT_dt__x[])
 {
 	real_t temp0[x_dim];
 	real_t temp1[x_dim];
-	real_t u[u_dim];
-	matrix::select_row<u_dim>(i, u_arr, u);
+
+	const real_t *u = matrix::select_row<u_dim>(i, u_arr);
 	matrix::right_multiply<x_dim, x_dim>(A, x, temp0);
 	matrix::right_multiply<x_dim, u_dim>(B, u, temp1);
 	matrix::sum<x_dim>(temp0, temp1, OUT_dt__x);
@@ -100,12 +100,8 @@ main()
 	real_t max_error = 0.;
 
 	for (uint_t i = 0; i < t_dim; ++i) {
-
-		real_t x[x_dim];
-		real_t x_chk[x_dim];
-
-		matrix::select_row<x_dim>(i, x_arr, x);
-		matrix::select_row<x_dim>(i, x_arr_chk, x_chk);
+		const real_t *x = matrix::select_row<x_dim>(i, x_arr);
+		const real_t *x_chk = matrix::select_row<x_dim>(i, x_arr_chk);
 
 		for (uint_t j = 0; j < x_dim; ++j) {
 			real_t error = std::abs(x[j] - x_chk[j]);

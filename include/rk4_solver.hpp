@@ -29,8 +29,6 @@ step(const real_t t, const real_t x[], const real_t h, const uint_t i, real_t x_
 {
 	constexpr real_t rk4_weight_0 = 1. / 6.;
 	constexpr real_t rk4_weight_1 = 1. / 3.;
-	const real_t t_next_0 = t + h / 2;
-	const real_t t_next_1 = t + h;
 
 	real_t k_0[X_DIM];
 	real_t k_1[X_DIM];
@@ -42,13 +40,13 @@ step(const real_t t, const real_t x[], const real_t h, const uint_t i, real_t x_
 
 	//* zero-order hold, i.e. no ODE_FUN(,, i+.5), ODE_FUN(,, i+1,) etc.
 	matrix::weighted_sum<X_DIM>(h / 2, k_0, 1., x, x_temp);
-	ODE_FUN(t_next_0, x_temp, i, k_1); //* ode_fun(ti + h/2, xi + h/2*k_0)
+	ODE_FUN(t + h / 2, x_temp, i, k_1); //* ode_fun(ti + h/2, xi + h/2*k_0)
 
 	matrix::weighted_sum<X_DIM>(h / 2, k_1, 1., x, x_temp);
-	ODE_FUN(t_next_0, x_temp, i, k_2); //* ode_fun(ti + h/2, xi + h/2*k_1)
+	ODE_FUN(t + h / 2, x_temp, i, k_2); //* ode_fun(ti + h/2, xi + h/2*k_1)
 
 	matrix::weighted_sum<X_DIM>(h, k_2, 1., x, x_temp);
-	ODE_FUN(t_next_1, x_temp, i, k_3); //* ode_fun(ti + h, xi + k_2)
+	ODE_FUN(t + h, x_temp, i, k_3); //* ode_fun(ti + h, xi + k_2)
 
 	for (uint_t i = 0; i < X_DIM; ++i) {
 		x_next[i] = x[i] +
