@@ -2,7 +2,6 @@
 
 #* specifytest data
 test_data_list=(
-	"test-rk4_solver-motor-t_arr.dat"
 	"test-rk4_solver-motor-u_arr.dat"
 	"test-rk4_solver-motor-x_arr_chk.dat"
 	)

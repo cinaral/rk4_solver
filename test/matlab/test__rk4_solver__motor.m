@@ -63,7 +63,6 @@ end
 %************************************
 %* write input (for test executable)
 %************************************
-writematrix(t_arr, append(prefix, t_arr_fname), 'Delimiter', delimiter);  
 writematrix(u_arr, append(prefix, u_arr_fname), 'Delimiter', delimiter);  
 writematrix(x_arr_chk, append(prefix, x_arr_chk_fname), 'Delimiter', delimiter);  
 

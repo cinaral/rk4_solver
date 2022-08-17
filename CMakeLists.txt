@@ -9,8 +9,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_compile_options(
-	-m64
-	-mavx2
 	-fdiagnostics-color=always 
 	-fmessage-length=0
 	-Wall #* all warnings
@@ -78,6 +76,8 @@ target_include_directories(rk4_solver-benchmark
 target_compile_options(rk4_solver-benchmark
 	PUBLIC
 		-O3
+		-m64
+		-mavx2
 		#-ffast-math #* feeling brave?
 )
 

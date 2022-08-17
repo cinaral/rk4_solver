@@ -111,7 +111,7 @@ main()
 		}
 	}
 
-	//* the error is due to numerical error on h
+	//* loop vs cum_loop sanity check
 	real_t max_loop_v_cum_loop_error = 0.;
 	for (uint_t i = 0; i < x_dim; ++i) {
 		real_t error = std::abs(x_arr[x_dim * (t_dim - 1) + i] - x[i]);

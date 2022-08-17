@@ -2,9 +2,6 @@
 #include "rk4_solver.hpp"
 #include <chrono>
 
-//********
-//* setup
-//********
 constexpr uint_t t_dim = 1e9;
 constexpr uint_t x_dim = 4;
 constexpr real_t h = 1. / (t_dim - 1);
@@ -14,24 +11,19 @@ real_t x[x_dim] = { 0 };
 uint_t i;
 
 //* dt__x = f(t, x) = t, x(0) = 0
-//* x = 1/2*t^2
+//* x = a*t^2
 void
-ode_fun(const real_t t, const real_t[], const uint_t, real_t OUT_dt__x[])
+ode_fun(const real_t t, const real_t[], const uint_t, real_t dt__x[])
 {
-	OUT_dt__x[0] = t;
-	OUT_dt__x[1] = 2*t;
-	OUT_dt__x[2] = 3*t;
-	OUT_dt__x[3] = 4*t;
+	dt__x[0] = t;
+	dt__x[1] = .5*t;
+	dt__x[2] = 2*t;
+	dt__x[3] = .25*t;
 }
 
 int
 main()
 {
-	
-
-	//*******
-	//* test
-	//*******
 	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
 	rk4_solver::loop<ode_fun, t_dim, x_dim>(t, x, h, &t, x);

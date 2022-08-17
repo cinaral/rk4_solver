@@ -14,9 +14,9 @@ real_t x_arr[t_dim * x_dim];
 //* dt__x = f(t, x) = t, x(0) = 0
 //* x = 1/2*t^2
 void
-ode_fun(const real_t t, const real_t[], const uint_t, real_t OUT_dt__x[])
+ode_fun(const real_t t, const real_t[], const uint_t, real_t dt__x[])
 {
-	OUT_dt__x[0] = t;
+	dt__x[0] = t;
 }
 
 int
