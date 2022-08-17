@@ -18,8 +18,15 @@ const std::string x_arr_chk_fname = "x_arr_chk.dat";
 constexpr uint_t t_dim = 1e3;
 constexpr uint_t x_dim = 3;
 constexpr uint_t u_dim = 1;
+constexpr real_t t0 = 0;
+constexpr real_t x0[x_dim] = {0};
+constexpr real_t h = 1. / (t_dim - 1);
+// constexpr real_t M_PI = 3.1415926535897932;
+#ifdef __USE_SINGLE_PRECISION__
 constexpr real_t error_thres = 1e-5;
-
+#else
+constexpr real_t error_thres = 1e-5;
+#endif
 //* Motor equations:
 //* dt2__th = -b/J*dt__th + K_t/J*i
 //* dt__i = - K_b/L*dt__th - R/L*i + 1/L*e
@@ -46,14 +53,12 @@ constexpr real_t K_b = 6.4e-2; //*  [V s]
 constexpr real_t A[x_dim * x_dim] = {0, 1, 0, 0, -b / J, K_t / J, 0, -K_b / L, -R / L};
 constexpr real_t B[x_dim * u_dim] = {0, 0, 1 / L};
 
-constexpr real_t h = 1. / (t_dim - 1);
-
 real_t t = 0;
-real_t x[x_dim] = {0};
+real_t x[t_dim];
 real_t t_arr[t_dim];
 real_t x_arr[t_dim * x_dim];
-real_t u_arr[t_dim * u_dim];
 real_t x_arr_chk[t_dim * x_dim];
+real_t u_arr[t_dim * u_dim];
 
 //* dt__x = A*x + B*x
 void
@@ -62,7 +67,7 @@ ode_fun(const real_t, const real_t x[], const uint_t i, real_t OUT_dt__x[])
 	real_t temp0[x_dim];
 	real_t temp1[x_dim];
 	real_t u[u_dim];
-	matrix::select_row<u_dim>(u_arr, i, u);
+	matrix::select_row<u_dim>(i, u_arr, u);
 	matrix::right_multiply<x_dim, x_dim>(A, x, temp0);
 	matrix::right_multiply<x_dim, u_dim>(B, u, temp1);
 	matrix::sum<x_dim>(temp0, temp1, OUT_dt__x);
@@ -74,15 +79,14 @@ main()
 	//*****************
 	//* read test data
 	//*****************
-	matrix_io::read<t_dim, 1>(test_dat_prefix + t_arr_fname, t_arr);
 	matrix_io::read<t_dim, u_dim>(test_dat_prefix + u_arr_fname, u_arr);
 	matrix_io::read<t_dim, x_dim>(test_dat_prefix + x_arr_chk_fname, x_arr_chk);
 
 	//*******
 	//* test
 	//*******
-	rk4_solver::loop<ode_fun, t_dim, x_dim>(h, &t, x);
-	rk4_solver::cum_loop<ode_fun, t_dim, x_dim>(t_arr, x_arr);
+	rk4_solver::loop<ode_fun, t_dim, x_dim>(t0, x0, h, &t, x);
+	rk4_solver::cum_loop<ode_fun, t_dim, x_dim>(t0, x0, h, t_arr, x_arr);
 
 	//******************
 	//* write test data
@@ -100,8 +104,8 @@ main()
 		real_t x[x_dim];
 		real_t x_chk[x_dim];
 
-		matrix::select_row<x_dim>(x_arr, i, x);
-		matrix::select_row<x_dim>(x_arr_chk, i, x_chk);
+		matrix::select_row<x_dim>(i, x_arr, x);
+		matrix::select_row<x_dim>(i, x_arr_chk, x_chk);
 
 		for (uint_t j = 0; j < x_dim; ++j) {
 			real_t error = std::abs(x[j] - x_chk[j]);
@@ -114,7 +118,7 @@ main()
 	//* the error is due to numerical error on h
 	real_t max_loop_v_cum_loop_error = 0.;
 	for (uint_t i = 0; i < x_dim; ++i) {
-		real_t error = std::abs(x_arr[x_dim*(t_dim - 1) + i] - x[i]);
+		real_t error = std::abs(x_arr[x_dim * (t_dim - 1) + i] - x[i]);
 		if (error > max_loop_v_cum_loop_error) {
 			max_loop_v_cum_loop_error = error;
 		}

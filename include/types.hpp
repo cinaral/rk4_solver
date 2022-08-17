@@ -10,7 +10,7 @@ using real_t = float;
 using real_t = double;
 #endif
 
-using ode_fun_t = void (*)(const real_t t, const real_t x[], const uint_t i, real_t OUT_dt__x[]);
-using event_fun_t = bool (*)(const uint_t i, real_t x[]);
+using ode_fun_t = void (*)(const real_t t, const real_t x[], const uint_t i, real_t dt__x[]);
+using event_fun_t = bool (*)(const real_t t, const real_t x[], const uint_t i, real_t x_plus[]);
 
 #endif

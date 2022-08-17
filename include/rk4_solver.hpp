@@ -25,7 +25,7 @@ namespace rk4_solver
 //* ODE_FUN can be parametrized using i (row_index), but zero-order hold will be used for the parameters during the step
 template <ode_fun_t ODE_FUN, uint_t X_DIM>
 void
-step(const real_t t, const real_t x[], const uint_t i, const real_t h, real_t OUT_x_next[])
+step(const real_t t, const real_t x[], const real_t h, const uint_t i, real_t x_next[])
 {
 	constexpr real_t rk4_weight_0 = 1. / 6.;
 	constexpr real_t rk4_weight_1 = 1. / 3.;
@@ -51,7 +51,7 @@ step(const real_t t, const real_t x[], const uint_t i, const real_t h, real_t OU
 	ODE_FUN(t_next_1, x_temp, i, k_3); //* ode_fun(ti + h, xi + k_2)
 
 	for (uint_t i = 0; i < X_DIM; ++i) {
-		OUT_x_next[i] = x[i] +
+		x_next[i] = x[i] +
 		    h * (rk4_weight_0 * k_0[i] + rk4_weight_1 * k_1[i] + rk4_weight_1 * k_2[i] + rk4_weight_0 * k_3[i]);
 	}
 }
@@ -61,21 +61,19 @@ step(const real_t t, const real_t x[], const uint_t i, const real_t h, real_t OU
 //* inputs:
 //* 1. h - time step
 //* 2. t - time
-//* 3. x - state
+//* 3. x - initial state
 template <ode_fun_t ODE_FUN, uint_t T_DIM, uint_t X_DIM>
 void
-loop(const real_t h, real_t *t, real_t x[])
+loop(const real_t t0, const real_t x0[], const real_t h, real_t *t, real_t x[])
 {
-	real_t x_next[X_DIM] = {0};
+	matrix::replace_row<X_DIM>(0, x0, x); //* initialize x
+	*t = t0;                              //* initialize t
 
 	for (uint_t i = 0; i < T_DIM - 1; ++i) {
-		*t = i * h;
+		step<ODE_FUN, X_DIM>(*t, x, h, i, x); //* update x to the next x
 
-		step<ODE_FUN, X_DIM>(*t, x, i, h, x_next);
-		matrix::replace_row<X_DIM>(x_next, 0, x);
+		*t = t0 + (i + 1) * h; //* update t to the next t
 	}
-
-	*t = (T_DIM - 1) * h;
 }
 
 //* loops Runge-Kutta 4th Order step T_DIM times
@@ -90,18 +88,22 @@ loop(const real_t h, real_t *t, real_t x[])
 //*	x_arr[0, X_DIM] = x_0
 template <ode_fun_t ODE_FUN, uint_t T_DIM, uint_t X_DIM>
 void
-cum_loop(const real_t t_arr[], real_t x_arr[])
+cum_loop(const real_t t0, const real_t x0[], const real_t h, real_t t_arr[], real_t x_arr[])
 {
 	real_t x[X_DIM] = {0};
-	real_t x_next[X_DIM] = {0};
+	matrix::replace_row<X_DIM>(0, x0, x); //* initialize x
+	real_t t = t0;                        //* initialize t
+
+	t_arr[0] = t;
+	matrix::replace_row<X_DIM>(0, x, x_arr);
 
 	for (uint_t i = 0; i < T_DIM - 1; ++i) {
-		const real_t t = t_arr[i];
-		const real_t h = t_arr[i + 1] - t_arr[i];
+		step<ODE_FUN, X_DIM>(t, x, h, i, x); //* update x to the next x
 
-		matrix::select_row<X_DIM>(x_arr, i, x);
-		step<ODE_FUN, X_DIM>(t, x, i, h, x_next);
-		matrix::replace_row<X_DIM>(x_next, i + 1, x_arr);
+		t = t0 + (i + 1) * h; //* update t to the next t
+
+		t_arr[i + 1] = t;
+		matrix::replace_row<X_DIM>(i + 1, x, x_arr);
 	}
 }
 
@@ -114,19 +116,22 @@ cum_loop(const real_t t_arr[], real_t x_arr[])
 //* 3. x - state
 template <ode_fun_t ODE_FUN, uint_t T_DIM, uint_t X_DIM, event_fun_t EVENT_FUN>
 uint_t
-loop(const real_t h, real_t *t, real_t x[])
+loop(const real_t t0, const real_t x0[], const real_t h, real_t *t, real_t x[])
 {
 	uint_t i = 0;
-	bool stop_flag = EVENT_FUN(i, x);
+	matrix::replace_row<X_DIM>(0, x0, x); //* initialize x
+	*t = t0;                              //* initialize t
 
-	for (; i < T_DIM - 1 && !stop_flag; ++i) {
-		*t = i * h;
+	//* check for events at the initial condition
+	bool stop_flag = EVENT_FUN(*t, x, i, x);
 
-		step<ODE_FUN, X_DIM>(*t, x, i, h, x);
-		stop_flag = EVENT_FUN(i, x);
+	for (; !stop_flag && i < T_DIM - 1; ++i) {
+		step<ODE_FUN, X_DIM>(*t, x, h, i, x); //* update x to the next x
+
+		*t = t0 + (i + 1) * h; //* update t to the next t
+
+		stop_flag = EVENT_FUN(*t, x, i, x);
 	}
-
-	*t = (T_DIM - 1) * h;
 
 	return i;
 }
@@ -149,28 +154,29 @@ loop(const real_t h, real_t *t, real_t x[])
 //*
 template <ode_fun_t ODE_FUN, uint_t T_DIM, uint_t X_DIM, event_fun_t EVENT_FUN>
 uint_t
-cum_loop(const real_t t_arr[], real_t x_arr[])
+cum_loop(const real_t t0, const real_t x0[], const real_t h, real_t t_arr[], real_t x_arr[])
 {
 	uint_t i = 0;
 	real_t x[X_DIM];
+	matrix::replace_row<X_DIM>(x0, 0, x); //* initialize x
+	real_t t = t0;                        //* initialize t
 
 	//* check for events at the initial condition
-	matrix::select_row<X_DIM>(x_arr, 0, x);
-	bool stop_flag = EVENT_FUN(i, x);
+	bool stop_flag = EVENT_FUN(t, x, i, x);
+
+	t_arr[0] = t;
 	matrix::replace_row<X_DIM>(0, x, x_arr);
 
-	for (; i < T_DIM - 1 && !stop_flag; ++i) {
-		const real_t t = t_arr[i];
-		const real_t h = t_arr[i + 1] - i;
+	for (; !stop_flag && i < T_DIM - 1; ++i) {
+		step<ODE_FUN, X_DIM>(t, x, h, i, x); //* update x to the next x
 
-		real_t x_next[X_DIM];
+		t = t0 + (i + 1) * h; //* update t to the next t
 
-		matrix::select_row<X_DIM>(x_arr, i, x);
-		step<ODE_FUN, T_DIM, X_DIM>(t, x, i, h, x_next);
-		stop_flag = EVENT_FUN(i, x_next);
-		matrix::replace_row<X_DIM>(x_next, i + 1, x_arr);
+		stop_flag = EVENT_FUN(t, x, i, x);
+
+		t_arr[i + 1] = t;
+		matrix::replace_row<X_DIM>(i + 1, x, x_arr);
 	}
-
 	return i;
 }
 

@@ -3,7 +3,10 @@
 
 constexpr uint_t t_dim = 1e3;
 constexpr uint_t x_dim = 1;
-constexpr real_t x_0 = 1;
+constexpr real_t t0 = 0.;
+constexpr real_t tf = 1.;
+constexpr real_t x0[x_dim] = {1.};
+constexpr real_t h = tf / (t_dim - 1);
 
 real_t t_arr[t_dim];
 real_t x_arr[t_dim * x_dim];
@@ -19,16 +22,8 @@ ode_fun(const real_t t, const real_t[], const uint_t, real_t OUT_dt__x[])
 int
 main()
 {
-	//* initialize t_arr
-	for (uint_t i = 0; i < t_dim; ++i) {
-		t_arr[i] = 1. * i / (t_dim - 1);
-	}
-
-	//* the initial condition is the first row of x_arr
-	x_arr[0] = x_0;
-
 	//* integration loop
-	rk4_solver::cum_loop<ode_fun, t_dim, x_dim>(t_arr, x_arr);
+	rk4_solver::cum_loop<ode_fun, t_dim, x_dim>(t0, x0, h, t_arr, x_arr);
 
 	return 0;
 }

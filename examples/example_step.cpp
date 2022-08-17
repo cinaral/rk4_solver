@@ -3,10 +3,11 @@
 
 constexpr uint_t x_dim = 2;
 constexpr real_t u = 1e3;
+constexpr real_t h = 1e-3;
 
+real_t t = 0;
 real_t x[x_dim] = {0, 0};
-real_t h = 1e-3;
-real_t OUT_x_next[x_dim];
+uint_t i = 0;
 
 //* dt__x = f(t, x) = [x[1]; u], x(0) = [0; 0];
 void
@@ -20,7 +21,7 @@ int
 main()
 {
 	//* integration step
-	rk4_solver::step<ode_fun, x_dim>(0, x, 0, h, OUT_x_next);
+	rk4_solver::step<ode_fun, x_dim>(t, x, h, i, x);
 
 	return 0;
 }
