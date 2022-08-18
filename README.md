@@ -57,6 +57,7 @@ void ode_fun(const real_t, const real_t x[], const uint_t, real_t dt__x[])
 
 int main()
 {
+	//* integration step
 	rk4_solver::step<ode_fun, x_dim>(t, x, h, i, x_next);
 	//...
 }
@@ -74,6 +75,7 @@ void ode_fun(const real_t t, const real_t[], const uint_t, real_t dt__x[])
 
 int main()
 {
+	//* integration loop with cumulatively saved data arrays
 	rk4_solver::cum_loop<ode_fun, t_dim, x_dim>(t0, x0, h, t_arr, x_arr);
 	//...
 }
@@ -81,15 +83,33 @@ int main()
 See [example_loop.cpp](./examples/example_loop.cpp) for details.
 
 ## Example 3: Events
-See ```examples/example_event.cpp``` for details.
 ```Cpp
 //...
+void ode_fun(const real_t, const real_t x[], const uint_t, real_t dt__x[])
+{
+	dt__x[0] = x[1];
+	dt__x[1] = -g;
+}
+
+bool event_fun(const real_t, const real_t x[], const uint_t, real_t x_plus[])
+{
+	if (x[0] <= 0) {
+		x_plus[0] = 0;
+		x_plus[1] = -e * x[1];
+	}
+
+	//* don't stop the integration
+	return false;
+}
 
 int main()
 {
+	//* integration loop with events
+	rk4_solver::loop<ode_fun, t_dim, x_dim, event_fun>(t0, x0, h, &t, x);
 	//...
 }
 ```
+See [example_event.cpp](./examples/example_event.cpp) for details.
 
 # Testing
 Reference data is required for some of the tests, which can be found in ```test/dat/```. 
