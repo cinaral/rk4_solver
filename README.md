@@ -6,7 +6,16 @@ It numerically solves a system of ordinary differential equations (ODE) given as
 
 # Installation
 
-Include the headers in ```include/``` into your project. ```matrix_io.hpp``` is optional, it is only used for testing.
+Include the headers in ```include/``` into your project. ```matrix_io.hpp``` is optional, it is only used for testing. 
+
+Alternatively, you can use [FetchContent()](https://cmake.org/cmake/help/latest/module/FetchContent.html) in your ```CMakeLists.txt```:
+```CMake
+FetchContent_Declare(rk4_solver                             
+	GIT_REPOSITORY https://github.com/cinaral/rk4_solver
+	GIT_TAG <version>)
+FetchContent_MakeAvailable(rk4_solver)
+set(rk4_solver_INCLUDE_DIR ${rk4_solver_SOURCE_DIR}/include)
+```
 
 Use CTest to test the library before using. Three tests are included:
 - Sine wave
