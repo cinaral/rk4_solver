@@ -1,0 +1,30 @@
+#* Thanks to https://www.foonathan.net/2022/06/cmake-fetchcontent/
+name: Release
+permissions:
+  contents: write
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release:
+    runs-on: windows
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Create build environment
+        run: cmake -E make_directory build
+      - name: Configure
+        working-directory: build/
+        run: cmake $GITHUB_WORKSPACE
+      - name: Package source code
+        working-directory: build/
+        run: cmake --build . --target rk4_solver
+
+      - name: Add packaged source code to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/rk4_solver-src.zip
+          tag: ${{ github.ref }}
