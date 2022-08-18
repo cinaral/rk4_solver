@@ -1,7 +1,7 @@
 #* only if we're in the root in order to not populate FetchContent()
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 
-	set(RK4_SOLVER_VERSION 1.0)
+	set(RK4_SOLVER_VERSION 1.0.0)
 	option(RK4_SOLVER_FORCE_BUILD_TYPE "Forces build type" OFF)
 	option(RK4_SOLVER_SET_CORE_COUNT "Sets number of cores used in compilation" ON)
 	option(RK4_SOLVER_BUILD_TESTS "Build tests" ON)
