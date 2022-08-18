@@ -8,31 +8,30 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+#* project compilation flags
 add_compile_options(
 	-fdiagnostics-color=always #* colored debug output
 	-fmessage-length=0 #* disable line wrapping (default=72 char) 
 	-Wall #* all warnings
 	-Wextra #* more warnings
 	-Wpedantic #* more warnings
-	-fno-math-errno #* disable errno
-	-fno-rtti #* disable RTTI 
-	-fno-exceptions #* disable exceptions 
-	-fno-non-call-exceptions 
-	-fno-use-cxa-atexit #* disable destructors
-	-fno-common #* declare globals once
-	-ffreestanding #* standard library may be unavailable
-	-D__USE_SINGLE_PRECISION__
-	#-fmax-errors=5 #* max number of errors displayed
-	#-Wno-unused-variable
-	#-Wno-unused-parameter
-	#-Wno-unused-but-set-parameter
-	#-fstack-protector-strong #* stack guard, costs one write and read per function, needs canary
+	#-fno-math-errno #* disable errno (for embedded systems)
+	#-fno-rtti #* disable RTTI (for embedded systems)
+	#-fno-exceptions #* disable exceptions  (for embedded systems)
+	#-fno-non-call-exceptions  (for embedded systems)
+	#-fno-use-cxa-atexit #* disable destructors (for embedded systems)
+	#-fno-common #* declare globals once (for embedded systems)
+	#-ffreestanding #* standard library may be unavailable (for embedded systems)
+	#-D__USE_SINGLE_PRECISION__ #* use single precision floats over double precision
 )
 
+#* force build type because CMake Tools sometimes fail to do so, manually change "Debug" to "Release" for release
+set(BUILD_TYPE "Debug")
 if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE "Debug" CACHE STRING
-            "Default build type: Debug" FORCE)
+    set(CMAKE_BUILD_TYPE ${BUILD_TYPE} CACHE STRING
+            "Default build type: ${BUILD_TYPE}" FORCE)
 endif()
+message("> Build type set to ${CMAKE_BUILD_TYPE}")
 
 #* where to look for the project header and source files
 set(INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
@@ -53,9 +52,6 @@ if(NOT N EQUAL 0)
 	set(ctest_test_args ${ctest_test_args} PARALLEL_LEVEL ${N})
 endif()
 message("> Number of cores set to ${N}")
-
-#* disable annoying deprecation warnings
-set(CMAKE_WARN_DEPRECATED OFF CACHE BOOL "" FORCE)
 
 #* enable testing
 enable_testing()
@@ -117,6 +113,7 @@ set(EXAMPLE_NAMES
 	example_event
 )
 
+#* loops through all exampkes
 foreach(ELEMENT ${EXAMPLE_NAMES})
 	add_executable(${ELEMENT} examples/${ELEMENT}.cpp)
 
