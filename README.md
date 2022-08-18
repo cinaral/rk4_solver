@@ -3,6 +3,7 @@
 
 It numerically solves a system of ordinary differential equations (ODE) given as $\dot{\mathbf{x}} = \mathbf{f}(t, \mathbf{x}(t)),\quad \mathbf{x}(0)=\mathbf{x}_0.$
 
+This library has no external dependencies including the standard library and was written with hard real-time embedded applications in mind (e.g. it does not use dynamic memory allocation, RTTI, exceptions). It can be compiled for ```float```s by enabling the ```__USE_SINGLE_PRECISION__``` compiler flag.
 
 # Installation
 
@@ -10,9 +11,7 @@ Include the headers in ```include/``` into your project. ```matrix_io.hpp``` is 
 
 Alternatively, you can use [FetchContent()](https://cmake.org/cmake/help/latest/module/FetchContent.html) in your ```CMakeLists.txt```:
 ```CMake
-FetchContent_Declare(rk4_solver                             
-	GIT_REPOSITORY https://github.com/cinaral/rk4_solver
-	GIT_TAG <version>)
+FetchContent_Declare(rk4_solver URL https://github.com/cinaral/rk4_solver/releases/download/<RELEASE_TAG>/rk4_solver-src.zip)
 FetchContent_MakeAvailable(rk4_solver)
 set(rk4_solver_INCLUDE_DIR ${rk4_solver_SOURCE_DIR}/include)
 ```
