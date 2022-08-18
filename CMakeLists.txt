@@ -3,7 +3,7 @@
 #***********#
 cmake_minimum_required(VERSION 3.13)
 
-set(RK4_SOLVER_VERSION 1.0.1)
+set(RK4_SOLVER_VERSION 1.0.0)
 
 project(rk4_solver VERSION ${RK4_SOLVER_VERSION} LANGUAGES CXX)
 
