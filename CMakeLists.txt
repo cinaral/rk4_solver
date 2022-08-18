@@ -9,15 +9,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_compile_options(
-	-fdiagnostics-color=always 
-	-fmessage-length=0
+	-fdiagnostics-color=always #* colored debug output
+	-fmessage-length=0 #* disable line wrapping (default=72 char) 
 	-Wall #* all warnings
-	-Wextra
-	-Wpedantic 
-	#-fmax-errors=5 #* max number of errors
-	#-Wno-unused-variable
-	#-Wno-unused-parameter
-	#-Wno-unused-but-set-parameter
+	-Wextra #* more warnings
+	-Wpedantic #* more warnings
 	-fno-math-errno #* disable errno
 	-fno-rtti #* disable RTTI 
 	-fno-exceptions #* disable exceptions 
@@ -25,8 +21,12 @@ add_compile_options(
 	-fno-use-cxa-atexit #* disable destructors
 	-fno-common #* declare globals once
 	-ffreestanding #* standard library may be unavailable
+	-D__USE_SINGLE_PRECISION__
+	#-fmax-errors=5 #* max number of errors displayed
+	#-Wno-unused-variable
+	#-Wno-unused-parameter
+	#-Wno-unused-but-set-parameter
 	#-fstack-protector-strong #* stack guard, costs one write and read per function, needs canary
-	#-D__USE_SINGLE_PRECISION__
 )
 
 if(NOT CMAKE_BUILD_TYPE)

@@ -25,7 +25,7 @@ constexpr real_t h = 1. / (t_dim - 1);
 #ifdef __USE_SINGLE_PRECISION__
 constexpr real_t error_thres = 1e-5;
 #else
-constexpr real_t error_thres = 1e-5;
+constexpr real_t error_thres = 1e-6;
 #endif
 //* Motor equations:
 //* dt2__th = -b/J*dt__th + K_t/J*i

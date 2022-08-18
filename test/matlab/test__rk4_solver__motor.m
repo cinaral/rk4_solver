@@ -99,7 +99,7 @@ else
     disp(append(test_name, '	fail'));
 end
 
-%figure('Name', 'x');
-%hold on;
-%plot(t_arr, x_arr(:, 1));
-%plot(t_arr, x_arr_chk(:, 1), '--');
+figure('Name', 'x');
+hold on;
+plot(t_arr, x_arr(:, 1));
+plot(t_arr, x_arr_chk(:, 1), '--');

@@ -6,7 +6,7 @@
 			"request": "launch",
 			"program": "${workspaceFolder}\\build\\bin\\${fileBasenameNoExtension}.exe",
 			"args": [],
-			"cwd": "${workspaceFolder}",
+			"cwd": "${workspaceFolder}\\build\\bin",
 			"environment": [],
 			"externalConsole": false,
 			"MIMode": "gdb",
