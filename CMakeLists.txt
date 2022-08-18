@@ -60,6 +60,7 @@ set(CMAKE_WARN_DEPRECATED OFF CACHE BOOL "" FORCE)
 #* enable testing
 enable_testing()
 
+
 #***********#
 #* Project *#
 #***********#
@@ -81,7 +82,7 @@ target_compile_options(rk4_solver-benchmark
 		#-ffast-math #* feeling brave?
 )
 
- 
+
 #***********# 
 #* Testing *#
 #***********#
@@ -89,7 +90,7 @@ target_compile_options(rk4_solver-benchmark
 set(TEST_NAMES
 	test-rk4_solver-sine
 	test-rk4_solver-motor
-	#test-rk4_solver-bouncing_ball
+	test-rk4_solver-ball
 )
 
 #* loops through all tests
@@ -105,6 +106,7 @@ foreach(ELEMENT ${TEST_NAMES})
 		     WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 endforeach(ELEMENT ${TEST_NAMES})
 
+
 #************#
 #* Examples *#
 #************#
@@ -112,7 +114,7 @@ endforeach(ELEMENT ${TEST_NAMES})
 set(EXAMPLE_NAMES
 	example_step
 	example_loop
-	#example_event
+	example_event
 )
 
 foreach(ELEMENT ${EXAMPLE_NAMES})

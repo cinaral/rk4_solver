@@ -1,3 +1,7 @@
+//* requires input data for verification
+//* test__rk4_solver__motor.m can generate it in ./dat if you have MATLAB (see README.md)
+//* then copy to ./test/dat or use ./scripts/update_test_data.sh
+
 #include "matrix_io.hpp"
 #include "rk4_solver.hpp"
 #include <cmath>
@@ -27,6 +31,7 @@ constexpr real_t error_thres = 1e-5;
 #else
 constexpr real_t error_thres = 1e-6;
 #endif
+
 //* Motor equations:
 //* dt2__th = -b/J*dt__th + K_t/J*i
 //* dt__i = - K_b/L*dt__th - R/L*i + 1/L*e
@@ -54,7 +59,7 @@ constexpr real_t A[x_dim * x_dim] = {0, 1, 0, 0, -b / J, K_t / J, 0, -K_b / L, -
 constexpr real_t B[x_dim * u_dim] = {0, 0, 1 / L};
 
 real_t t = 0;
-real_t x[t_dim];
+real_t x[x_dim];
 real_t t_arr[t_dim];
 real_t x_arr[t_dim * x_dim];
 real_t x_arr_chk[t_dim * x_dim];
@@ -62,7 +67,7 @@ real_t u_arr[t_dim * u_dim];
 
 //* dt__x = A*x + B*x
 void
-ode_fun(const real_t, const real_t x[], const uint_t i, real_t OUT_dt__x[])
+ode_fun(const real_t, const real_t x[], const uint_t i, real_t dt__x[])
 {
 	real_t temp0[x_dim];
 	real_t temp1[x_dim];
@@ -70,7 +75,7 @@ ode_fun(const real_t, const real_t x[], const uint_t i, real_t OUT_dt__x[])
 	const real_t *u = matrix::select_row<u_dim>(i, u_arr);
 	matrix::right_multiply<x_dim, x_dim>(A, x, temp0);
 	matrix::right_multiply<x_dim, u_dim>(B, u, temp1);
-	matrix::sum<x_dim>(temp0, temp1, OUT_dt__x);
+	matrix::sum<x_dim>(temp0, temp1, dt__x);
 }
 
 int
@@ -100,11 +105,11 @@ main()
 	real_t max_error = 0.;
 
 	for (uint_t i = 0; i < t_dim; ++i) {
-		const real_t *x = matrix::select_row<x_dim>(i, x_arr);
-		const real_t *x_chk = matrix::select_row<x_dim>(i, x_arr_chk);
+		const real_t *x_ = matrix::select_row<x_dim>(i, x_arr);
+		const real_t *x_chk_ = matrix::select_row<x_dim>(i, x_arr_chk);
 
 		for (uint_t j = 0; j < x_dim; ++j) {
-			real_t error = std::abs(x[j] - x_chk[j]);
+			real_t error = std::abs(x_[j] - x_chk_[j]);
 			if (error > max_error) {
 				max_error = error;
 			}
@@ -112,15 +117,15 @@ main()
 	}
 
 	//* loop vs cum_loop sanity check
-	real_t max_loop_v_cum_loop_error = 0.;
+	real_t max_loop_vs_cum_error = 0.;
 	for (uint_t i = 0; i < x_dim; ++i) {
 		real_t error = std::abs(x_arr[x_dim * (t_dim - 1) + i] - x[i]);
-		if (error > max_loop_v_cum_loop_error) {
-			max_loop_v_cum_loop_error = error;
+		if (error > max_loop_vs_cum_error) {
+			max_loop_vs_cum_error = error;
 		}
 	}
 
-	if (max_error < error_thres && max_loop_v_cum_loop_error < error_thres) {
+	if (max_error < error_thres && max_loop_vs_cum_error < error_thres) {
 		return 0;
 	} else {
 		return 1;

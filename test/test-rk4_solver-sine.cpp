@@ -25,7 +25,7 @@ constexpr real_t error_thres = 1e-9;
 #endif
 
 real_t t = 0;
-real_t x[t_dim];
+real_t x[x_dim];
 real_t t_arr[t_dim];
 real_t x_arr[t_dim * x_dim];
 real_t x_arr_chk[t_dim * x_dim];
@@ -59,24 +59,24 @@ main()
 	real_t max_error = 0.;
 
 	for (uint_t i = 0; i < t_dim; ++i) {
-		const real_t *x = matrix::select_row<x_dim>(i, x_arr);
+		const real_t *x_ = matrix::select_row<x_dim>(i, x_arr);
 
-		real_t error = std::abs(x[0] - sin(t_arr[i] * 2 * M_PI * f));
+		real_t error = std::abs(x_[0] - sin(t_arr[i] * 2 * M_PI * f));
 		if (error > max_error) {
 			max_error = error;
 		}
 	}
 
 	//* loop vs cum_loop sanity check
-	real_t max_loop_v_cum_loop_error = 0.;
+	real_t max_loop_vs_cum_error = 0.;
 	for (uint_t i = 0; i < x_dim; ++i) {
 		real_t error = std::abs(x_arr[x_dim * (t_dim - 1) + i] - x[i]);
-		if (error > max_loop_v_cum_loop_error) {
-			max_loop_v_cum_loop_error = error;
+		if (error > max_loop_vs_cum_error) {
+			max_loop_vs_cum_error = error;
 		}
 	}
 
-	if (max_error < error_thres && max_loop_v_cum_loop_error < error_thres) {
+	if (max_error < error_thres && max_loop_vs_cum_error < error_thres) {
 		return 0;
 	} else {
 		return 1;

@@ -18,9 +18,10 @@ namespace rk4_solver
 //* computes the next Runge-Kutta 4th Order step
 //*
 //* inputs:
-//* 1. t - time
-//* 2. x[X_DIM] - state
-//* 3. i - row index
+//* 1. t - time [s]
+//* 2. x - [X_DIM] state
+//* 3. h - time step [s]
+//* 4. i - row index
 //*
 //* ODE_FUN can be parametrized using i (row_index), but zero-order hold will be used for the parameters during the step
 template <ode_fun_t ODE_FUN, uint_t X_DIM>
@@ -57,9 +58,9 @@ step(const real_t t, const real_t x[], const real_t h, const uint_t i, real_t x_
 //* loops Runge-Kutta 4th Order step T_DIM times
 //*
 //* inputs:
-//* 1. h - time step
-//* 2. t - time
-//* 3. x - initial state
+//* 1. t0 - initial time [s]
+//* 2. x0 - [X_DIM] initial state
+//* 3. h - time step [s]
 template <ode_fun_t ODE_FUN, uint_t T_DIM, uint_t X_DIM>
 void
 loop(const real_t t0, const real_t x0[], const real_t h, real_t *t, real_t x[])
@@ -75,15 +76,12 @@ loop(const real_t t0, const real_t x0[], const real_t h, real_t *t, real_t x[])
 }
 
 //* loops Runge-Kutta 4th Order step T_DIM times
-//* cumulatively saves all data points
+//* cumulatively saves all data points into t_arr [T_DIM] and x_arr [T_DIM * X_DIM]
 //*
 //* inputs:
-//* 1. t_arr[T_DIM] - time array
-//* 2. x_arr[T_DIM x X_DIM] - state array
-//*
-//* the initial condition is supplied in the first row of x_arr:
-//* t_arr[0] = t_0;
-//*	x_arr[0, X_DIM] = x_0
+//* 1. t0 - initial time [s]
+//* 2. x0 - [X_DIM] initial state
+//* 3. h - time step [s]
 template <ode_fun_t ODE_FUN, uint_t T_DIM, uint_t X_DIM>
 void
 cum_loop(const real_t t0, const real_t x0[], const real_t h, real_t t_arr[], real_t x_arr[])
@@ -109,9 +107,9 @@ cum_loop(const real_t t0, const real_t x0[], const real_t h, real_t t_arr[], rea
 //* EVENT_FUN can be used to modify x when certain conditions are met.
 //*
 //* inputs:
-//* 1. h - time step
-//* 2. t - time
-//* 3. x - state
+//* 1. t0 - initial time [s]
+//* 2. x0 - [X_DIM] initial state
+//* 3. h - time step [s]
 template <ode_fun_t ODE_FUN, uint_t T_DIM, uint_t X_DIM, event_fun_t EVENT_FUN>
 uint_t
 loop(const real_t t0, const real_t x0[], const real_t h, real_t *t, real_t x[])
@@ -136,27 +134,19 @@ loop(const real_t t0, const real_t x0[], const real_t h, real_t *t, real_t x[])
 
 //* loops Runge-Kutta 4th Order step T_DIM times or until EVENT_FUN returns true.
 //* EVENT_FUN can be used to modify x when certain conditions are met.
-//* cumulatively saves all data points
+//* cumulatively saves all data points into t_arr [T_DIM] and x_arr [T_DIM * X_DIM]
 //*
 //* inputs:
-//* 1. t_arr[T_DIM] - time array
-//* 2. x_arr[T_DIM x X_DIM] - state array
-//*
-//* outputs:
-//* 1. i - event row index
-//*
-//* the initial condition is supplied in the first row of x_arr:
-//* t_arr[0] = t_0;
-//*	x_arr[0, X_DIM] = x_0
-//*
-//*
+//* 1. t0 - initial time [s]
+//* 2. x0 - [X_DIM] initial state
+//* 3. h - time step [s]
 template <ode_fun_t ODE_FUN, uint_t T_DIM, uint_t X_DIM, event_fun_t EVENT_FUN>
 uint_t
 cum_loop(const real_t t0, const real_t x0[], const real_t h, real_t t_arr[], real_t x_arr[])
 {
 	uint_t i = 0;
 	real_t x[X_DIM];
-	matrix::replace_row<X_DIM>(x0, 0, x); //* initialize x
+	matrix::replace_row<X_DIM>(0, x0, x); //* initialize x
 	real_t t = t0;                        //* initialize t
 
 	//* check for events at the initial condition

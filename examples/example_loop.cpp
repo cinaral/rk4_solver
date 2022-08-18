@@ -22,7 +22,7 @@ ode_fun(const real_t t, const real_t[], const uint_t, real_t dt__x[])
 int
 main()
 {
-	//* integration loop
+	//* integration loop with cumulatively saved data arrays
 	rk4_solver::cum_loop<ode_fun, t_dim, x_dim>(t0, x0, h, t_arr, x_arr);
 
 	return 0;

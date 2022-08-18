@@ -90,9 +90,6 @@ int main()
 	//...
 }
 ```
-# To do
-
-1. Bouncing ball test
 
 # Testing
 Reference data is required for some of the tests, which can be found in ```test/dat/```. 

@@ -4,3 +4,4 @@ end
 
 test__rk4_solver__sine
 test__rk4_solver__motor
+test__rk4_solver__ball

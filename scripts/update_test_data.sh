@@ -4,6 +4,7 @@
 test_data_list=(
 	"test-rk4_solver-motor-u_arr.dat"
 	"test-rk4_solver-motor-x_arr_chk.dat"
+	"test-rk4_solver-ball-x_arr_chk.dat"
 	)
 
 #* remove existing test data
