@@ -1,7 +1,14 @@
+#***********#
+#* Project *#
+#***********#
+cmake_minimum_required(VERSION 3.13)
+
+set(RK4_SOLVER_VERSION 1.0.1)
+
+project(rk4_solver VERSION ${RK4_SOLVER_VERSION} LANGUAGES CXX)
+
 #* only if we're in the root in order to not populate FetchContent()
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-
-	set(RK4_SOLVER_VERSION 1.0.0)
 	option(RK4_SOLVER_FORCE_BUILD_TYPE "Forces build type" OFF)
 	option(RK4_SOLVER_SET_CORE_COUNT "Sets number of cores used in compilation" ON)
 	option(RK4_SOLVER_BUILD_TESTS "Build tests" ON)
@@ -11,14 +18,12 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	#****************************************#
 	#* Cmake, language and compiler options *#
 	#****************************************#
-	cmake_minimum_required(VERSION 3.13)
 	##* [Optional]:
 	#set(CMAKE_C_COMPILER "gcc")
 	#set(CMAKE_CXX_COMPILER "g++")
 	#set(CMAKE_CXX_STANDARD 17)
 	#set(CMAKE_CXX_STANDARD_REQUIRED ON)
 	#set(CMAKE_CXX_EXTENSIONS OFF)
-
 	#* project compilation flags
 	add_compile_options(
 		-fdiagnostics-color=always #* colored debug output
@@ -68,13 +73,6 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 		endif()
 		message("> Number of cores set to ${N}")
 	endif()
-
-
-	#***********#
-	#* Project *#
-	#***********#
-	project(rk4_solver VERSION ${RK4_SOLVER_VERSION} LANGUAGES CXX)
-
 
 	#***********# 
 	#* Testing *#
