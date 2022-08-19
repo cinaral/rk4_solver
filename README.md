@@ -1,9 +1,9 @@
 # ```rk4_solver```: Runge-Kutta 4th Order Solver
-[Runge-Kutta 4th Order Method](https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods) ODE Solver with events. This is a header-only library.
+[Runge-Kutta 4th Order Method](https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods) ODE Solver with events. This is a header-only C++ library. MATLAB was used to generate reference solutions for testing.
 
 It numerically solves a system of ordinary differential equations (ODE) given as $\dot{\mathbf{x}} = \mathbf{f}(t, \mathbf{x}(t)),\quad \mathbf{x}(0)=\mathbf{x}_0.$
 
-This library has no external dependencies including the standard library and was written with hard real-time embedded applications in mind (e.g. it does not use dynamic memory allocation, RTTI, exceptions). It can be compiled for ```float```s by enabling the ```__USE_SINGLE_PRECISION__``` compiler flag.
+This library has no external dependencies including the standard library. It was written with hard real-time embedded applications in mind, e.g. it does not use dynamic memory allocation, RTTI or exceptions. It can be compiled for ```float```s by enabling the ```__USE_SINGLE_PRECISION__``` compiler flag.
 
 # Installation
 
@@ -21,7 +21,7 @@ Use CTest to test the library before using. Three tests are included:
 - Motor response 
 - Bouncing ball
   
-Some of them require reference data which is provided in this repository, see [Testing](#testing) for details.
+Some of them require reference solutions which is provided in this repository without the need for MATLAB, see [Testing](#testing) for details.
 
 
 # Usage
@@ -140,11 +140,11 @@ See [example_event.cpp](./examples/example_event.cpp) for details.
 
 
 # Testing
-Reference data is required for some tests, which can be found in ```test/dat/```. 
+Reference solutions are required for some tests, which can be found in ```test/dat/```. 
 
-You may need to generate new data in order to update the existing tests or to add new tests. [run_all_tests.m](./test/matlab/run_all_tests.m) may be used to generate reference data if you have access to MATLAB. By default, the data files are put in ```dat/```, which you may copy into ```test/dat/``` or use ```scripts/update_test_data.sh```.
+You may need to generate new solutions in order to update the existing tests or to add new tests. [run_all_tests.m](./test/matlab/run_all_tests.m) may be used to generate solutions if you have access to MATLAB. By default, the data files are put in ```dat/```, which you may copy into ```test/dat/``` or use ```scripts/update_test_data.sh```.
 
- The MATLAB tests are optional. The MATLAB scripts under ```test/matlab/``` can also be used to visually inspect the output. 
+The MATLAB tests are optional. The MATLAB scripts under ```test/matlab/``` can also be used to visually inspect the output. 
 
 The ```*.dat``` files are comma and newline delimited. If you have access to MATLAB, the formatting is compatible with ```writematrix``` and ```readmatrix```.
 ```MATLAB
