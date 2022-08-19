@@ -6,12 +6,6 @@
 #include "matrix.hpp"
 #include "types.hpp"
 
-//#ifdef __AVX__
-//  #include <immintrin.h>
-//#else
-//  #warning AVX is not available. Code will not compile!
-//#endif
-
 namespace rk4_solver
 {
 

@@ -2,11 +2,12 @@
 #* Cmake, language and compiler options *#
 #****************************************#
 cmake_minimum_required(VERSION 3.13)
-set(CMAKE_C_COMPILER "gcc")
-set(CMAKE_CXX_COMPILER "g++")
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+##* [Optional]:
+#set(CMAKE_C_COMPILER "gcc")
+#set(CMAKE_CXX_COMPILER "g++")
+#set(CMAKE_CXX_STANDARD 17)
+#set(CMAKE_CXX_STANDARD_REQUIRED ON)
+#set(CMAKE_CXX_EXTENSIONS OFF)
 
 #* project compilation flags
 add_compile_options(
@@ -15,23 +16,24 @@ add_compile_options(
 	-Wall #* all warnings
 	-Wextra #* more warnings
 	-Wpedantic #* more warnings
-	#-fno-math-errno #* disable errno (for embedded systems)
-	#-fno-rtti #* disable RTTI (for embedded systems)
-	#-fno-exceptions #* disable exceptions  (for embedded systems)
-	#-fno-non-call-exceptions  (for embedded systems)
-	#-fno-use-cxa-atexit #* disable destructors (for embedded systems)
-	#-fno-common #* declare globals once (for embedded systems)
-	#-ffreestanding #* standard library may be unavailable (for embedded systems)
 	#-D__USE_SINGLE_PRECISION__ #* use single precision floats over double precision
+	##* [Optional]: for embedded systems the following flags may be enabled
+	#-fno-math-errno #* disable errno 
+	#-fno-rtti #* disable RTTI 
+	#-fno-exceptions #* disable exceptions  
+	#-fno-non-call-exceptions  
+	#-fno-use-cxa-atexit #* disable destructors 
+	#-fno-common #* declare globals once 
+	#-ffreestanding #* standard library may be unavailable 
 )
 
-#* force build type because CMake Tools sometimes fail to do so, manually change "Debug" to "Release" for release
-set(BUILD_TYPE "Debug")
-if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE ${BUILD_TYPE} CACHE STRING
-            "Default build type: ${BUILD_TYPE}" FORCE)
-endif()
-message("> Build type set to ${CMAKE_BUILD_TYPE}")
+##* [Optional]: force build type if CMake Tools fail to do so, change "Debug" to "Release" for release
+#set(BUILD_TYPE "Debug")
+#if(NOT CMAKE_BUILD_TYPE)
+#    set(CMAKE_BUILD_TYPE ${BUILD_TYPE} CACHE STRING
+#            "Default build type: ${BUILD_TYPE}" FORCE)
+#endif()
+#message("> Build type set to ${CMAKE_BUILD_TYPE}")
 
 #* where to look for the project header and source files
 set(INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
@@ -43,7 +45,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/dat)
 
-#* set the number of CPUs 
+#* set the number of CPUs for compilation
 include(ProcessorCount)
 ProcessorCount(N)
 
@@ -63,6 +65,7 @@ enable_testing()
 
 project(rk4_solver VERSION 1.0.0 LANGUAGES CXX)
 
+#* benchmark
 add_executable(rk4_solver-benchmark ${SRC_DIR}/rk4_solver-benchmark.cpp)
 
 target_include_directories(rk4_solver-benchmark
@@ -83,6 +86,7 @@ target_compile_options(rk4_solver-benchmark
 #* Testing *#
 #***********#
 
+#* list of the tests
 set(TEST_NAMES
 	test-rk4_solver-sine
 	test-rk4_solver-motor
@@ -107,6 +111,7 @@ endforeach(ELEMENT ${TEST_NAMES})
 #* Examples *#
 #************#
 
+#* list of the examples
 set(EXAMPLE_NAMES
 	example_step
 	example_loop
