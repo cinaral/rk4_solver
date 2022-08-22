@@ -7,7 +7,7 @@ This library has no external dependencies including the standard library. It was
 
 # Installation
 
-Include the headers in ```include/``` into your project. ```matrix_io.hpp``` is optional, it is only used for testing. 
+Include the headers in ```include/``` into your project.
 
 Alternatively, you can use [FetchContent()](https://cmake.org/cmake/help/latest/module/FetchContent.html) in your ```CMakeLists.txt```:
 ```CMake
