@@ -2,8 +2,8 @@
 //* test__rk4_solver__ball.m can generate it in ./dat if you have MATLAB (see README.md)
 //* then copy to ./test/dat or use ./scripts/update_test_data.sh
 
-#include "rk4_solver.hpp"
 #include "matrix_rw.hpp"
+#include "rk4_solver.hpp"
 
 //********
 //* setup
