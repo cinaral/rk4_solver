@@ -9,11 +9,11 @@ project(rk4_solver VERSION ${RK4_SOLVER_VERSION} LANGUAGES CXX)
 
 #* only if we're in the root in order to not populate FetchContent()
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-	option(RK4_SOLVER_FORCE_BUILD_TYPE "Forces build type" OFF)
-	option(RK4_SOLVER_SET_CORE_COUNT "Sets number of cores used in compilation" ON)
-	option(RK4_SOLVER_BUILD_TESTS "Build tests" ON)
-	option(RK4_SOLVER_BUILD_EXAMPLES "Build examples" ON)
-	option(RK4_SOLVER_BUILD_BENCHMARK "Build tests" ON)
+	option(FORCE_BUILD_TYPE "Forces build type" OFF)
+	option(SET_CORE_COUNT "Sets number of cores used in compilation" ON)
+	option(BUILD_TESTS "Build tests" ON)
+	option(BUILD_EXAMPLES "Build examples" ON)
+	option(BUILD_BENCHMARK "Build tests" ON)
 
 	#****************************************#
 	#* Cmake, language and compiler options *#
@@ -44,7 +44,7 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	)
 
 	#* force build type if CMake Tools fail to do so, change "Debug" to "Release" for release
-	if(RK4_SOLVER_FORCE_BUILD_TYPE)
+	if(FORCE_BUILD_TYPE)
 		set(BUILD_TYPE "Debug")
 		if(NOT CMAKE_BUILD_TYPE)
 			set(CMAKE_BUILD_TYPE ${BUILD_TYPE} CACHE STRING
@@ -64,7 +64,7 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	file(MAKE_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/dat)
 
 	#* set the number of cores for compilation
-	if(RK4_SOLVER_SET_CORE_COUNT)
+	if(SET_CORE_COUNT)
 		include(ProcessorCount)
 		ProcessorCount(N)
 
@@ -79,7 +79,7 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	#***********# 
 	#* Testing *#
 	#***********#
-	if(RK4_SOLVER_BUILD_TESTS)
+	if(BUILD_TESTS)
 		#* enable testing
 		enable_testing()
 
@@ -108,7 +108,7 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	#************#
 	#* Examples *#
 	#************#
-	if(RK4_SOLVER_BUILD_EXAMPLES)
+	if(BUILD_EXAMPLES)
 		#* list of the examples
 		set(EXAMPLE_NAMES
 			example_step
@@ -131,7 +131,7 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	#*************#
 	#* Benchmark *#
 	#*************#
-	if(RK4_SOLVER_BUILD_BENCHMARK)
+	if(BUILD_BENCHMARK)
 		add_executable(rk4_solver-benchmark ${SRC_DIR}/rk4_solver-benchmark.cpp)
 
 		target_include_directories(rk4_solver-benchmark
