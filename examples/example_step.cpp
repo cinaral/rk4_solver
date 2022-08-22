@@ -1,5 +1,4 @@
 #include "rk4_solver.hpp"
-#include "types.hpp"
 
 constexpr uint_t x_dim = 2;
 constexpr real_t u = 1e3;

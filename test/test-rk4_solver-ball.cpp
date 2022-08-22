@@ -2,8 +2,8 @@
 //* test__rk4_solver__ball.m can generate it in ./dat if you have MATLAB (see README.md)
 //* then copy to ./test/dat or use ./scripts/update_test_data.sh
 
-#include "matrix_io.hpp"
 #include "rk4_solver.hpp"
+#include "matrix_rw.hpp"
 
 //********
 //* setup
@@ -62,7 +62,7 @@ main()
 	//*****************
 	//* read test data
 	//*****************
-	matrix_io::read<t_dim, x_dim>(test_dat_prefix + x_arr_chk_fname, x_arr_chk);
+	matrix_rw::read<t_dim, x_dim>(test_dat_prefix + x_arr_chk_fname, x_arr_chk);
 
 	//*******
 	//* test
@@ -73,8 +73,8 @@ main()
 	//******************
 	//* write test data
 	//******************
-	matrix_io::write<t_dim, 1>(dir_prefix + t_arr_fname, t_arr);
-	matrix_io::write<t_dim, x_dim>(dir_prefix + x_arr_fname, x_arr);
+	matrix_rw::write<t_dim, 1>(dir_prefix + t_arr_fname, t_arr);
+	matrix_rw::write<t_dim, x_dim>(dir_prefix + x_arr_fname, x_arr);
 
 	//*********
 	//* verify

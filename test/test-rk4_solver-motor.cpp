@@ -2,7 +2,7 @@
 //* test__rk4_solver__motor.m can generate it in ./dat if you have MATLAB (see README.md)
 //* then copy to ./test/dat or use ./scripts/update_test_data.sh
 
-#include "matrix_io.hpp"
+#include "matrix_rw.hpp"
 #include "rk4_solver.hpp"
 #include <cmath>
 
@@ -29,7 +29,7 @@ constexpr real_t h = 1. / (t_dim - 1);
 #ifdef __USE_SINGLE_PRECISION__
 constexpr real_t error_thres = 1e-5;
 #else
-constexpr real_t error_thres = 1e-6;
+constexpr real_t error_thres = 1e-13;
 #endif
 
 //* Motor equations:
@@ -84,8 +84,8 @@ main()
 	//*****************
 	//* read test data
 	//*****************
-	matrix_io::read<t_dim, u_dim>(test_dat_prefix + u_arr_fname, u_arr);
-	matrix_io::read<t_dim, x_dim>(test_dat_prefix + x_arr_chk_fname, x_arr_chk);
+	matrix_rw::read<t_dim, u_dim>(test_dat_prefix + u_arr_fname, u_arr);
+	matrix_rw::read<t_dim, x_dim>(test_dat_prefix + x_arr_chk_fname, x_arr_chk);
 
 	//*******
 	//* test
@@ -96,8 +96,8 @@ main()
 	//******************
 	//* write test data
 	//******************
-	matrix_io::write<t_dim, 1>(dir_prefix + t_arr_fname, t_arr);
-	matrix_io::write<t_dim, x_dim>(dir_prefix + x_arr_fname, x_arr);
+	matrix_rw::write<t_dim, 1>(dir_prefix + t_arr_fname, t_arr);
+	matrix_rw::write<t_dim, x_dim>(dir_prefix + x_arr_fname, x_arr);
 
 	//*********
 	//* verify

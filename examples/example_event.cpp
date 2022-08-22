@@ -1,4 +1,3 @@
-#include "matrix_io.hpp"
 #include "rk4_solver.hpp"
 
 constexpr uint_t t_dim = 1e5;

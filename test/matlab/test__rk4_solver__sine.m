@@ -12,6 +12,8 @@ x_arr_chk_fname = 'x_arr_chk.dat';
 t_dim = 1e3;
 x_dim = 1;
 error_thres = 1e-9;
+%* __USE_SINGLE_PRECISION__
+%error_thres = 1e-5;
 f = 5;
 
 %***************************

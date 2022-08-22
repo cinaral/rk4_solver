@@ -19,8 +19,6 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	#* Cmake, language and compiler options *#
 	#****************************************#
 	##* [Optional]:
-	#set(CMAKE_C_COMPILER "gcc")
-	#set(CMAKE_CXX_COMPILER "g++")
 	#set(CMAKE_CXX_STANDARD 17)
 	#set(CMAKE_CXX_STANDARD_REQUIRED ON)
 	#set(CMAKE_CXX_EXTENSIONS OFF)
@@ -80,6 +78,17 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	#* Testing *#
 	#***********#
 	if(BUILD_TESTS)
+
+		#* matrix_rw, used for testing
+		include(FetchContent)
+		FetchContent_Declare(matrix_rw                             
+		URL https://github.com/cinaral/matrix_rw/releases/download/v1.0.0/matrix_rw-src.zip
+		)
+
+		FetchContent_MakeAvailable(matrix_rw)
+
+		set(matrix_rw_INCLUDE_DIR ${matrix_rw_SOURCE_DIR}/include)
+
 		#* enable testing
 		enable_testing()
 
@@ -96,7 +105,8 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 
 			target_include_directories( ${ELEMENT}
 				PUBLIC 
-					${INCLUDE_DIR} )
+					${INCLUDE_DIR}
+					${matrix_rw_INCLUDE_DIR} )
 
 			add_test(NAME              ${ELEMENT} 
 					COMMAND           ${ELEMENT}
@@ -152,7 +162,6 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	#************************#
 	#* Packaged source code *#
 	#************************#
-	#* Thanks to https://www.foonathan.net/2022/06/cmake-fetchcontent/
 	set(PACKAGE_FILES include/types.hpp include/matrix.hpp include/rk4_solver.hpp CMakeLists.txt LICENSE)
 	add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-src.zip
 		COMMAND ${CMAKE_COMMAND} -E tar c ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-src.zip --format=zip -- ${PACKAGE_FILES}
