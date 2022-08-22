@@ -18,7 +18,7 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 
 
 	#****************************************#
-	#* Cmake, language and compiler options *#
+	#* CMake, language and compiler options *#
 	#****************************************#
 	##* [Optional]:
 	#set(CMAKE_CXX_STANDARD 17)
@@ -60,7 +60,6 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	#* set up directories for binary, library and data files 
 	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-	set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 	file(MAKE_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/dat)
 	
 	

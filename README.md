@@ -1,5 +1,5 @@
 # ```rk4_solver```: Runge-Kutta 4th Order Solver
-[Runge-Kutta 4th Order Method](https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods) ODE Solver with events. This is a header-only C++ library. MATLAB was used to generate reference solutions for testing.
+Simple [Runge-Kutta 4th Order Method](https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods) ODE Solver with events. This is a header-only C++ library. MATLAB was used to generate reference solutions for testing.
 
 It numerically solves a system of ordinary differential equations (ODE) given as $\dot{\mathbf{x}} = \mathbf{f}(t, \mathbf{x}(t)),\quad \mathbf{x}(0)=\mathbf{x}_0.$
 
