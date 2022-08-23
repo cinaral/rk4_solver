@@ -70,13 +70,7 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 		#* matrix_rw, used for testing
 		include(FetchContent)
 
-		FetchContent_Declare(matrix_rw                             
-<<<<<<< HEAD
-			URL https://github.com/cinaral/matrix_rw/releases/download/v1.0.0/matrix_rw-src.zip
-=======
-			URL https://github.com/cinaral/matrix_rw/releases/download/v${matrix_rw_VERSION}/matrix_rw-src.zip
->>>>>>> 51f634cf4e5f7864d5ca8c070dcee49846290730
-		)
+		FetchContent_Declare(matrix_rw URL https://github.com/cinaral/matrix_rw/releases/download/v${matrix_rw_VERSION}/matrix_rw-src.zip)
 		FetchContent_MakeAvailable(matrix_rw)
 
 		set(matrix_rw_INCLUDE_DIR ${matrix_rw_SOURCE_DIR}/include)
