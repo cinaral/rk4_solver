@@ -2,6 +2,10 @@
 #include "rk4_solver.hpp"
 #include <cmath>
 
+#ifndef M_PI
+    #define M_PI 3.14159265358979323846
+#endif
+
 //********
 //* setup
 //********
@@ -16,7 +20,6 @@ constexpr uint_t x_dim = 1;
 constexpr real_t t0 = 0;
 constexpr real_t x0[x_dim] = {0};
 constexpr real_t h = 1. / (t_dim - 1);
-constexpr real_t PI = 3.1415926535897932;
 constexpr real_t f = 5.;
 #ifdef __USE_SINGLE_PRECISION__
 constexpr real_t error_thres = 1e-5;
@@ -35,7 +38,7 @@ real_t x_arr_chk[t_dim * x_dim];
 void
 ode_fun(const real_t t, const real_t[], const uint_t, real_t dt__x[])
 {
-	dt__x[0] = 2 * M_PI * f * cos(t * 2 * PI * f);
+	dt__x[0] = 2 * M_PI * f * cos(t * 2 * M_PI * f);
 }
 
 int
@@ -61,7 +64,7 @@ main()
 	for (uint_t i = 0; i < t_dim; ++i) {
 		const real_t *x_ = matrix::select_row<x_dim>(i, x_arr);
 
-		real_t error = std::abs(x_[0] - sin(t_arr[i] * 2 * PI * f));
+		real_t error = std::abs(x_[0] - sin(t_arr[i] * 2 * M_PI * f));
 		if (error > max_error) {
 			max_error = error;
 		}

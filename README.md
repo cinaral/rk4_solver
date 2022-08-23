@@ -1,9 +1,10 @@
 # ```rk4_solver```: Runge-Kutta 4th Order Solver
-[Runge-Kutta 4th Order Method](https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods) ODE Solver with events. This is a header-only C++ library. MATLAB was used to generate reference solutions for testing.
+Simple [Runge-Kutta 4th Order Method](https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods) ODE Solver with events. This is a header-only C++ library. MATLAB was used to generate reference solutions for testing.
 
-It numerically solves a system of ordinary differential equations (ODE) given as $\dot{\mathbf{x}} = \mathbf{f}(t, \mathbf{x}(t)),\quad \mathbf{x}(0)=\mathbf{x}_0.$
+It numerically solves a system of ordinary differential equations (ODE) given as $\dot{\mathbf{x}} = \mathbf{f}(t, \mathbf{x}(t)),\quad \mathbf{x}(0)=\mathbf{x}_0$.
 
-This library has no external dependencies including the standard library. It was written with hard real-time embedded applications in mind, e.g. it does not use dynamic memory allocation, RTTI or exceptions. It can be compiled for ```float```s by enabling the ```__USE_SINGLE_PRECISION__``` compiler flag.
+This library has no external dependencies including the standard library (except for [Testing](#testing)). It was written with hard real-time embedded applications in mind, e.g. it does not use dynamic memory allocation, RTTI or exceptions. It can be compiled for ```float```s by enabling the ```__USE_SINGLE_PRECISION__``` compiler flag.
+
 
 # Installation
 
@@ -55,7 +56,7 @@ uint_t loop(const real_t t0, const real_t x0[], const real_t h, real_t *t, real_
 using ode_fun_t = void (*)(const real_t t, const real_t x[], const uint_t i, real_t dt__x[]);
 using event_fun_t = bool (*)(const real_t t, const real_t x[], const uint_t i, real_t x_plus[]);
 ```
-where ```i < T_DIM``` $\in\mathbb{N}$ is the current time step, i.e. $t[i] = t_0 + i h$ for the time step size $h\in\mathbb{R}$. ```i``` is provided for time index dependent inputs such as pre-computed discrete control input.
+where ```i < T_DIM``` is the current time step for the time step size ```h```. ```i``` is provided for time index dependent inputs such as pre-computed discrete control input.
 
 You may use cumulative loop functions with or without the event function to save the integration value at every time step:
 ```Cpp
@@ -68,7 +69,6 @@ uint_t cum_loop(const real_t t0, const real_t x0[], const real_t h, real_t t_arr
 
 
 # Examples
-
 
 ## Example 1: Single integration step
 ```Cpp
@@ -142,13 +142,8 @@ See [example_event.cpp](./examples/example_event.cpp) for details.
 # Testing
 Reference solutions are required for some tests, which can be found in ```test/dat/```. 
 
+[matrix_rw](https://github.com/cinaral/matrix_rw) library is used for testing, the ```*.dat``` files are comma and newline delimited. If you have access to MATLAB, the formatting is compatible with ```writematrix``` and ```readmatrix```. 
+
 You may need to generate new solutions in order to update the existing tests or to add new tests. [run_all_tests.m](./test/matlab/run_all_tests.m) may be used to generate solutions if you have access to MATLAB. By default, the data files are put in ```dat/```, which you may copy into ```test/dat/``` or use ```scripts/update_test_data.sh```.
 
 The MATLAB tests are optional. The MATLAB scripts under ```test/matlab/``` can also be used to visually inspect the output. 
-
-The ```*.dat``` files are comma and newline delimited. If you have access to MATLAB, the formatting is compatible with ```writematrix``` and ```readmatrix```.
-```MATLAB
-writematrix(matrix, file, 'Delimiter', ',');  
-matrix = readmatrix(file);  
-```
- Each row in file corresponds to a matrix row. For example, if the test reference data is a ```N``` by ```M``` matrix then the ```*.dat``` file should contain ```N``` lines and ```M``` comma-separated numbers in each line.

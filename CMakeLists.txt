@@ -3,9 +3,10 @@
 #***********#
 cmake_minimum_required(VERSION 3.13)
 
-set(RK4_SOLVER_VERSION 1.0.0)
+set(rk4_solver_VERSION 1.0.1)
+set(matrix_rw_VERSION 1.0.0)
 
-project(rk4_solver VERSION ${RK4_SOLVER_VERSION} LANGUAGES CXX)
+project(rk4_solver VERSION ${rk4_solver_VERSION} LANGUAGES CXX)
 
 #* only if we're in the root in order to not populate FetchContent()
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
@@ -15,8 +16,9 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	option(BUILD_EXAMPLES "Build examples" ON)
 	option(BUILD_BENCHMARK "Build tests" ON)
 
+
 	#****************************************#
-	#* Cmake, language and compiler options *#
+	#* CMake, language and compiler options *#
 	#****************************************#
 	##* [Optional]:
 	#set(CMAKE_CXX_STANDARD 17)
@@ -45,8 +47,7 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	if(FORCE_BUILD_TYPE)
 		set(BUILD_TYPE "Debug")
 		if(NOT CMAKE_BUILD_TYPE)
-			set(CMAKE_BUILD_TYPE ${BUILD_TYPE} CACHE STRING
-					"Default build type: ${BUILD_TYPE}" FORCE)
+			set(CMAKE_BUILD_TYPE ${BUILD_TYPE} CACHE STRING	"Default build type: ${BUILD_TYPE}" FORCE)
 		endif()
 		message("> Build type set to ${CMAKE_BUILD_TYPE}")
 	endif()
@@ -58,21 +59,8 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	#* set up directories for binary, library and data files 
 	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-	set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 	file(MAKE_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/dat)
-
-	#* set the number of cores for compilation
-	if(SET_CORE_COUNT)
-		include(ProcessorCount)
-		ProcessorCount(N)
-
-		if(NOT N EQUAL 0)
-			set(CTEST_BUILD_FLAGS -j${N})
-			set(ctest_test_args ${ctest_test_args} PARALLEL_LEVEL ${N})
-		endif()
-		message("> Number of cores set to ${N}")
-	endif()
-
+	
 	
 	#***********# 
 	#* Testing *#
@@ -83,7 +71,11 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 		include(FetchContent)
 
 		FetchContent_Declare(matrix_rw                             
+<<<<<<< HEAD
 			URL https://github.com/cinaral/matrix_rw/releases/download/v1.0.0/matrix_rw-src.zip
+=======
+			URL https://github.com/cinaral/matrix_rw/releases/download/v${matrix_rw_VERSION}/matrix_rw-src.zip
+>>>>>>> 51f634cf4e5f7864d5ca8c070dcee49846290730
 		)
 		FetchContent_MakeAvailable(matrix_rw)
 
@@ -170,5 +162,3 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	add_custom_target(${PROJECT_NAME}_package DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-src.zip)
 
 endif()
-
-
