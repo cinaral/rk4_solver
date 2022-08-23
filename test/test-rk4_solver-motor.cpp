@@ -4,7 +4,6 @@
 
 #include "matrix_rw.hpp"
 #include "rk4_solver.hpp"
-#include <cmath>
 
 //********
 //* setup
@@ -25,7 +24,6 @@ constexpr uint_t u_dim = 1;
 constexpr real_t t0 = 0;
 constexpr real_t x0[x_dim] = {0};
 constexpr real_t h = 1. / (t_dim - 1);
-// constexpr real_t M_PI = 3.1415926535897932;
 #ifdef __USE_SINGLE_PRECISION__
 constexpr real_t error_thres = 1e-5;
 #else

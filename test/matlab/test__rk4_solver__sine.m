@@ -7,10 +7,7 @@ prefix = append(dat_dir, '/', test_name, '-');
 exe_name = append(test_name, '.exe');
 t_arr_fname = 't_arr.dat';
 x_arr_fname = 'x_arr.dat';
-x_arr_chk_fname = 'x_arr_chk.dat';
 
-t_dim = 1e3;
-x_dim = 1;
 error_thres = 1e-9;
 %* __USE_SINGLE_PRECISION__
 %error_thres = 1e-5;
