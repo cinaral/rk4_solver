@@ -3,8 +3,8 @@
 #***********#
 cmake_minimum_required(VERSION 3.13)
 
-set(rk4_solver_VERSION 1.0.1)
-set(matrix_rw_VERSION 1.0.0)
+set(rk4_solver_VERSION 1.0.2)
+set(matrix_rw_VERSION 1.0.1)
 
 project(rk4_solver VERSION ${rk4_solver_VERSION} LANGUAGES CXX)
 
