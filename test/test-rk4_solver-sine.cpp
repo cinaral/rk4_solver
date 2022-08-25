@@ -2,8 +2,11 @@
 #include "rk4_solver.hpp"
 #include <cmath>
 
+using uint_t = rk4_solver::uint_t;
+using real_t = rk4_solver::real_t;
+
 #ifndef M_PI
-    #define M_PI 3.14159265358979323846
+#define M_PI 3.14159265358979323846
 #endif
 
 //********

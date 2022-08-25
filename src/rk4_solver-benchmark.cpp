@@ -1,6 +1,6 @@
 #include "rk4_solver.hpp"
-#include <iostream>
 #include <chrono>
+#include <iostream>
 
 using uint_t = rk4_solver::uint_t;
 using real_t = rk4_solver::real_t;
@@ -10,7 +10,7 @@ constexpr uint_t x_dim = 4;
 constexpr real_t h = 1. / (t_dim - 1);
 
 real_t t = 0;
-real_t x[x_dim] = { 0 };
+real_t x[x_dim] = {0};
 uint_t i;
 
 //* dt__x = f(t, x) = t, x(0) = 0
@@ -19,9 +19,9 @@ void
 ode_fun(const real_t t, const real_t[], const uint_t, real_t dt__x[])
 {
 	dt__x[0] = t;
-	dt__x[1] = .5*t;
-	dt__x[2] = 2*t;
-	dt__x[3] = .25*t;
+	dt__x[1] = .5 * t;
+	dt__x[2] = 2 * t;
+	dt__x[3] = .25 * t;
 }
 
 int

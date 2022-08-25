@@ -2,8 +2,8 @@
 //* test__rk4_solver__motor.m can generate it in ./dat if you have MATLAB (see README.md)
 //* then copy to ./test/dat or use ./scripts/update_test_data.sh
 
-#include "rk4_solver.hpp"
 #include "matrix_rw.hpp"
+#include "rk4_solver.hpp"
 
 using uint_t = rk4_solver::uint_t;
 using real_t = rk4_solver::real_t;

@@ -49,7 +49,7 @@ uint_t loop(const real_t t0, const real_t x0[], const real_t h, real_t *t, real_
 
 ```uint_t```, ```real_t```, ```ode_fun_t``` and ```event_fun_t``` are defined in ```types.hpp```.  
 
-**WARNING:** By default, ```uint_t``` is ```unsigned long long int``` and ```real_t``` is ```double``` (```float``` with ```__USE_SINGLE_PRECISION__``` compiler flag). Their sizes in bytes may be system or compiler dependent. If this is a concern ```types.hpp``` should be modified. 
+**WARNING:** By default, ```uint_t``` is ```unsigned long long int``` and ```real_t``` is ```double``` (```float``` with ```__USE_SINGLE_PRECISION__``` compiler flag). Their sizes in bytes may be system or compiler dependent.
 
 ```ode_fun_t``` and ```event_fun_t``` are function pointers defined as:
 ```Cpp
