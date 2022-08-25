@@ -3,6 +3,10 @@
 //* then copy to ./test/dat or use ./scripts/update_test_data.sh
 
 #include "rk4_solver.hpp"
+#include "matrix_rw.hpp"
+
+using uint_t = rk4_solver::uint_t;
+using real_t = rk4_solver::real_t;
 
 //********
 //* setup

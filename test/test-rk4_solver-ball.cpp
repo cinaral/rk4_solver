@@ -5,6 +5,9 @@
 #include "matrix_rw.hpp"
 #include "rk4_solver.hpp"
 
+using uint_t = rk4_solver::uint_t;
+using real_t = rk4_solver::real_t;
+
 //********
 //* setup
 //********

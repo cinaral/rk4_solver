@@ -3,10 +3,15 @@
 
 //* basic matrix operations
 
-#include "types.hpp"
-
 namespace matrix
 {
+
+using uint_t = unsigned long long int;
+#ifdef __USE_SINGLE_PRECISION__
+using real_t = float;
+#else
+using real_t = double;
+#endif
 
 //* selects a row from an N_ROW by M_COL matrix
 template <uint_t M_COL>

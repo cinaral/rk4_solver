@@ -1,5 +1,8 @@
 #include "rk4_solver.hpp"
 
+using uint_t = rk4_solver::uint_t;
+using real_t = rk4_solver::real_t;
+
 constexpr uint_t t_dim = 1e3;
 constexpr uint_t x_dim = 1;
 constexpr real_t t0 = 0.;

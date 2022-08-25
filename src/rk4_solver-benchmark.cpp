@@ -2,6 +2,9 @@
 #include <iostream>
 #include <chrono>
 
+using uint_t = rk4_solver::uint_t;
+using real_t = rk4_solver::real_t;
+
 constexpr uint_t t_dim = 1e9;
 constexpr uint_t x_dim = 4;
 constexpr real_t h = 1. / (t_dim - 1);
