@@ -43,15 +43,6 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 		#-ffreestanding #* standard library may be unavailable 
 	)
 
-	#* force build type if CMake Tools fail to do so, change "Debug" to "Release" for release
-	if(FORCE_BUILD_TYPE)
-		set(BUILD_TYPE "Debug")
-		if(NOT CMAKE_BUILD_TYPE)
-			set(CMAKE_BUILD_TYPE ${BUILD_TYPE} CACHE STRING	"Default build type: ${BUILD_TYPE}" FORCE)
-		endif()
-		message("> Build type set to ${CMAKE_BUILD_TYPE}")
-	endif()
-
 	#* where to look for the project header and source files
 	set(INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
 	set(SRC_DIR ${CMAKE_CURRENT_LIST_DIR}/src)

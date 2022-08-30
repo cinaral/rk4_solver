@@ -26,11 +26,20 @@
 		{
 			"label": "Clean build",
 			"type": "shell",
-			"group": "build",
+			//"group": "build",
 			"command": "./scripts/clean_build.sh",
 			"options": {
 				"cwd": "${workspaceFolder}"
 			},
+		},
+		{
+			"label": "Clean build and configure",
+			"type": "cmake",
+			"group": "build",
+			"command": "configure",
+			"dependsOn": [
+                "Clean build"
+            ],
 		},
 		{
 			"label": "Update test data",
