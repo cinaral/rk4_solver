@@ -4,18 +4,24 @@
 cmake_minimum_required(VERSION 3.13)
 
 set(rk4_solver_VERSION 1.0.2)
+set(matrix_VERSION 1.0.0)
 set(matrix_rw_VERSION 1.0.1)
 
 project(rk4_solver VERSION ${rk4_solver_VERSION} LANGUAGES CXX)
 
+include(FetchContent)
+
+#* matrix, used for basic matrix operations
+FetchContent_Declare(matrix URL https://github.com/cinaral/matrix/releases/download/v${matrix_VERSION}/matrix-src.zip)
+FetchContent_MakeAvailable(matrix)
+
+set(matrix_INCLUDE_DIR ${matrix_SOURCE_DIR}/include)
+
 #* only if we're in the root in order to not populate FetchContent()
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-	option(FORCE_BUILD_TYPE "Forces build type" OFF)
-	option(SET_CORE_COUNT "Sets number of cores used in compilation" ON)
 	option(BUILD_TESTS "Build tests" ON)
 	option(BUILD_EXAMPLES "Build examples" ON)
 	option(BUILD_BENCHMARK "Build tests" ON)
-
 
 	#****************************************#
 	#* CMake, language and compiler options *#
@@ -52,15 +58,12 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 	file(MAKE_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/dat)
 	
-	
 	#***********# 
 	#* Testing *#
 	#***********#
 	if(BUILD_TESTS)
 
 		#* matrix_rw, used for testing
-		include(FetchContent)
-
 		FetchContent_Declare(matrix_rw URL https://github.com/cinaral/matrix_rw/releases/download/v${matrix_rw_VERSION}/matrix_rw-src.zip)
 		FetchContent_MakeAvailable(matrix_rw)
 
@@ -83,6 +86,7 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 			target_include_directories( ${ELEMENT}
 				PUBLIC 
 					${INCLUDE_DIR}
+					${matrix_INCLUDE_DIR}
 					${matrix_rw_INCLUDE_DIR} )
 
 			add_test(NAME              ${ELEMENT} 
@@ -90,7 +94,6 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 					WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 		endforeach(ELEMENT ${TEST_NAMES})
 	endif()
-
 
 	#************#
 	#* Examples *#
@@ -103,17 +106,17 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 			example_event
 		)
 
-		#* loops through all exampkes
+		#* loops through all examples
 		foreach(ELEMENT ${EXAMPLE_NAMES})
 			add_executable(${ELEMENT} examples/${ELEMENT}.cpp)
 
 			target_include_directories(${ELEMENT}
 				PUBLIC 
 					${INCLUDE_DIR}	
+					${matrix_INCLUDE_DIR}
 			)
 		endforeach(ELEMENT ${EXAMPLE_NAMES})
 	endif()
-
 
 	#*************#
 	#* Benchmark *#
@@ -124,6 +127,7 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 		target_include_directories(rk4_solver-benchmark
 			PUBLIC 
 				${INCLUDE_DIR}	
+				${matrix_INCLUDE_DIR}
 		)
 
 		target_compile_options(rk4_solver-benchmark
@@ -134,7 +138,6 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 				#-ffast-math #* feeling brave?
 		)
 	endif()
-
 
 	#************************#
 	#* Packaged source code *#

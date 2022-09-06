@@ -30,7 +30,7 @@
 			"command": "./scripts/clean_build.sh",
 			"options": {
 				"cwd": "${workspaceFolder}"
-			},
+			}
 		},
 		{
 			"label": "Clean build and configure",
@@ -39,7 +39,7 @@
 			"command": "configure",
 			"dependsOn": [
                 "Clean build"
-            ],
+            ]
 		},
 		{
 			"label": "Update test data",
@@ -48,7 +48,7 @@
 			"command": "../scripts/update_test_data.sh",
 			"options": {
 				"cwd": "${workspaceFolder}/dat"
-			},
+			}
 		}
 	],
 	"version": "2.0.0",
