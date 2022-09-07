@@ -14,7 +14,6 @@ include(FetchContent)
 #* matrix, used for basic matrix operations
 FetchContent_Declare(matrix URL https://github.com/cinaral/matrix/releases/download/v${matrix_VERSION}/matrix-src.zip)
 FetchContent_MakeAvailable(matrix)
-
 set(matrix_INCLUDE_DIR ${matrix_SOURCE_DIR}/include)
 
 #* only if we're in the root in order to not populate FetchContent()
@@ -62,11 +61,9 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	#* Testing *#
 	#***********#
 	if(BUILD_TESTS)
-
 		#* matrix_rw, used for testing
 		FetchContent_Declare(matrix_rw URL https://github.com/cinaral/matrix_rw/releases/download/v${matrix_rw_VERSION}/matrix_rw-src.zip)
 		FetchContent_MakeAvailable(matrix_rw)
-
 		set(matrix_rw_INCLUDE_DIR ${matrix_rw_SOURCE_DIR}/include)
 
 		#* enable testing
