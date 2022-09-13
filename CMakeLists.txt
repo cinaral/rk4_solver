@@ -3,7 +3,7 @@
 #***********#
 cmake_minimum_required(VERSION 3.13)
 
-set(rk4_solver_VERSION 1.0.2)
+set(rk4_solver_VERSION 1.0.3)
 set(matrix_VERSION 1.0.0)
 set(matrix_rw_VERSION 1.0.1)
 
@@ -37,6 +37,7 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 		-Wall #* all warnings
 		-Wextra #* more warnings
 		-Wpedantic #* more warnings
+		#-D__DO_USE_HEAP__
 		#-D__USE_SINGLE_PRECISION__ #* use single precision floats over double precision
 		#-fno-math-errno #* disable errno 
 		##* [Optional]: for embedded systems the following flags may be enabled
