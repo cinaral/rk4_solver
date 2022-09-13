@@ -41,11 +41,11 @@ step(const real_t t, const real_t x[], const real_t h, const uint_t i, real_t x_
 	static real_t *k_3 = new real_t[X_DIM];
 	static real_t *x_temp = new real_t[X_DIM];
 #else
-	real_t k_0[X_DIM];
-	real_t k_1[X_DIM];
-	real_t k_2[X_DIM];
-	real_t k_3[X_DIM];
-	real_t x_temp[X_DIM];
+	static real_t k_0[X_DIM];
+	static real_t k_1[X_DIM];
+	static real_t k_2[X_DIM];
+	static real_t k_3[X_DIM];
+	static real_t x_temp[X_DIM];
 #endif
 
 	ODE_FUN(t, x, i, k_0); //* ode_fun(ti, xi)
@@ -100,7 +100,7 @@ cum_loop(const real_t t0, const real_t x0[], const real_t h, real_t t_arr[], rea
 #ifdef __DO_USE_HEAP__
 	static real_t *x = new real_t[X_DIM];
 #else
-	real_t x[X_DIM];
+	static real_t x[X_DIM];
 #endif
 	matrix::replace_row<X_DIM>(0, x0, x); //* initialize x
 	real_t t = t0;                        //* initialize t
@@ -163,7 +163,7 @@ cum_loop(const real_t t0, const real_t x0[], const real_t h, real_t t_arr[], rea
 #ifdef __DO_USE_HEAP__
 	static real_t *x = new real_t[X_DIM];
 #else
-	real_t x[X_DIM];
+	static real_t x[X_DIM];
 #endif
 	matrix::replace_row<X_DIM>(0, x0, x); //* initialize x
 	real_t t = t0;                        //* initialize t
