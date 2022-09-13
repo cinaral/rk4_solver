@@ -140,7 +140,7 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	#************************#
 	#* Packaged source code *#
 	#************************#
-	set(PACKAGE_FILES include/matrix.hpp include/rk4_solver.hpp CMakeLists.txt LICENSE)
+	set(PACKAGE_FILES include/rk4_solver.hpp CMakeLists.txt LICENSE)
 	add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-src.zip
 		COMMAND ${CMAKE_COMMAND} -E tar c ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-src.zip --format=zip -- ${PACKAGE_FILES}
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
