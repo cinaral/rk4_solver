@@ -35,11 +35,11 @@ step(const real_t t, const real_t x[], const real_t h, const uint_t i, real_t x_
 	constexpr real_t rk4_weight_1 = 1. / 3.;
 
 #ifdef __DO_USE_HEAP__
-	real_t *k_0 = new real_t[X_DIM];
-	real_t *k_1 = new real_t[X_DIM];
-	real_t *k_2 = new real_t[X_DIM];
-	real_t *k_3 = new real_t[X_DIM];
-	real_t *x_temp = new real_t[X_DIM];
+	static real_t *k_0 = new real_t[X_DIM];
+	static real_t *k_1 = new real_t[X_DIM];
+	static real_t *k_2 = new real_t[X_DIM];
+	static real_t *k_3 = new real_t[X_DIM];
+	static real_t *x_temp = new real_t[X_DIM];
 #else
 	real_t k_0[X_DIM];
 	real_t k_1[X_DIM];
@@ -64,14 +64,6 @@ step(const real_t t, const real_t x[], const real_t h, const uint_t i, real_t x_
 		x_next[i] = x[i] +
 		    h * (rk4_weight_0 * k_0[i] + rk4_weight_1 * k_1[i] + rk4_weight_1 * k_2[i] + rk4_weight_0 * k_3[i]);
 	}
-
-#ifdef __DO_USE_HEAP__
-	delete[] k_0;
-	delete[] k_1;
-	delete[] k_2;
-	delete[] k_3;
-	delete[] x_temp;
-#endif
 }
 
 //* loops Runge-Kutta 4th Order step T_DIM times
@@ -106,7 +98,7 @@ void
 cum_loop(const real_t t0, const real_t x0[], const real_t h, real_t t_arr[], real_t x_arr[])
 {
 #ifdef __DO_USE_HEAP__
-	real_t *x = new real_t[X_DIM];
+	static real_t *x = new real_t[X_DIM];
 #else
 	real_t x[X_DIM];
 #endif
@@ -124,9 +116,6 @@ cum_loop(const real_t t0, const real_t x0[], const real_t h, real_t t_arr[], rea
 		t_arr[i + 1] = t;
 		matrix::replace_row<X_DIM>(i + 1, x, x_arr);
 	}
-#ifdef __DO_USE_HEAP__
-	delete[] x;
-#endif
 }
 
 //* loops Runge-Kutta 4th Order step T_DIM times or until EVENT_FUN returns true.
@@ -172,7 +161,7 @@ cum_loop(const real_t t0, const real_t x0[], const real_t h, real_t t_arr[], rea
 {
 	uint_t i = 0;
 #ifdef __DO_USE_HEAP__
-	real_t *x = new real_t[X_DIM];
+	static real_t *x = new real_t[X_DIM];
 #else
 	real_t x[X_DIM];
 #endif
@@ -195,9 +184,6 @@ cum_loop(const real_t t0, const real_t x0[], const real_t h, real_t t_arr[], rea
 		t_arr[i + 1] = t;
 		matrix::replace_row<X_DIM>(i + 1, x, x_arr);
 	}
-#ifdef __DO_USE_HEAP__
-	delete[] x;
-#endif
 	return i;
 }
 
