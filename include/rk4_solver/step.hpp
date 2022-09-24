@@ -6,7 +6,7 @@
 
 namespace rk4_solver
 {
-	
+
 //* computes the next Runge-Kutta 4th Order step
 //*
 //* inputs:
@@ -23,11 +23,19 @@ step(const real_t t, const real_t (&x)[X_DIM], const real_t h, const uint_t i, r
 	constexpr real_t rk4_weight_0 = 1. / 6.;
 	constexpr real_t rk4_weight_1 = 1. / 3.;
 
-	real_t k_0[X_DIM];
-	real_t k_1[X_DIM];
-	real_t k_2[X_DIM];
-	real_t k_3[X_DIM];
-	real_t x_temp[X_DIM];
+#ifdef __DO_USE_HEAP__
+	static real_t *k_0 = new real_t[X_DIM];
+	static real_t *k_1 = new real_t[X_DIM];
+	static real_t *k_2 = new real_t[X_DIM];
+	static real_t *k_3 = new real_t[X_DIM];
+	static real_t *x_temp = new real_t[X_DIM];
+#else
+	static real_t k_0[X_DIM];
+	static real_t k_1[X_DIM];
+	static real_t k_2[X_DIM];
+	static real_t k_3[X_DIM];
+	static real_t x_temp[X_DIM];
+#endif
 
 	ODE_FUN(t, x, i, k_0); //* ode_fun(ti, xi)
 

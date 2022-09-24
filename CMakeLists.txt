@@ -23,6 +23,7 @@ set(matrix_op_INCLUDE_DIR ${matrix_op_SOURCE_DIR}/include)
 #********#
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	option(SINGLE_PRECISION "Single precision" OFF)
+	option(HEAP_USAGE "Single precision" OFF)
 	option(BUILD_TESTS "Build tests" ON)
 	option(BUILD_EXAMPLES "Build examples" ON)
 	option(BUILD_BENCHMARKS "Build bencmarks" ON)
@@ -41,6 +42,10 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 
 	if(SINGLE_PRECISION)
 		add_compile_options(-D__USE_SINGLE_PRECISION__) #* use single precision floats
+	endif()
+
+	if(HEAP_USAGE)
+		add_compile_options(-D__DO_USE_HEAP__) #* use single precision floats
 	endif()
 
 	#* where to look for the project header and source files
