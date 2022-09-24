@@ -9,8 +9,6 @@ project(
 	LANGUAGES CXX
 )
 
-set(matrix_rw_VERSION 1.0.2)
-
 include(FetchContent)
 
 #* matrix_op, used for basic matrix operations
