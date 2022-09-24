@@ -26,11 +26,10 @@
 		{
 			"label": "Clean build",
 			"type": "shell",
-			//"group": "build",
 			"command": "./scripts/clean_build.sh",
 			"options": {
 				"cwd": "${workspaceFolder}"
-			}
+			},
 		},
 		{
 			"label": "Clean build and configure",
@@ -39,16 +38,7 @@
 			"command": "configure",
 			"dependsOn": [
                 "Clean build"
-            ]
-		},
-		{
-			"label": "Update test data",
-			"type": "shell",
-			"group": "build",
-			"command": "../scripts/update_test_data.sh",
-			"options": {
-				"cwd": "${workspaceFolder}/dat"
-			}
+            ],
 		}
 	],
 	"version": "2.0.0",

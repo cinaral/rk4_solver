@@ -1,8 +1,5 @@
 .cache/**
 build/**
-dat/**
-test/matlab/*.mat
-*.s
 
 # Created by https://www.toptal.com/developers/gitignore/api/git,c++,cmake,matlab,jupyternotebooks,visualstudiocode,c
 # Edit at https://www.toptal.com/developers/gitignore?templates=git,c++,cmake,matlab,jupyternotebooks,visualstudiocode,c

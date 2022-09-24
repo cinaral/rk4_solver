@@ -14,7 +14,7 @@ uint_t i = 0;
 
 //* dt__x = f(t, x) = [x[1]; u], x(0) = [0; 0];
 void
-ode_fun(const real_t, const real_t x[], const uint_t, real_t dt__x[])
+ode_fun(const real_t, const real_t (&x)[x_dim], const uint_t, real_t (&dt__x)[x_dim])
 {
 	dt__x[0] = x[1];
 	dt__x[1] = u;
@@ -24,7 +24,7 @@ int
 main()
 {
 	//* integration step
-	rk4_solver::step<ode_fun, x_dim>(t, x, h, i, x_next);
+	rk4_solver::step<x_dim, ode_fun>(t, x, h, i, x_next);
 
 	return 0;
 }

@@ -39,7 +39,7 @@ real_t x_arr_chk[t_dim * x_dim];
 //* dt__x = f(t, x) = 2*pi*f*cos(t*2*pi*f)
 //* x = sin(t*2*pi*f)
 void
-ode_fun(const real_t t, const real_t[], const uint_t, real_t dt__x[])
+ode_fun(const real_t t, const real_t (&)[x_dim], const uint_t, real_t (&dt__x)[x_dim])
 {
 	dt__x[0] = 2 * M_PI * f * cos(t * 2 * M_PI * f);
 }
@@ -50,8 +50,8 @@ main()
 	//*******
 	//* test
 	//*******
-	rk4_solver::loop<ode_fun, t_dim, x_dim>(t0, x0, h, &t, x);
-	rk4_solver::cum_loop<ode_fun, t_dim, x_dim>(t0, x0, h, t_arr, x_arr);
+	rk4_solver::loop<t_dim, x_dim, ode_fun>(t0, x0, h, &t, x);
+	rk4_solver::cum_loop<t_dim, x_dim, ode_fun>(t0, x0, h, t_arr, x_arr);
 
 	//******************
 	//* write test data
@@ -65,7 +65,8 @@ main()
 	real_t max_error = 0.;
 
 	for (uint_t i = 0; i < t_dim; ++i) {
-		const real_t *x_ = matrix::select_row<x_dim>(i, x_arr);
+		real_t x_[x_dim]; 
+		matrix_op::select_row<t_dim>(i, x_arr, x_);
 
 		real_t error = std::abs(x_[0] - sin(t_arr[i] * 2 * M_PI * f));
 		if (error > max_error) {

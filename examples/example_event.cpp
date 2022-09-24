@@ -19,14 +19,14 @@ real_t t = 0;
 real_t x[x_dim];
 
 void
-ode_fun(const real_t, const real_t x[], const uint_t, real_t dt__x[])
+ode_fun(const real_t, const real_t (&x)[x_dim], const uint_t, real_t (&dt__x)[x_dim])
 {
 	dt__x[0] = x[1];
 	dt__x[1] = -g;
 }
 
 bool
-event_fun(const real_t, const real_t x[], const uint_t, real_t x_plus[])
+event_fun(const real_t, const real_t (&x)[x_dim], const uint_t, real_t (&x_plus)[x_dim])
 {
 	if (x[0] <= 0) {
 		x_plus[0] = 0;
@@ -41,7 +41,7 @@ int
 main()
 {
 	//* integration loop with events
-	rk4_solver::loop<ode_fun, t_dim, x_dim, event_fun>(t0, x0, h, &t, x);
+	rk4_solver::loop<t_dim, x_dim, ode_fun, event_fun>(t0, x0, h, &t, x);
 
 	return 0;
 }

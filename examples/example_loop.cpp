@@ -16,7 +16,7 @@ real_t x_arr[t_dim * x_dim];
 //* dt__x = f(t, x) = t, x(0) = 0
 //* x = 1/2*t^2
 void
-ode_fun(const real_t t, const real_t[], const uint_t, real_t dt__x[])
+ode_fun(const real_t t, const real_t (&)[x_dim], const uint_t, real_t (&dt__x)[x_dim])
 {
 	dt__x[0] = t;
 }
@@ -25,7 +25,7 @@ int
 main()
 {
 	//* integration loop with cumulatively saved data arrays
-	rk4_solver::cum_loop<ode_fun, t_dim, x_dim>(t0, x0, h, t_arr, x_arr);
+	rk4_solver::cum_loop<t_dim, x_dim, ode_fun>(t0, x0, h, t_arr, x_arr);
 
 	return 0;
 }

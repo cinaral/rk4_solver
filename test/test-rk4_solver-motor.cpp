@@ -3,6 +3,7 @@
 //* then copy to ./test/dat or use ./scripts/update_test_data.sh
 
 #include "matrix_rw.hpp"
+#include "matrix_op.hpp"
 #include "rk4_solver.hpp"
 
 using uint_t = rk4_solver::uint_t;
@@ -68,15 +69,16 @@ real_t u_arr[t_dim * u_dim];
 
 //* dt__x = A*x + B*x
 void
-ode_fun(const real_t, const real_t x[], const uint_t i, real_t dt__x[])
+ode_fun(const real_t, const real_t (&x)[x_dim], const uint_t i, real_t (&dt__x)[x_dim])
 {
 	real_t temp0[x_dim];
 	real_t temp1[x_dim];
 
-	const real_t *u = matrix::select_row<u_dim>(i, u_arr);
-	matrix::right_multiply<x_dim, x_dim>(A, x, temp0);
-	matrix::right_multiply<x_dim, u_dim>(B, u, temp1);
-	matrix::sum<x_dim>(temp0, temp1, dt__x);
+	real_t u[u_dim];
+	matrix_op::select_row<t_dim>(i, u_arr, u);
+	matrix_op::right_multiply<x_dim, x_dim>(A, x, temp0);
+	matrix_op::right_multiply<x_dim, u_dim>(B, u, temp1);
+	matrix_op::sum<x_dim>(temp0, temp1, dt__x);
 }
 
 int
@@ -91,8 +93,8 @@ main()
 	//*******
 	//* test
 	//*******
-	rk4_solver::loop<ode_fun, t_dim, x_dim>(t0, x0, h, &t, x);
-	rk4_solver::cum_loop<ode_fun, t_dim, x_dim>(t0, x0, h, t_arr, x_arr);
+	rk4_solver::loop<t_dim, x_dim, ode_fun>(t0, x0, h, &t, x);
+	rk4_solver::cum_loop<t_dim, x_dim, ode_fun>(t0, x0, h, t_arr, x_arr);
 
 	//******************
 	//* write test data
@@ -106,8 +108,10 @@ main()
 	real_t max_error = 0.;
 
 	for (uint_t i = 0; i < t_dim; ++i) {
-		const real_t *x_ = matrix::select_row<x_dim>(i, x_arr);
-		const real_t *x_chk_ = matrix::select_row<x_dim>(i, x_arr_chk);
+		real_t x_[x_dim];
+		matrix_op::select_row<t_dim>(i, x_arr, x_);
+		real_t x_chk_[x_dim];
+		matrix_op::select_row<t_dim>(i, x_arr_chk, x_chk_);
 
 		for (uint_t j = 0; j < x_dim; ++j) {
 			real_t error = std::abs(x_[j] - x_chk_[j]);
