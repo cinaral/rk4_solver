@@ -31,11 +31,11 @@ step(T &obj, ode_fun_t<T, X_DIM> ode_fun, const real_t t, const real_t (&x)[X_DI
 	static real_t (*k_2_ptr)[X_DIM] = (real_t(*)[X_DIM])new real_t[X_DIM];
 	static real_t (*k_3_ptr)[X_DIM] = (real_t(*)[X_DIM])new real_t[X_DIM];
 	static real_t (*x_temp_ptr)[X_DIM] = (real_t(*)[X_DIM])new real_t[X_DIM];
-	static real_t (&k_0)[X_DIM] = *k_0_ptr;
-	static real_t (&k_1)[X_DIM] = *k_1_ptr;
-	static real_t (&k_2)[X_DIM] = *k_2_ptr;
-	static real_t (&k_3)[X_DIM] = *k_3_ptr;
-	static real_t (&x_temp)[X_DIM] = *x_temp_ptr;
+	real_t (&k_0)[X_DIM] = *k_0_ptr;
+	real_t (&k_1)[X_DIM] = *k_1_ptr;
+	real_t (&k_2)[X_DIM] = *k_2_ptr;
+	real_t (&k_3)[X_DIM] = *k_3_ptr;
+	real_t (&x_temp)[X_DIM] = *x_temp_ptr;
 	//* "..._ptr"s are of type "real_t(*)[X_DIM]", they point to "real_t[X_DIM]"s which are allocated on the heap,
 	//* dereferencing "..._ptr"s gives us rvalue references to "real_t[X_DIM]"s, which can be substituted to "real_t[X_DIM]"s allocated on the stack.
 	//* Yes, maybe typedef should have been used more

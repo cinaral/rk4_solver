@@ -67,13 +67,11 @@ struct Dynamics {
 		real_t temp0[x_dim];
 		real_t temp1[x_dim];
 
-		real_t u[u_dim];
-		matrix_op::select_row<t_dim>(i, u_arr, u);
+		const real_t(&u)[u_dim] = *matrix_op::select_row<t_dim, u_dim>(i, u_arr);
 		matrix_op::right_multiply<x_dim, x_dim>(A, x, temp0);
 		matrix_op::right_multiply<x_dim, u_dim>(B, u, temp1);
 		matrix_op::sum<x_dim>(temp0, temp1, dt__x);
 	}
-
 	real_t u_arr[t_dim * u_dim];
 };
 Dynamics dyn;
@@ -102,13 +100,12 @@ main()
 	real_t max_error = 0.;
 
 	for (uint_t i = 0; i < t_dim; ++i) {
-		real_t x_[x_dim];
-		matrix_op::select_row<t_dim>(i, x_arr, x_);
-		real_t x_chk_[x_dim];
-		matrix_op::select_row<t_dim>(i, x_arr_chk, x_chk_);
+		const real_t(&x_)[x_dim] = *matrix_op::select_row<t_dim, x_dim>(i, x_arr);
+		const real_t(&x_chk_)[x_dim] = *matrix_op::select_row<t_dim, x_dim>(i, x_arr_chk);
 
 		for (uint_t j = 0; j < x_dim; ++j) {
 			real_t error = std::abs(x_[j] - x_chk_[j]);
+
 			if (error > max_error) {
 				max_error = error;
 			}
@@ -119,6 +116,7 @@ main()
 	real_t max_loop_vs_cum_error = 0.;
 	for (uint_t i = 0; i < x_dim; ++i) {
 		real_t error = std::abs(x_arr[x_dim * (t_dim - 1) + i] - x[i]);
+
 		if (error > max_loop_vs_cum_error) {
 			max_loop_vs_cum_error = error;
 		}

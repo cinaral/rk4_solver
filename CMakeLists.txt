@@ -5,14 +5,14 @@ cmake_minimum_required(VERSION 3.13)
 
 project(
 	rk4_solver
-	VERSION 1.0.5 
+	VERSION 1.0.6 
 	LANGUAGES CXX
 )
 
 include(FetchContent)
 
 #* matrix_op, used for basic matrix operations
-set(matrix_op_VERSION 1.0.2)
+set(matrix_op_VERSION 1.0.3)
 
 FetchContent_Declare(matrix_op URL https://github.com/cinaral/matrix_op/releases/download/v${matrix_op_VERSION}/matrix_op-src.zip)
 FetchContent_MakeAvailable(matrix_op)

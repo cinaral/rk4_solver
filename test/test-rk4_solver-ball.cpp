@@ -84,13 +84,12 @@ main()
 	real_t max_error = 0.;
 
 	for (uint_t i = 0; i < t_dim; ++i) {
-		real_t x_[x_dim];
-		matrix_op::select_row<t_dim>(i, x_arr, x_);
-		real_t x_chk_[x_dim];
-		matrix_op::select_row<t_dim>(i, x_arr_chk, x_chk_);
+		const real_t(&x_)[x_dim] = *matrix_op::select_row<t_dim, x_dim>(i, x_arr);
+		const real_t(&x_chk_)[x_dim] = *matrix_op::select_row<t_dim, x_dim>(i, x_arr_chk);
 
 		for (uint_t j = 0; j < 1; ++j) {
 			real_t error = std::abs(x_[j] - x_chk_[j]);
+
 			if (error > max_error) {
 				max_error = error;
 			}
@@ -101,6 +100,7 @@ main()
 	real_t max_loop_vs_cum_error = 0.;
 	for (uint_t i = 0; i < x_dim; ++i) {
 		real_t error = std::abs(x_arr[x_dim * (t_dim - 1) + i] - x[i]);
+
 		if (error > max_loop_vs_cum_error) {
 			max_loop_vs_cum_error = error;
 		}
