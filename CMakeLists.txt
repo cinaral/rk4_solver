@@ -22,8 +22,8 @@ set(matrix_op_INCLUDE_DIR ${matrix_op_SOURCE_DIR}/include)
 #* Self *#
 #********#
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-	option(SINGLE_PRECISION "Single precision" OFF)
-	option(HEAP_USAGE "Heap usage" OFF)
+	option(SINGLE_PRECISION "Single precision" ON)
+	option(HEAP_USAGE "Heap usage" ON)
 	option(BUILD_TESTS "Build tests" ON)
 	option(BUILD_EXAMPLES "Build examples" ON)
 	option(BUILD_BENCHMARKS "Build bencmarks" ON)
@@ -159,8 +159,9 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 				-O3 #* optimization level
 				-m64 #* x64
 				-mavx2 #* enable avx2
+				-fno-exceptions #* disable exceptions  
 				#-fno-math-errno #* disable errno 
-				#-ffast-math #* feeling brave?
+				#-ffast-math #* feeling brave? (may not improve performance)
 			)
 		endforeach(ELEMENT ${BENCHMARK_NAMES})
 	endif()
