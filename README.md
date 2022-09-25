@@ -31,11 +31,11 @@ For a single integration step, call ```rk4_solver::step(...)```:
 ```Cpp
 template <typename T, uint_t T_DIM, uint_t X_DIM>
 void loop(	T &obj, 
-			ode_fun_t<T, X_DIM> ode_fun, 
-			const real_t t0, 
-			const real_t (&x0)[X_DIM], 
-			const real_t h, 
-			real_t *t,
+		ode_fun_t<T, X_DIM> ode_fun, 
+		const real_t t0, 
+		const real_t (&x0)[X_DIM], 
+		const real_t h, 
+		real_t *t,
      		real_t (&x)[X_DIM]);
 ```
 
@@ -44,11 +44,11 @@ For an integration loop, call ```rk4_solver::loop(...)```:
 template <typename T, uint_t T_DIM, uint_t X_DIM>
 void
 loop(	T &obj, 
-		ode_fun_t<T, X_DIM> ode_fun, 
-		const real_t t0, 
-		const real_t (&x0)[X_DIM], 
-		const real_t h, 
-		real_t *t,
+	ode_fun_t<T, X_DIM> ode_fun, 
+	const real_t t0, 
+	const real_t (&x0)[X_DIM], 
+	const real_t h, 
+	real_t *t,
     	real_t (&x)[X_DIM])
 ```
 
@@ -59,13 +59,13 @@ If you want to use events with your integration loop, you may do so by using an 
 template <typename T, uint_t T_DIM, uint_t X_DIM>
 uint_t
 loop(	T &obj, 
-		ode_fun_t<T, X_DIM> ode_fun, 
-		event_fun_t<T, X_DIM> event_fun, 
-		const real_t t0, 
-		const real_t (&x0)[X_DIM],
+	ode_fun_t<T, X_DIM> ode_fun, 
+	event_fun_t<T, X_DIM> event_fun, 
+	const real_t t0, 
+	const real_t (&x0)[X_DIM],
      	const real_t h, 
-		real_t *t, 
-		real_t (&x)[X_DIM])
+	real_t *t, 
+	real_t (&x)[X_DIM])
 ```
 
 ```uint_t```, ```real_t```, ```ode_fun_t``` and ```event_fun_t``` are defined in ```types.hpp```.  
@@ -88,13 +88,13 @@ You may use cumulative loop functions with or without the event function to save
 template <typename T, uint_t T_DIM, uint_t X_DIM>
 uint_t
 cum_loop(	T &obj, 
-			ode_fun_t<T, X_DIM> ode_fun, 
-			[OPTIONAL] event_fun_t<T, X_DIM> event_fun, 
-			const real_t t0,
-			const real_t (&x0)[X_DIM], 
-			const real_t h, 
-			real_t (&t_arr)[T_DIM], 
-			real_t (&x_arr)[T_DIM * X_DIM])
+		ode_fun_t<T, X_DIM> ode_fun, 
+		[OPTIONAL] event_fun_t<T, X_DIM> event_fun, 
+		const real_t t0,
+		const real_t (&x0)[X_DIM], 
+		const real_t h, 
+		real_t (&t_arr)[T_DIM], 
+		real_t (&x_arr)[T_DIM * X_DIM])
 ```
 
 
