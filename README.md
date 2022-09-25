@@ -3,7 +3,7 @@ Simple [Runge-Kutta 4th Order Method](https://en.wikipedia.org/wiki/Runge%E2%80%
 
 It numerically solves a system of ordinary differential equations (ODE) given as $\dot{\mathbf{x}} = \mathbf{f}(t, \mathbf{x}(t)),\quad \mathbf{x}(0)=\mathbf{x}_0$.
 
-This library has no external dependencies including the standard library (except for [Testing](#testing)). It was written with hard real-time embedded applications in mind, e.g. it does not use dynamic memory allocation, RTTI or exceptions. It can be compiled for ```float```s by enabling the ```__USE_SINGLE_PRECISION__``` compiler flag.
+This library and its only dependency [matrix_op](https://github.com/cinaral/matrix_op) was written with hard real-time embedded applications in mind (excluding [Testing](#testing)), e.g. it does not use dynamic memory allocation, RTTI or exceptions. It can be compiled for ```float```s by enabling the ```__USE_SINGLE_PRECISION__``` compiler flag.
 
 
 # Installation
