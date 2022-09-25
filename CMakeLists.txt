@@ -51,21 +51,41 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	#* where to look for the project header and source files
 	set(INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
 	set(SRC_DIR ${CMAKE_CURRENT_LIST_DIR}/src)
+	set(TEST_DIR ${CMAKE_CURRENT_LIST_DIR}/test)
+	set(EXAMPLE_DIR ${CMAKE_CURRENT_LIST_DIR}/examples)
+	set(BENCHMARK_DIR ${CMAKE_CURRENT_LIST_DIR}/src)
 
-	#* set up directories for binary, library, data and parameter files 
+	#* tests, examples, benchmarks to compile
+	set(TEST_NAMES
+		test-rk4_solver-sine
+		test-rk4_solver-motor
+		test-rk4_solver-ball
+	)
+	set(EXAMPLE_NAMES
+		example_step
+		example_loop
+		example_event
+	)
+	set(BENCHMARK_NAMES
+		rk4_solver-benchmark
+	)
+
+	#* files to package
+	set(PACKAGE_FILES 
+		include/${PROJECT_NAME}/
+		include/${PROJECT_NAME}.hpp 
+		CMakeLists.txt 
+		LICENSE
+	)
+
+	#* set up output directories
 	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 	file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/dat)
 	
 	#***********#
 	#* Testing *#
 	#***********#
 	if(BUILD_TESTS)
-		set(TEST_NAMES
-			test-rk4_solver-sine
-			test-rk4_solver-motor
-			test-rk4_solver-ball
-		)
 		enable_testing()
 
 		#* matrix_rw, used for testing
@@ -81,7 +101,7 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 		foreach(ELEMENT ${TEST_NAMES})
 			add_executable(
 				${ELEMENT} 
-				test/${ELEMENT}.cpp						
+				${TEST_DIR}/${ELEMENT}.cpp						
 			)
 
 			target_include_directories(
@@ -103,16 +123,11 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	#* Examples *#
 	#************#
 	if(BUILD_EXAMPLES)
-		set(EXAMPLE_NAMES
-			example_step
-			example_loop
-			example_event
-		)
 
 		foreach(ELEMENT ${EXAMPLE_NAMES})
 			add_executable(
 				${ELEMENT} 
-				examples/${ELEMENT}.cpp)
+				${EXAMPLE_DIR}/${ELEMENT}.cpp)
 
 			target_include_directories(
 				${ELEMENT} PRIVATE 
@@ -126,14 +141,11 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	#* Benchmark *#
 	#*************#
 	if(BUILD_BENCHMARKS)
-		set(BENCHMARK_NAMES
-			rk4_solver-benchmark
-		)
 
 		foreach(ELEMENT ${BENCHMARK_NAMES})
 			add_executable(
 				${ELEMENT} 
-				src/${ELEMENT}.cpp
+				${BENCHMARK_DIR}/${ELEMENT}.cpp
 			)
 
 			target_include_directories(
@@ -156,13 +168,6 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	#************************#
 	#* Packaged source code *#
 	#************************#
-	set(PACKAGE_FILES 
-		include/${PROJECT_NAME}/
-		include/${PROJECT_NAME}.hpp 
-		CMakeLists.txt 
-		LICENSE
-	)
-
 	add_custom_command(
 		OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-src.zip
 		COMMAND ${CMAKE_COMMAND} -E tar c ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-src.zip --format=zip -- ${PACKAGE_FILES}

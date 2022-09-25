@@ -25,13 +25,20 @@ step(T &obj, ode_fun_t<T, X_DIM> ode_fun, const real_t t, const real_t (&x)[X_DI
 {
 	constexpr real_t rk4_weight_0 = 1. / 6.;
 	constexpr real_t rk4_weight_1 = 1. / 3.;
-
-#ifdef __DO_USE_HEAP__
-	static real_t *k_0 = new real_t[X_DIM];
-	static real_t *k_1 = new real_t[X_DIM];
-	static real_t *k_2 = new real_t[X_DIM];
-	static real_t *k_3 = new real_t[X_DIM];
-	static real_t *x_temp = new real_t[X_DIM];
+#ifdef __DO_USE_HEAP__ 
+	static real_t (*k_0_ptr)[X_DIM] = (real_t(*)[X_DIM])new real_t[X_DIM];
+	static real_t (*k_1_ptr)[X_DIM] = (real_t(*)[X_DIM])new real_t[X_DIM];
+	static real_t (*k_2_ptr)[X_DIM] = (real_t(*)[X_DIM])new real_t[X_DIM];
+	static real_t (*k_3_ptr)[X_DIM] = (real_t(*)[X_DIM])new real_t[X_DIM];
+	static real_t (*x_temp_ptr)[X_DIM] = (real_t(*)[X_DIM])new real_t[X_DIM];
+	static real_t (&k_0)[X_DIM] = *k_0_ptr;
+	static real_t (&k_1)[X_DIM] = *k_1_ptr;
+	static real_t (&k_2)[X_DIM] = *k_2_ptr;
+	static real_t (&k_3)[X_DIM] = *k_3_ptr;
+	static real_t (&x_temp)[X_DIM] = *x_temp_ptr;
+	//* "..._ptr"s are of type "real_t(*)[X_DIM]", they point to "real_t[X_DIM]"s which are allocated on the heap,
+	//* dereferencing "..._ptr"s gives us rvalue references to "real_t[X_DIM]"s, which can be substituted to "real_t[X_DIM]"s allocated on the stack.
+	//* Yes, maybe typedef should have been used more
 #else
 	static real_t k_0[X_DIM];
 	static real_t k_1[X_DIM];
@@ -57,6 +64,7 @@ step(T &obj, ode_fun_t<T, X_DIM> ode_fun, const real_t t, const real_t (&x)[X_DI
 		    h * (rk4_weight_0 * k_0[i] + rk4_weight_1 * k_1[i] + rk4_weight_1 * k_2[i] + rk4_weight_0 * k_3[i]);
 	}
 }
+
 } // namespace rk4_solver
 
 #endif
