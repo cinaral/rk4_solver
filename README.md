@@ -8,7 +8,7 @@ This library has no external dependencies including the standard library (except
 
 # Installation
 
-Include the headers in ```include/``` into your project.
+Include all or some of the headers in ```include/``` into your project.
 
 Alternatively, you can use [FetchContent()](https://cmake.org/cmake/help/latest/module/FetchContent.html) in your ```CMakeLists.txt```:
 ```CMake
@@ -17,7 +17,7 @@ FetchContent_MakeAvailable(rk4_solver)
 set(rk4_solver_INCLUDE_DIR ${rk4_solver_SOURCE_DIR}/include)
 ```
 
-Use CTest to test the library before using. Three tests are included:
+Use CTest to test the library before using. There are three included tests.
 - Sine wave
 - Motor response 
 - Bouncing ball
@@ -29,22 +29,43 @@ Some of them require reference solutions which is provided in this repository wi
 
 For a single integration step, call ```rk4_solver::step(...)```:
 ```Cpp
-template <ode_fun_t ODE_FUN, uint_t X_DIM>
-void step(const real_t t, const real_t x[], const real_t h, const uint_t i, real_t x_next[]);
+template <typename T, uint_t T_DIM, uint_t X_DIM>
+void loop(	T &obj, 
+			ode_fun_t<T, X_DIM> ode_fun, 
+			const real_t t0, 
+			const real_t (&x0)[X_DIM], 
+			const real_t h, 
+			real_t *t,
+     		real_t (&x)[X_DIM]);
 ```
 
 For an integration loop, call ```rk4_solver::loop(...)```:
 ```Cpp
-template <ode_fun_t ODE_FUN, uint_t T_DIM, uint_t X_DIM>
-void loop(const real_t t0, const real_t x0[], const real_t h, real_t *t, real_t x[]);
+template <typename T, uint_t T_DIM, uint_t X_DIM>
+void
+loop(	T &obj, 
+		ode_fun_t<T, X_DIM> ode_fun, 
+		const real_t t0, 
+		const real_t (&x0)[X_DIM], 
+		const real_t h, 
+		real_t *t,
+    	real_t (&x)[X_DIM])
 ```
 
 If you want to use events with your integration loop, you may do so by using an event function:
 
 **WARNING**: This is a fixed-step size method and therefore the event detection will be approximate within the time step size.
 ```Cpp
-template <ode_fun_t ODE_FUN, uint_t T_DIM, uint_t X_DIM, event_fun_t EVENT_FUN>
-uint_t loop(const real_t t0, const real_t x0[], const real_t h, real_t *t, real_t x[]);
+template <typename T, uint_t T_DIM, uint_t X_DIM>
+uint_t
+loop(	T &obj, 
+		ode_fun_t<T, X_DIM> ode_fun, 
+		event_fun_t<T, X_DIM> event_fun, 
+		const real_t t0, 
+		const real_t (&x0)[X_DIM],
+     	const real_t h, 
+		real_t *t, 
+		real_t (&x)[X_DIM])
 ```
 
 ```uint_t```, ```real_t```, ```ode_fun_t``` and ```event_fun_t``` are defined in ```types.hpp```.  
@@ -53,18 +74,27 @@ uint_t loop(const real_t t0, const real_t x0[], const real_t h, real_t *t, real_
 
 ```ode_fun_t``` and ```event_fun_t``` are function pointers defined as:
 ```Cpp
-using ode_fun_t = void (*)(const real_t t, const real_t x[], const uint_t i, real_t dt__x[]);
-using event_fun_t = bool (*)(const real_t t, const real_t x[], const uint_t i, real_t x_plus[]);
+template <typename T, uint_t X_DIM>
+using ode_fun_t = void (T::*)(const real_t t, const real_t (&x)[X_DIM], const uint_t i, real_t (&dt__x)[X_DIM]);
+
+template <typename T, uint_t X_DIM>
+using event_fun_t = bool (T::*)(const real_t t, const real_t (&x)[X_DIM], const uint_t i, real_t (&x_plus)[X_DIM]);
+
 ```
 where ```i < T_DIM``` is the current time step for the time step size ```h```. ```i``` is provided for time index dependent inputs such as pre-computed discrete control input.
 
 You may use cumulative loop functions with or without the event function to save the integration value at every time step:
 ```Cpp
-template <ode_fun_t ODE_FUN, uint_t T_DIM, uint_t X_DIM>
-void cum_loop(const real_t t0, const real_t x0[], const real_t h, real_t t_arr[], real_t x_arr[]);
-
-template <ode_fun_t ODE_FUN, uint_t T_DIM, uint_t X_DIM, event_fun_t EVENT_FUN>
-uint_t cum_loop(const real_t t0, const real_t x0[], const real_t h, real_t t_arr[], real_t x_arr[]);
+template <typename T, uint_t T_DIM, uint_t X_DIM>
+uint_t
+cum_loop(	T &obj, 
+			ode_fun_t<T, X_DIM> ode_fun, 
+			[OPTIONAL] event_fun_t<T, X_DIM> event_fun, 
+			const real_t t0,
+			const real_t (&x0)[X_DIM], 
+			const real_t h, 
+			real_t (&t_arr)[T_DIM], 
+			real_t (&x_arr)[T_DIM * X_DIM])
 ```
 
 
@@ -72,19 +102,20 @@ uint_t cum_loop(const real_t t0, const real_t x0[], const real_t h, real_t t_arr
 
 ## Example 1: Single integration step
 ```Cpp
-#include "rk4_solver.hpp"
-#include "types.hpp"
+#include "rk4_solver/step.hpp"
 //...
-void ode_fun(const real_t, const real_t x[], const uint_t, real_t dt__x[])
+void Dynamics::ode_fun(const real_t, const real_t x[], const uint_t, real_t dt__x[])
 {
 	dt__x[0] = x[1];
 	dt__x[1] = u;
 }
+//...
+Dynamics dyn;
 
 int main()
 {
 	//* integration step
-	rk4_solver::step<ode_fun, x_dim>(t, x, h, i, x_next);
+	rk4_solver::step<Dynamics, x_dim>(dyn, &Dynamics::ode_fun, t, x, h, i, x_next);
 	//...
 }
 ```
@@ -93,16 +124,19 @@ See [example_step.cpp](./examples/example_step.cpp) for details.
 
 ## Example 2: Integration loop
 ```Cpp
+#include "rk4_solver/cum_loop.hpp"
 //...
-void ode_fun(const real_t t, const real_t[], const uint_t, real_t dt__x[])
+void Dynamics::ode_fun(const real_t t, const real_t[], const uint_t, real_t dt__x[])
 {
 	dt__x[0] = t;
 }
+//...
+Dynamics dyn;
 
 int main()
 {
 	//* integration loop with cumulatively saved data arrays
-	rk4_solver::cum_loop<ode_fun, t_dim, x_dim>(t0, x0, h, t_arr, x_arr);
+	rk4_solver::cum_loop<Dynamics, t_dim, x_dim>(dyn, &Dynamics::ode_fun, t0, x0, h, t_arr, x_arr);
 	//...
 }
 ```
@@ -111,28 +145,33 @@ See [example_loop.cpp](./examples/example_loop.cpp) for details.
 
 ## Example 3: Events
 ```Cpp
+#include "rk4_solver.hpp"
 //...
-void ode_fun(const real_t, const real_t x[], const uint_t, real_t dt__x[])
-{
-	dt__x[0] = x[1];
-	dt__x[1] = -g;
-}
-
-bool event_fun(const real_t, const real_t x[], const uint_t, real_t x_plus[])
-{
-	if (x[0] <= 0) {
-		x_plus[0] = 0;
-		x_plus[1] = -e * x[1];
+struct Dynamics {
+	void
+	ode_fun(const real_t, const real_t (&x)[x_dim], const uint_t, real_t (&dt__x)[x_dim])
+	{
+		dt__x[0] = x[1];
+		dt__x[1] = -g;
 	}
+	bool
+	event_fun(const real_t, const real_t (&x)[x_dim], const uint_t, real_t (&x_plus)[x_dim])
+	{
+		if (x[0] <= 0) {
+			x_plus[0] = 0;
+			x_plus[1] = -e * x[1];
+		}
+		//* don't stop the integration
+		return false;
+	}
+};
+Dynamics dyn;
 
-	//* don't stop the integration
-	return false;
-}
-
-int main()
+int
+main()
 {
 	//* integration loop with events
-	rk4_solver::loop<ode_fun, t_dim, x_dim, event_fun>(t0, x0, h, &t, x);
+	rk4_solver::loop<Dynamics,  t_dim, x_dim>(dyn, &Dynamics::ode_fun, &Dynamics::event_fun, t0, x0, h, &t, x);
 	//...
 }
 ```

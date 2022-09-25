@@ -1,4 +1,4 @@
-#include "rk4_solver.hpp"
+#include "rk4_solver/loop.hpp"
 
 using uint_t = rk4_solver::uint_t;
 using real_t = rk4_solver::real_t;
@@ -33,7 +33,6 @@ struct Dynamics {
 			x_plus[0] = 0;
 			x_plus[1] = -e * x[1];
 		}
-
 		//* don't stop the integration
 		return false;
 	}
@@ -44,7 +43,7 @@ int
 main()
 {
 	//* integration loop with events
-	rk4_solver::loop<Dynamics,  t_dim, x_dim>(dyn, &Dynamics::ode_fun, &Dynamics::event_fun, t0, x0, h, &t, x);
+	rk4_solver::loop<Dynamics, t_dim, x_dim>(dyn, &Dynamics::ode_fun, &Dynamics::event_fun, t0, x0, h, &t, x);
 
 	return 0;
 }
