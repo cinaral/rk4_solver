@@ -2,87 +2,85 @@
 //* test__rk4_solver__ball.m can generate it in ./dat if you have MATLAB (see README.md)
 //* then copy to ./test/dat or use ./scripts/update_test_data.sh
 
-#include "matrix_rw.hpp"
 #include "matrix_op.hpp"
+#include "matrix_rw.hpp"
 #include "rk4_solver.hpp"
 
 using uint_t = rk4_solver::uint_t;
 using real_t = rk4_solver::real_t;
 
-//********
 //* setup
-//********
-const std::string dat_dir = "../../dat";
-const std::string test_dat_dir = "../../test/dat";
+const std::string dat_dir = "../dat";
+const std::string ref_dat_dir = "../../test/reference_dat";
 const std::string test_name = "test-rk4_solver-ball";
-const std::string dir_prefix = dat_dir + "/" + test_name + "-";
-const std::string test_dat_prefix = test_dat_dir + "/" + test_name + "-";
+const std::string dat_prefix = dat_dir + "/" + test_name + "-";
+const std::string ref_dat_prefix = ref_dat_dir + "/" + test_name + "-";
 const std::string t_arr_fname = "t_arr.dat";
 const std::string x_arr_fname = "x_arr.dat";
 const std::string x_arr_chk_fname = "x_arr_chk.dat";
 
-constexpr uint_t t_dim = 1e5;
+constexpr uint_t t_dim = 1e4;
 constexpr uint_t x_dim = 2;
 constexpr real_t t0 = 0.;
 constexpr real_t tf = 2.;
 constexpr real_t x0[x_dim] = {1., 0.};
 constexpr real_t h = tf / (t_dim - 1);
+
 #ifdef __USE_SINGLE_PRECISION__
-constexpr real_t error_thres = 1e-3;
+constexpr real_t error_thres = 2e-3;
 #else
-constexpr real_t error_thres = 1e-4;
+constexpr real_t error_thres = 1e-3;
 #endif
 
-//* Ball equations:
-//* dt__x =  [x2; -g]
-constexpr real_t e = .75;
-constexpr real_t g = 9.806;
-
-real_t t = 0;
-real_t x[x_dim];
-real_t t_arr[t_dim];
-real_t x_arr[t_dim * x_dim];
-real_t x_arr_chk[t_dim * x_dim];
-
-void
-ode_fun(const real_t, const real_t (&x)[x_dim], const uint_t, real_t (&dt__x)[x_dim])
+class Dynamics
 {
-	dt__x[0] = x[1];
-	dt__x[1] = -g;
-}
-bool
-event_fun(const real_t, const real_t (&x)[x_dim], const uint_t, real_t (&x_plus)[x_dim])
-{
-	if (x[0] <= 0) {
-		x_plus[0] = 0;
-		x_plus[1] = -e * x[1];
+  public:
+	void
+	ode_fun(const real_t, const real_t (&x)[x_dim], const uint_t, real_t (&dt__x)[x_dim])
+	{
+		dt__x[0] = x[1];
+		dt__x[1] = -g;
 	}
-	return false;
-}
+
+	bool
+	event_fun(const real_t, const real_t (&x)[x_dim], const uint_t, real_t (&x_plus)[x_dim])
+	{
+		if (x[0] <= 0) {
+			x_plus[0] = 0;
+			x_plus[1] = -e * x[1];
+		}
+		return false;
+	}
+
+  private:
+	//* Ball equations:
+	//* dt__x =  [x2; -g]
+	const real_t e = .75;
+	const real_t g = 9.806;
+};
+Dynamics dyn;
 
 int
 main()
 {
-	//*****************
-	//* read test data
-	//*****************
-	matrix_rw::read<t_dim, x_dim>(test_dat_prefix + x_arr_chk_fname, x_arr_chk);
+	//* read reference data
+	real_t x_arr_chk[t_dim * x_dim];
+	matrix_rw::read<t_dim, x_dim>(ref_dat_prefix + x_arr_chk_fname, x_arr_chk);
 
-	//*******
 	//* test
-	//*******
-	rk4_solver::loop< t_dim, x_dim, ode_fun, event_fun>(t0, x0, h, &t, x);
-	rk4_solver::cum_loop<t_dim, x_dim, ode_fun, event_fun>(t0, x0, h, t_arr, x_arr);
+	real_t t = 0;
+	real_t x[x_dim];
+	real_t t_arr[t_dim];
+	real_t x_arr[t_dim * x_dim];
+	rk4_solver::loop<Dynamics, t_dim, x_dim>(dyn, &Dynamics::ode_fun, &Dynamics::event_fun, t0, x0, h, &t, x);
+	rk4_solver::cum_loop<Dynamics, t_dim, x_dim>(dyn, &Dynamics::ode_fun, &Dynamics::event_fun, t0, x0, h, t_arr,
+	                                             x_arr);
 
-	//******************
 	//* write test data
-	//******************
-	matrix_rw::write<t_dim, 1>(dir_prefix + t_arr_fname, t_arr);
-	matrix_rw::write<t_dim, x_dim>(dir_prefix + x_arr_fname, x_arr);
+	matrix_rw::write<t_dim, 1>(dat_prefix + t_arr_fname, t_arr);
+	matrix_rw::write<t_dim, x_dim>(dat_prefix + x_arr_fname, x_arr);
 
-	//*********
 	//* verify
-	//*********
 	real_t max_error = 0.;
 
 	for (uint_t i = 0; i < t_dim; ++i) {

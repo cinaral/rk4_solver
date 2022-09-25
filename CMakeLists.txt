@@ -5,14 +5,14 @@ cmake_minimum_required(VERSION 3.13)
 
 project(
 	rk4_solver
-	VERSION 1.0.3 
+	VERSION 1.0.5 
 	LANGUAGES CXX
 )
 
 include(FetchContent)
 
 #* matrix_op, used for basic matrix operations
-set(matrix_op_VERSION 1.0.1)
+set(matrix_op_VERSION 1.0.2)
 
 FetchContent_Declare(matrix_op URL https://github.com/cinaral/matrix_op/releases/download/v${matrix_op_VERSION}/matrix_op-src.zip)
 FetchContent_MakeAvailable(matrix_op)
@@ -23,7 +23,7 @@ set(matrix_op_INCLUDE_DIR ${matrix_op_SOURCE_DIR}/include)
 #********#
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	option(SINGLE_PRECISION "Single precision" OFF)
-	option(HEAP_USAGE "Single precision" OFF)
+	option(HEAP_USAGE "Heap usage" OFF)
 	option(BUILD_TESTS "Build tests" ON)
 	option(BUILD_EXAMPLES "Build examples" ON)
 	option(BUILD_BENCHMARKS "Build bencmarks" ON)

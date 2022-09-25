@@ -18,30 +18,33 @@ constexpr real_t g = 9.806;
 real_t t = 0;
 real_t x[x_dim];
 
-void
-ode_fun(const real_t, const real_t (&x)[x_dim], const uint_t, real_t (&dt__x)[x_dim])
-{
-	dt__x[0] = x[1];
-	dt__x[1] = -g;
-}
-
-bool
-event_fun(const real_t, const real_t (&x)[x_dim], const uint_t, real_t (&x_plus)[x_dim])
-{
-	if (x[0] <= 0) {
-		x_plus[0] = 0;
-		x_plus[1] = -e * x[1];
+struct Dynamics {
+	void
+	ode_fun(const real_t, const real_t (&x)[x_dim], const uint_t, real_t (&dt__x)[x_dim])
+	{
+		dt__x[0] = x[1];
+		dt__x[1] = -g;
 	}
 
-	//* don't stop the integration
-	return false;
-}
+	bool
+	event_fun(const real_t, const real_t (&x)[x_dim], const uint_t, real_t (&x_plus)[x_dim])
+	{
+		if (x[0] <= 0) {
+			x_plus[0] = 0;
+			x_plus[1] = -e * x[1];
+		}
+
+		//* don't stop the integration
+		return false;
+	}
+};
+Dynamics dyn;
 
 int
 main()
 {
 	//* integration loop with events
-	rk4_solver::loop<t_dim, x_dim, ode_fun, event_fun>(t0, x0, h, &t, x);
+	rk4_solver::loop<Dynamics,  t_dim, x_dim>(dyn, &Dynamics::ode_fun, &Dynamics::event_fun, t0, x0, h, &t, x);
 
 	return 0;
 }

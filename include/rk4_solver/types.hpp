@@ -10,11 +10,11 @@ using real_t = float;
 using real_t = double;
 #endif
 
-template <uint_t X_DIM>
-using ode_fun_t = void (*)(const real_t t, const real_t (&x)[X_DIM], const uint_t i, real_t (&dt__x)[X_DIM]);
+template <typename T, uint_t X_DIM>
+using ode_fun_t = void (T::*)(const real_t t, const real_t (&x)[X_DIM], const uint_t i, real_t (&dt__x)[X_DIM]);
 
-template <uint_t X_DIM>
-using event_fun_t = bool (*)(const real_t t, const real_t (&x)[X_DIM], const uint_t i, real_t (&x_plus)[X_DIM]);
+template <typename T, uint_t X_DIM>
+using event_fun_t = bool (T::*)(const real_t t, const real_t (&x)[X_DIM], const uint_t i, real_t (&x_plus)[X_DIM]);
 
 } // namespace rk4_solver
 
