@@ -20,7 +20,7 @@ jobs:
         run: cmake $GITHUB_WORKSPACE
       - name: Package source code
         working-directory: build/
-        run: cmake --build . --target rk4_solver_package
+        run: cmake --build . --target src_package
 
       - name: Add packaged source code to release
         uses: svenstaro/upload-release-action@v2
