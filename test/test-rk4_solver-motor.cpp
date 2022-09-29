@@ -23,29 +23,6 @@ constexpr real_t t0 = 0;
 constexpr real_t x0[x_dim] = {0};
 constexpr real_t h = 1. / (t_dim - 1);
 
-#ifdef __USE_SINGLE_PRECISION__
-constexpr real_t error_thres = 1e-5;
-#else
-constexpr real_t error_thres = 1e-13;
-#endif
-
-//* Motor equations:
-//* dt2__th = -b/J*dt__th + K_t/J*i
-//* dt__i = - K_b/L*dt__th - R/L*i + 1/L*e
-//*
-//* In state-space:
-//* x = [th; dt__th; i]
-//* u = [e]
-//*
-//* dt__x = A*x + B*u
-//* A = [0, 1,      0;
-//*      0, -b/J,   K_t/J;
-//*      0, -K_b/L, -R/L];
-//* B = [0,
-//*      0,
-//*      1/L];
-//*
-//* Crouzet 89830012:
 constexpr real_t R = 1.4;      //* [ohm]
 constexpr real_t L = 1.7e-3;   //*  [ohm s]
 constexpr real_t J = 1.29e-4;  //*  [kg m-2]
@@ -55,8 +32,28 @@ constexpr real_t K_b = 6.4e-2; //*  [V s]
 constexpr real_t A[x_dim * x_dim] = {0, 1, 0, 0, -b / J, K_t / J, 0, -K_b / L, -R / L};
 constexpr real_t B[x_dim * u_dim] = {0, 0, 1 / L};
 
+#ifdef __USE_SINGLE_PRECISION__
+constexpr real_t error_thres = 1e-5;
+#else
+constexpr real_t error_thres = 1e-13;
+#endif
+
 struct Dynamics {
-	//* dt__x = A*x + B*x
+	//* Motor equations:
+	//* dt2__th = -b/J*dt__th + K_t/J*i
+	//* dt__i = - K_b/L*dt__th - R/L*i + 1/L*e
+	//*
+	//* In state-space:
+	//* x = [th; dt__th; i]
+	//* u = [e]
+	//*
+	//* dt__x = A*x + B*u
+	//* A = [0, 1,      0;
+	//*      0, -b/J,   K_t/J;
+	//*      0, -K_b/L, -R/L];
+	//* B = [0,
+	//*      0,
+	//*      1/L];
 	void
 	ode_fun(const real_t, const real_t (&x)[x_dim], const uint_t i, real_t (&dt__x)[x_dim])
 	{
@@ -100,7 +97,7 @@ main()
 		const real_t(&x_chk_)[x_dim] = *matrix_op::select_row<t_dim, x_dim>(i, x_arr_chk);
 
 		for (uint_t j = 0; j < x_dim; ++j) {
-			real_t error = std::abs(x_[j] - x_chk_[j]);
+			const real_t error = std::abs(x_[j] - x_chk_[j]);
 
 			if (error > max_error) {
 				max_error = error;
@@ -109,16 +106,18 @@ main()
 	}
 
 	//* loop vs cum_loop sanity check
-	real_t max_loop_vs_cum_error = 0.;
-	for (uint_t i = 0; i < x_dim; ++i) {
-		real_t error = std::abs(x_arr[x_dim * (t_dim - 1) + i] - x[i]);
+	real_t max_loop_error = 0.;
+	const real_t(&x_final)[x_dim] = *matrix_op::select_row<t_dim, x_dim>(t_dim - 1, x_arr);
 
-		if (error > max_loop_vs_cum_error) {
-			max_loop_vs_cum_error = error;
+	for (uint_t i = 0; i < x_dim; ++i) {
+		const real_t error = std::abs(x_final[i] - x[i]);
+
+		if (error > max_loop_error) {
+			max_loop_error = error;
 		}
 	}
 
-	if (max_error < error_thres && max_loop_vs_cum_error < error_thres) {
+	if (max_error < error_thres && max_loop_error < std::numeric_limits<real_t>::epsilon()) {
 		return 0;
 	} else {
 		return 1;

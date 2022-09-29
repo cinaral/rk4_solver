@@ -31,7 +31,7 @@ endif()
 
 
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-	option(SINGLE_PRECISION "Single precision" ON)
+	option(SINGLE_PRECISION "Single precision" OFF)
 	option(HEAP_USAGE "Heap usage" ON)
 	option(BUILD_TESTS "Build tests" ON)
 	option(BUILD_EXAMPLES "Build examples" ON)
@@ -42,18 +42,20 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	set(SRC_DIR ${CMAKE_CURRENT_LIST_DIR}/src)
 	set(TEST_DIR ${CMAKE_CURRENT_LIST_DIR}/test)
 	set(EXAMPLE_DIR ${CMAKE_CURRENT_LIST_DIR}/examples)
-	set(BENCHMARK_DIR ${CMAKE_CURRENT_LIST_DIR}/src)
+	set(BENCHMARK_DIR ${CMAKE_CURRENT_LIST_DIR}/benchmarks)
 
 	#* tests, examples, benchmarks to compile
 	set(TEST_NAMES
 		test-rk4_solver-sine
 		test-rk4_solver-motor
 		test-rk4_solver-ball
+		test-rk4_solver-first_order
 	)
 	set(EXAMPLE_NAMES
-		example_step
-		example_loop
-		example_event
+		step
+		loop
+		event
+		first_order
 	)
 	set(BENCHMARK_NAMES
 		rk4_solver-benchmark
@@ -82,6 +84,7 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 		-Wall #* all warnings
 		-Wextra #* more warnings
 		-Wpedantic #* more warnings
+		-Wno-array-bounds #* disable false array bounds warning
 	)
 
 	if(SINGLE_PRECISION)

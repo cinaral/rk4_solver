@@ -10,3 +10,4 @@ AccessModifierOffset: -6
 BreakBeforeConceptDeclarations: false
 ColumnLimit: 120
 AlignEscapedNewlines: DontAlign
+IndentPPDirectives: BeforeHash

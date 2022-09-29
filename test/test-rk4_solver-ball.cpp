@@ -21,6 +21,8 @@ constexpr real_t t0 = 0.;
 constexpr real_t tf = 2.;
 constexpr real_t x0[x_dim] = {1., 0.};
 constexpr real_t h = tf / (t_dim - 1);
+constexpr real_t e = .75;
+constexpr real_t g = 9.806;
 
 #ifdef __USE_SINGLE_PRECISION__
 constexpr real_t error_thres = 2e-3;
@@ -28,9 +30,9 @@ constexpr real_t error_thres = 2e-3;
 constexpr real_t error_thres = 1e-3;
 #endif
 
-class Dynamics
-{
-  public:
+struct Dynamics {
+	//* Ball equations:
+	//* dt__x =  [x2; -g]
 	void
 	ode_fun(const real_t, const real_t (&x)[x_dim], const uint_t, real_t (&dt__x)[x_dim])
 	{
@@ -47,12 +49,6 @@ class Dynamics
 		}
 		return false;
 	}
-
-  private:
-	//* Ball equations:
-	//* dt__x =  [x2; -g]
-	const real_t e = .75;
-	const real_t g = 9.806;
 };
 Dynamics dyn;
 
@@ -84,7 +80,7 @@ main()
 		const real_t(&x_chk_)[x_dim] = *matrix_op::select_row<t_dim, x_dim>(i, x_arr_chk);
 
 		for (uint_t j = 0; j < 1; ++j) {
-			real_t error = std::abs(x_[j] - x_chk_[j]);
+			const real_t error = std::abs(x_[j] - x_chk_[j]);
 
 			if (error > max_error) {
 				max_error = error;
@@ -93,16 +89,18 @@ main()
 	}
 
 	//* loop vs cum_loop sanity check
-	real_t max_loop_vs_cum_error = 0.;
-	for (uint_t i = 0; i < x_dim; ++i) {
-		real_t error = std::abs(x_arr[x_dim * (t_dim - 1) + i] - x[i]);
+	real_t max_loop_error = 0.;
+	const real_t(&x_final)[x_dim] = *matrix_op::select_row<t_dim, x_dim>(t_dim - 1, x_arr);
 
-		if (error > max_loop_vs_cum_error) {
-			max_loop_vs_cum_error = error;
+	for (uint_t i = 0; i < x_dim; ++i) {
+		const real_t error = std::abs(x_final[i] - x[i]);
+
+		if (error > max_loop_error) {
+			max_loop_error = error;
 		}
 	}
 
-	if (max_error < error_thres && max_loop_vs_cum_error < error_thres) {
+	if (max_error < error_thres && max_loop_error < std::numeric_limits<real_t>::epsilon()) {
 		return 0;
 	} else {
 		return 1;

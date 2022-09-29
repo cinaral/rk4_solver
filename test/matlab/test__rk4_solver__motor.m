@@ -12,8 +12,8 @@ x_arr_fname = 'x_arr.dat';
 u_arr_fname = 'u_arr.dat';
 x_arr_chk_fname = 'x_arr_chk.dat';
 
-is_drawing = false;
-is_single_precision = false;
+is_drawing = true;
+is_single_precision = true;
 t_dim = 1e3;
 x_dim = 3;
 u_dim = 1;
@@ -25,7 +25,7 @@ else
 end
 
 %* create reference data 
-f = 10; %* input frequency
+f = 1000; %* input frequency
 R = 1.4; %* [ohm]
 L = 1.7e-3; %* [ohm s] 
 J = 1.29e-4; %* [kg m-2]

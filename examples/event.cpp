@@ -9,23 +9,21 @@ constexpr real_t t0 = 0.;
 constexpr real_t tf = 2.;
 constexpr real_t x0[x_dim] = {1., 0.};
 constexpr real_t h = tf / (t_dim - 1);
-
-//* Ball equations:
-//* dt__x =  [x2; -g]
 constexpr real_t e = .75;
 constexpr real_t g = 9.806;
 
-real_t t = 0;
-real_t x[x_dim];
-
 struct Dynamics {
+	//* Ball in vertical axis:
+	//* dt__x =  [x2; -g]
 	void
 	ode_fun(const real_t, const real_t (&x)[x_dim], const uint_t, real_t (&dt__x)[x_dim])
 	{
 		dt__x[0] = x[1];
 		dt__x[1] = -g;
 	}
-
+	//* Impact event:
+	//* x+ = 0
+	//* dt__x+ = -e * dt__x
 	bool
 	event_fun(const real_t, const real_t (&x)[x_dim], const uint_t, real_t (&x_plus)[x_dim])
 	{
@@ -42,6 +40,8 @@ Dynamics dyn;
 int
 main()
 {
+	real_t t;
+	real_t x[x_dim];
 	//* integration loop with events
 	rk4_solver::loop<Dynamics, t_dim, x_dim>(dyn, &Dynamics::ode_fun, &Dynamics::event_fun, t0, x0, h, &t, x);
 

@@ -15,9 +15,9 @@ namespace rk4_solver
 //* 3. t - time [s]
 //* 4. x - [X_DIM] state
 //* 5. h - time step [s]
-//* 6. i - row index
+//* 6. i - time index
 //*
-//* ODE_FUN can be parametrized using i (row_index), but zero-order hold will be used for the parameters during the step
+//* ode_fun can be parametrized using the time (row) index i
 template <typename T, uint_t X_DIM>
 void
 step(T &obj, ode_fun_t<T, X_DIM> ode_fun, const real_t t, const real_t (&x)[X_DIM], const real_t h, const uint_t i,
