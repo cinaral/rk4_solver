@@ -33,15 +33,18 @@
 
 namespace rk4_solver
 {
-//* loops Runge-Kutta 4th Order step T_DIM times
-//* cumulatively saves all data points into t_arr [T_DIM] and x_arr [T_DIM * X_DIM]
+//* Loops Runge-Kutta 4th Order step T_DIM times and cumulatively saves all points.
 //*
-//* inputs:
-//* 1. obj - dynamics object
-//* 2. ode_fun - ode function, a member of obj
+//* cum_loop<T, T_DIM, X_DIM>(obj, ode_fun, t0, x0, h, OUT:t_arr, OUT:x_arr)
+//* IN:
+//* 1. obj - [T] dynamics object
+//* 2. ode_fun - [T::*] ode function, a member of obj
 //* 3. t0 - initial time [s]
 //* 4. x0 - [X_DIM] initial state
 //* 5. h - time step [s]
+//* OUT:
+//* 6. t_arr - [T_DIM] time array [s]
+//* 7. x_arr - [T_DIM * X_DIM] state array
 template <typename T, uint_t T_DIM, uint_t X_DIM>
 void
 cum_loop(T &obj, ode_fun_t<T, X_DIM> ode_fun, const real_t t0, const real_t (&x0)[X_DIM], const real_t h,
@@ -69,17 +72,21 @@ cum_loop(T &obj, ode_fun_t<T, X_DIM> ode_fun, const real_t t0, const real_t (&x0
 	}
 }
 
-//* loops Runge-Kutta 4th Order step T_DIM times or until EVENT_FUN returns true.
-//* EVENT_FUN can be used to modify x when certain conditions are met.
-//* cumulatively saves all data points into t_arr [T_DIM] and x_arr [T_DIM * X_DIM]
+//* loops Runge-Kutta 4th Order step T_DIM times or until event_fun returns true and cumulatively saves all points.
+//* event_fun can be used to modify x when certain conditions are met.
 //*
-//* inputs:
-//* 1. obj - dynamics object
-//* 2. ode_fun - ode function, a member of obj
-//* 3. event_fun - event function, a member of obj
+//* OUT:i = cum_loop<T, T_DIM, X_DIM>(obj, ode_fun, t0, x0, h, OUT:t_arr, OUT:x_arr)
+//* IN:
+//* 1. obj - [T] dynamics object
+//* 2. ode_fun - [T::*] ode function, a member of obj
+//* 3. event_fun - [T::*] event function, a member of obj
 //* 4. t0 - initial time [s]
 //* 5. x0 - [X_DIM] initial state
 //* 6. h - time step [s]
+//* OUT:
+//* 7. i - final index
+//* 8. t_arr - [T_DIM] time array [s]
+//* 9. x_arr - [T_DIM * X_DIM] state array
 template <typename T, uint_t T_DIM, uint_t X_DIM>
 uint_t
 cum_loop(T &obj, ode_fun_t<T, X_DIM> ode_fun, event_fun_t<T, X_DIM> event_fun, const real_t t0,

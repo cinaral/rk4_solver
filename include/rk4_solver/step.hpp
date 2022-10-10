@@ -33,17 +33,19 @@
 namespace rk4_solver
 {
 
-//* computes the next Runge-Kutta 4th Order step
+//* Computes the next Runge-Kutta 4th Order step.
+//* ode_fun can be parametrized using the time (row) index i.
 //*
-//* inputs:
-//* 1. obj - dynamics object
-//* 2. ode_fun - ode function, a member of obj
+//* step<T, X_DIM>(obj, ode_fun, t, x, h, i, OUT:x_next)
+//* IN:
+//* 1. obj - [T] dynamics object
+//* 2. ode_fun - [T::*] ode function, a member of obj
 //* 3. t - time [s]
 //* 4. x - [X_DIM] state
 //* 5. h - time step [s]
 //* 6. i - time index
-//*
-//* ode_fun can be parametrized using the time (row) index i
+//* OUT:
+//*	7. x_next - [X_DIM] next state
 template <typename T, uint_t X_DIM>
 void
 step(T &obj, ode_fun_t<T, X_DIM> ode_fun, const real_t t, const real_t (&x)[X_DIM], const real_t h, const uint_t i,

@@ -12,7 +12,7 @@ x_arr_fname = 'x_arr.dat';
 u_arr_fname = 'u_arr.dat';
 x_arr_chk_fname = 'x_arr_chk.dat';
 
-is_drawing = true;
+is_drawing = false;
 is_single_precision = true;
 t_dim = 1e3;
 x_dim = 3;
