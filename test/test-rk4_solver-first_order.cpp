@@ -26,7 +26,7 @@ constexpr real_t error_thres = 1e-9;
 #endif
 
 struct Dynamics {
-	//* dt__x = f(t, x) = a*t
+	//* dt__x = f(t, x) = a*x
 	//* x = exp(a*t)
 	void
 	ode_fun(const real_t, const real_t (&x)[x_dim], const uint_t, real_t (&dt__x)[x_dim])
@@ -56,7 +56,7 @@ main()
 
 	for (uint_t i = 0; i < t_dim; ++i) {
 		const real_t(&x_)[x_dim] = *matrix_op::select_row<t_dim, x_dim>(i, x_arr);
-		const real_t error = std::abs(x_[0] - std::exp(t_arr[i]));
+		const real_t error = std::abs(x_[0] - std::exp(a * t_arr[i]));
 
 		if (error > max_error) {
 			max_error = error;

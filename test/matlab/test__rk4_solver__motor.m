@@ -97,3 +97,4 @@ else
 	error(append(bin_dir, '/', exe_name, ' does not exist. Use CMake to build the test.'));
 end
 cd(prev_pwd);
+rmpath('../../matlab');
