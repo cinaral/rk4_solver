@@ -5,10 +5,12 @@
 using uint_t = rk4_solver::uint_t;
 using real_t = rk4_solver::real_t;
 
-constexpr uint_t t_dim = 1e9;
+constexpr uint_t sample_freq = 1e9;
+constexpr real_t time_step = 1. / sample_freq;
+constexpr real_t t_init = 0.;
+constexpr real_t t_final = 1.;
+constexpr uint_t t_dim = sample_freq*(t_final - t_init) + 1;
 constexpr uint_t x_dim = 4;
-constexpr real_t t0 = 0;
-constexpr real_t h = 1. / (t_dim - 1);
 
 struct Dynamics {
 	//* dt__x = f(t, x) = t, x(0) = 0
@@ -33,7 +35,7 @@ main()
 	real_t t;
 	real_t x[x_dim];
 	const auto start = std::chrono::high_resolution_clock::now();
-	rk4_solver::loop<Dynamics, t_dim, x_dim>(dyn, &Dynamics::ode_fun, t0, x, h, &t, x);
+	rk4_solver::loop<Dynamics, t_dim, x_dim>(dyn, &Dynamics::ode_fun, t_init, x, time_step, &t, x);
 	print_elapsed_since(start);
 
 	return 0;

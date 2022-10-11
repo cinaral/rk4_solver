@@ -14,8 +14,8 @@ const std::string x_arr_fname = "x_arr.dat";
 
 constexpr uint_t sample_freq = 1e3;
 constexpr real_t time_step = 1. / sample_freq;
-constexpr real_t t_init = 0;
-constexpr real_t t_final = 1;
+constexpr real_t t_init = 0.;
+constexpr real_t t_final = 1.;
 constexpr uint_t t_dim = sample_freq*(t_final - t_init) + 1;
 constexpr uint_t x_dim = 1;
 constexpr real_t x_init[x_dim] = {1.};

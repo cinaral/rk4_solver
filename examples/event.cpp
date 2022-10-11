@@ -3,14 +3,17 @@
 using uint_t = rk4_solver::uint_t;
 using real_t = rk4_solver::real_t;
 
-constexpr uint_t t_dim = 1e5;
+
+constexpr uint_t sample_freq = 1e5;
+constexpr real_t time_step = 1. / sample_freq;
+constexpr real_t t_init = 0.;
+constexpr real_t t_final = 2.;
+constexpr uint_t t_dim = sample_freq*(t_final - t_init) + 1;
 constexpr uint_t x_dim = 2;
-constexpr real_t t0 = 0.;
-constexpr real_t tf = 2.;
-constexpr real_t x0[x_dim] = {1., 0.};
-constexpr real_t h = tf / (t_dim - 1);
-constexpr real_t e = .75;
-constexpr real_t g = 9.806;
+constexpr real_t x_init[x_dim] = {1., 0.};
+constexpr real_t e_restitution = .75;
+constexpr real_t gravity_const = 9.806;
+
 
 struct Dynamics {
 	//* Ball in vertical axis:
@@ -19,7 +22,7 @@ struct Dynamics {
 	ode_fun(const real_t, const real_t (&x)[x_dim], const uint_t, real_t (&dt__x)[x_dim])
 	{
 		dt__x[0] = x[1];
-		dt__x[1] = -g;
+		dt__x[1] = -gravity_const;
 	}
 	//* Impact event:
 	//* x+ = 0
@@ -29,7 +32,7 @@ struct Dynamics {
 	{
 		if (x[0] <= 0) {
 			x_plus[0] = 0;
-			x_plus[1] = -e * x[1];
+			x_plus[1] = -e_restitution * x[1];
 		}
 		//* don't stop the integration
 		return false;
@@ -43,7 +46,7 @@ main()
 	real_t t;
 	real_t x[x_dim];
 	//* integration loop with events
-	rk4_solver::loop<Dynamics, t_dim, x_dim>(dyn, &Dynamics::ode_fun, &Dynamics::event_fun, t0, x0, h, &t, x);
+	rk4_solver::loop<Dynamics, t_dim, x_dim>(dyn, &Dynamics::ode_fun, &Dynamics::event_fun, t_init, x_init, time_step, &t, x);
 
 	return 0;
 }
