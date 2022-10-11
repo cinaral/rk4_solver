@@ -18,9 +18,9 @@ t_final = 2;
 t_dim = sample_freq*(t_final - t_init) + 1;
 x_dim = 2;
 u_dim = 1;
-g = 9.806;
-e = 0.75;
-x0 = [1; 0];
+gravity_const = 9.806;
+e_restitution = 0.75;
+x_init = [1; 0];
 
 if is_single_precision
 	error_thres = 1e-3;
@@ -29,7 +29,7 @@ else
 end
 
 %* create reference data 
-ball_system = @(~, x) [x(2); -g];
+ball_system = @(~, x) [x(2); -gravity_const];
 
 refine = 16;
 options = odeset('Events', @event, 'Refine', refine);
@@ -43,11 +43,11 @@ t = 0;
 
 while t < t_final && ~isempty(t_arr_part)
 	%* Numerical integration
-	[t_arr_part, x_arr_part] = ode45(ball_system, t_arr_part, x0, options);
+	[t_arr_part, x_arr_part] = ode45(ball_system, t_arr_part, x_init, options);
 	t = t_arr_part(end);
 	len = length(t_arr_part);
-	x0(1) = 0;
-	x0(2) = -e * x_arr_part(end, 2);
+	x_init(1) = 0;
+	x_init(2) = -e_restitution * x_arr_part(end, 2);
 
 	%* Accumulate output
 	x_arr_chk(idx_begin:idx_begin + len - 1, :) = x_arr_part;

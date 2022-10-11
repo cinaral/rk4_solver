@@ -5,12 +5,12 @@ using real_t = rk4_solver::real_t;
 
 
 constexpr uint_t sample_freq = 1e5;
-constexpr real_t time_step = 1. / sample_freq;
-constexpr real_t t_init = 0.;
-constexpr real_t t_final = 2.;
-constexpr uint_t t_dim = sample_freq*(t_final - t_init) + 1;
+constexpr real_t h = 1. / sample_freq;
+constexpr real_t t0 = 0.;
+constexpr real_t tf = 2.;
+constexpr uint_t t_dim = sample_freq*(tf - t0) + 1;
 constexpr uint_t x_dim = 2;
-constexpr real_t x_init[x_dim] = {1., 0.};
+constexpr real_t x0[x_dim] = {1., 0.};
 constexpr real_t e_restitution = .75;
 constexpr real_t gravity_const = 9.806;
 
@@ -46,7 +46,7 @@ main()
 	real_t t;
 	real_t x[x_dim];
 	//* integration loop with events
-	rk4_solver::loop<Dynamics, t_dim, x_dim>(dyn, &Dynamics::ode_fun, &Dynamics::event_fun, t_init, x_init, time_step, &t, x);
+	rk4_solver::loop<Dynamics, t_dim, x_dim>(dyn, &Dynamics::ode_fun, &Dynamics::event_fun, t0, x0, h, &t, x);
 
 	return 0;
 }
