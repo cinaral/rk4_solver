@@ -24,20 +24,20 @@
 			}
 		},
 		{
-			"label": "Clean build",
+			"label": "Clear build",
 			"type": "shell",
-			"command": "./scripts/clean_build.sh",
+			"command": "./scripts/clear_build.sh",
 			"options": {
 				"cwd": "${workspaceFolder}"
 			},
 		},
 		{
-			"label": "Clean build and configure",
+			"label": "Clear build and configure",
 			"type": "cmake",
 			"group": "build",
 			"command": "configure",
 			"dependsOn": [
-                "Clean build"
+                "Clear build"
             ],
 		}
 	],
