@@ -45,7 +45,7 @@ B = [0;
 C = [1, 0, 0];
 D = 0;
 
-t_arr_chk = linspace(0, 1, t_dim).';
+t_arr_chk = linspace(t_init, t_final, t_dim).';
 motor_system = @(x, u) A*x + B*u;
 
 x_arr_chk = zeros(t_dim, x_dim);

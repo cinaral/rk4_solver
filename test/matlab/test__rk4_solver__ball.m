@@ -34,7 +34,7 @@ ball_system = @(~, x) [x(2); -gravity_const];
 refine = 16;
 options = odeset('Events', @event, 'Refine', refine);
 
-t_arr_chk = linspace(0, t_final, t_dim).';
+t_arr_chk = linspace(t_init, t_final, t_dim).';
 x_arr_chk = zeros(t_dim, x_dim);
 
 idx_begin = 1;

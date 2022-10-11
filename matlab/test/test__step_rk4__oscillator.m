@@ -7,25 +7,28 @@ error_thres = 2e-3;
 %* dtdt__y + 2*zeta*w_n*dt__y + w_n^2*y = sin(t)
 %* x = [y; dt__y]
 
-time_step = 1e-4;
-t_init    = 0;
-t_final   = 20;
-t_arr     = (t_init:time_step:t_final).';
-t_arr_len = size(t_arr, 1);
-x_dim     = 2;
-u_dim     = 1;
-zeta      = 0.1;
-w_n       = 1;
-A         = [0, 1; -w_n^2, -2*zeta*w_n];
-B         = [0; 1];
+
+sample_freq = 1e4;
+time_step = 1/sample_freq;
+t_init = 0;
+t_final = 20;
+t_dim = sample_freq*(t_final - t_init) + 1;
+x_dim = 2;
+u_dim = 1;
+zeta = 0.1;
+w_n = 1;
+A = [0, 1; -w_n^2, -2*zeta*w_n];
+B = [0; 1];
 dt__x_fun = @(x, u) A*x + B*u;
-x_init    = [1; 0];
-w_u       = 1;
-u_arr     = sin(pi*w_u*t_arr);
-x_arr     = [x_init.'; zeros(t_arr_len - 1, x_dim)];
+x_init = [1; 0];
+w_u = 1;
+
+t_arr = linspace(t_init, t_final, t_dim).';
+u_arr = sin(pi*w_u*t_arr);
+x_arr = [x_init.'; zeros(t_dim - 1, x_dim)];
 
 %* call
-for i = 1:t_arr_len - 1
+for i = 1:t_dim - 1
 	t = t_arr(i, :).';
 	x = x_arr(i, :).';
 	h = t_arr(i + 1) - t;

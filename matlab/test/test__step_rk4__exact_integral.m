@@ -6,14 +6,17 @@ error_thres = 1e-10;
 %* Exact Integral
 %* dt__y = t.^3 - t.^2
 
-time_step = 1e-3;
+sample_freq = 1e3;
+time_step = 1/sample_freq;
 t_init = 0;
 t_final = 20;
-t_arr = (t_init:time_step:t_final).';
-t_dim = size(t_arr, 1);
+t_dim = sample_freq*(t_final - t_init) + 1;
+x_dim = 1;
 y_fun = @(t) t.^4/4 - t.^3/3;
 dt__y_fun = @(t) t.^3 - t.^2;
-y_arr = zeros(t_dim, 1);
+
+t_arr = linspace(t_init, t_final, t_dim).';
+y_arr = zeros(t_dim, x_dim);
 
 %* call
 for i = 1:t_dim - 1

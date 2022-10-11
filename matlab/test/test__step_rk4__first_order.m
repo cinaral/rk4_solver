@@ -7,20 +7,24 @@ error_thres = 1e-12;
 %* f(t, x) = a*x
 %* x = exp(a*t)
 
-time_step = 1e-3;
+
+sample_freq = 1e3;
+time_step = 1/sample_freq;
 t_init = 0;
 t_final = 1;
-t_arr = (t_init:time_step:t_final).';
-t_arr_len = size(t_arr, 1);
-a = 1;
+t_dim = sample_freq*(t_final - t_init) + 1;
+x_dim = 1;
+a_constant = 1;
 x0 = 1;
-x_fun = @(t) exp(a*t);
-dt__x_fun = @(t, x) a*x;
-x_arr = zeros(t_arr_len, 1);
-x_arr(1, :) = 1;
+x_fun = @(t) exp(a_constant*t);
+dt__x_fun = @(t, x) a_constant*x;
+
+t_arr = linspace(t_init, t_final, t_dim).';
+x_arr = zeros(t_dim, x_dim);
+x_arr(1, :) = x0;
 
 %* call
-for i = 1:t_arr_len - 1
+for i = 1:t_dim - 1
 	t = t_arr(i, :).';
 	y = x_arr(i, :).';
 	h = t_arr(i + 1) - t;
