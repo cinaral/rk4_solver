@@ -14,7 +14,10 @@ x_arr_chk_fname = 'x_arr_chk.dat';
 
 is_drawing = false;
 is_single_precision = true;
-t_dim = 1e3;
+sample_freq = 1e3;
+t_init = 0;
+t_final = 1;
+t_dim = sample_freq*(t_final - t_init) + 1;
 x_dim = 3;
 u_dim = 1;
 

@@ -11,9 +11,10 @@ x_arr_fname = 'x_arr.dat';
 
 is_drawing = false;
 is_single_precision = false;
+sine_freq = 5;
 
 if is_single_precision
-	error_thres =1e-5; %* single precision
+	error_thres = 1e-5; %* single precision
 else 
 	error_thres = 1e-9;
 end
@@ -31,8 +32,7 @@ if isfile(exe_name)
 	x_arr = readmatrix(append(dat_prefix, x_arr_fname));
 
 	%* verify
-	f = 5; %* sine freq
-	x_arr_chk = sin(t_arr*2*pi*f);
+	x_arr_chk = sin(t_arr*2*pi*sine_freq);
 
 	max_error = max(vecnorm(x_arr - x_arr_chk, 2, 2));
 	mean_error = mean(vecnorm(x_arr - x_arr_chk, 2, 2));

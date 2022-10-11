@@ -10,13 +10,13 @@ time_step = 1e-3;
 t_init = 0;
 t_final = 20;
 t_arr = (t_init:time_step:t_final).';
-t_arr_len = size(t_arr, 1);
+t_dim = size(t_arr, 1);
 y_fun = @(t) t.^4/4 - t.^3/3;
 dt__y_fun = @(t) t.^3 - t.^2;
-y_arr = zeros(t_arr_len, 1);
+y_arr = zeros(t_dim, 1);
 
 %* call
-for i = 1:t_arr_len - 1
+for i = 1:t_dim - 1
 	t = t_arr(i, :).';
 	y = y_arr(i, :).';
 	h = t_arr(i + 1) - t;

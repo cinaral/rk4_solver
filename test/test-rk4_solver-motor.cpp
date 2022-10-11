@@ -16,12 +16,14 @@ const std::string u_arr_fname = "u_arr.dat";
 const std::string x_arr_fname = "x_arr.dat";
 const std::string x_arr_chk_fname = "x_arr_chk.dat";
 
-constexpr uint_t t_dim = 1e3;
+constexpr uint_t sample_freq = 1e3;
+constexpr real_t time_step = 1. / sample_freq;
+constexpr real_t t_init = 0;
+constexpr real_t t_final = 1;
+constexpr uint_t t_dim = sample_freq*(t_final - t_init) + 1;
 constexpr uint_t x_dim = 3;
 constexpr uint_t u_dim = 1;
-constexpr real_t t0 = 0;
-constexpr real_t x0[x_dim] = {0};
-constexpr real_t h = 1. / (t_dim - 1);
+constexpr real_t x_init[x_dim] = {0,0,0};
 
 constexpr real_t R = 1.4;      //* [ohm]
 constexpr real_t L = 1.7e-3;   //*  [ohm s]
@@ -82,8 +84,8 @@ main()
 	real_t x[x_dim];
 	real_t t_arr[t_dim];
 	real_t x_arr[t_dim * x_dim];
-	rk4_solver::loop<Dynamics, t_dim, x_dim>(dyn, &Dynamics::ode_fun, t0, x0, h, &t, x);
-	rk4_solver::cum_loop<Dynamics, t_dim, x_dim>(dyn, &Dynamics::ode_fun, t0, x0, h, t_arr, x_arr);
+	rk4_solver::loop<Dynamics, t_dim, x_dim>(dyn, &Dynamics::ode_fun, t_init, x_init, time_step, &t, x);
+	rk4_solver::cum_loop<Dynamics, t_dim, x_dim>(dyn, &Dynamics::ode_fun, t_init, x_init, time_step, t_arr, x_arr);
 
 	//* write test data
 	matrix_rw::write<t_dim, 1>(dat_prefix + t_arr_fname, t_arr);
