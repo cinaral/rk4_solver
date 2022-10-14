@@ -45,24 +45,24 @@ namespace rk4_solver
 //* OUT:
 //* 6. t_arr - [T_DIM] time array [s]
 //* 7. x_arr - [T_DIM * X_DIM] state array
-template <typename T, uint_t T_DIM, uint_t X_DIM>
+template <typename T, Uint_T T_DIM, Uint_T X_DIM>
 void
-cum_loop(T &obj, ode_fun_t<T, X_DIM> ode_fun, const real_t t0, const real_t (&x0)[X_DIM], const real_t h,
-         real_t (&t_arr)[T_DIM], real_t (&x_arr)[T_DIM * X_DIM])
+cum_loop(T &obj, OdeFun_T<T, X_DIM> ode_fun, const Real_T t0, const Real_T (&x0)[X_DIM], const Real_T h,
+         Real_T (&t_arr)[T_DIM], Real_T (&x_arr)[T_DIM * X_DIM])
 {
 #ifdef __DO_USE_HEAP__
-	static real_t (*x_ptr)[X_DIM] = (real_t(*)[X_DIM])new real_t[X_DIM];
-	static real_t (&x)[X_DIM] = *x_ptr;
+	static Real_T (*x_ptr)[X_DIM] = (Real_T(*)[X_DIM])new Real_T[X_DIM];
+	static Real_T (&x)[X_DIM] = *x_ptr;
 #else
-	real_t x[X_DIM];
+	Real_T x[X_DIM];
 #endif
 	matrix_op::replace_row<1>(0, x0, x); //* initialize x
-	real_t t = t0;                       //* initialize t
+	Real_T t = t0;                       //* initialize t
 
 	t_arr[0] = t;
 	matrix_op::replace_row<T_DIM>(0, x, x_arr);
 
-	for (uint_t i = 0; i < T_DIM - 1; ++i) {
+	for (Uint_T i = 0; i < T_DIM - 1; ++i) {
 		step<T, X_DIM>(obj, ode_fun, t, x, h, i, x); //* update x to the next x
 
 		t = t0 + (i + 1) * h; //* update t to the next t
@@ -87,20 +87,20 @@ cum_loop(T &obj, ode_fun_t<T, X_DIM> ode_fun, const real_t t0, const real_t (&x0
 //* 7. i - final index
 //* 8. t_arr - [T_DIM] time array [s]
 //* 9. x_arr - [T_DIM * X_DIM] state array
-template <typename T, uint_t T_DIM, uint_t X_DIM>
-uint_t
-cum_loop(T &obj, ode_fun_t<T, X_DIM> ode_fun, event_fun_t<T, X_DIM> event_fun, const real_t t0,
-         const real_t (&x0)[X_DIM], const real_t h, real_t (&t_arr)[T_DIM], real_t (&x_arr)[T_DIM * X_DIM])
+template <typename T, Uint_T T_DIM, Uint_T X_DIM>
+Uint_T
+cum_loop(T &obj, OdeFun_T<T, X_DIM> ode_fun, EventFun_T<T, X_DIM> event_fun, const Real_T t0,
+         const Real_T (&x0)[X_DIM], const Real_T h, Real_T (&t_arr)[T_DIM], Real_T (&x_arr)[T_DIM * X_DIM])
 {
-	uint_t i = 0;
+	Uint_T i = 0;
 #ifdef __DO_USE_HEAP__
-	static real_t (*x_ptr)[X_DIM] = (real_t(*)[X_DIM])new real_t[X_DIM];
-	static real_t (&x)[X_DIM] = *x_ptr;
+	static Real_T (*x_ptr)[X_DIM] = (Real_T(*)[X_DIM])new Real_T[X_DIM];
+	static Real_T (&x)[X_DIM] = *x_ptr;
 #else
-	real_t x[X_DIM];
+	Real_T x[X_DIM];
 #endif
 	matrix_op::replace_row<1>(0, x0, x); //* initialize x
-	real_t t = t0;                       //* initialize t
+	Real_T t = t0;                       //* initialize t
 
 	//* check for events at the initial condition
 	bool stop_flag = (obj.*event_fun)(t, x, i, x);

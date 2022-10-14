@@ -2,21 +2,21 @@
 #include <chrono>
 #include <iostream>
 
-using uint_t = rk4_solver::uint_t;
-using real_t = rk4_solver::real_t;
+using Uint_T = rk4_solver::Uint_T;
+using Real_T = rk4_solver::Real_T;
 
-constexpr uint_t sample_freq = 1e9;
-constexpr real_t time_step = 1. / sample_freq;
-constexpr real_t t_init = 0.;
-constexpr real_t t_final = 1.;
-constexpr uint_t t_dim = sample_freq*(t_final - t_init) + 1;
-constexpr uint_t x_dim = 4;
+constexpr Uint_T sample_freq = 1e9;
+constexpr Real_T time_step = 1. / sample_freq;
+constexpr Real_T t_init = 0.;
+constexpr Real_T t_final = 1.;
+constexpr Uint_T t_dim = sample_freq*(t_final - t_init) + 1;
+constexpr Uint_T x_dim = 4;
 
 struct Dynamics {
 	//* dt__x = f(t, x) = t, x(0) = 0
 	//* x = v*t^2
 	void
-	ode_fun(const real_t t, const real_t (&)[x_dim], const uint_t, real_t (&dt__x)[x_dim])
+	ode_fun(const Real_T t, const Real_T (&)[x_dim], const Uint_T, Real_T (&dt__x)[x_dim])
 	{
 		dt__x[0] = t;
 		dt__x[1] = .5 * t;
@@ -32,8 +32,8 @@ print_elapsed_since(const std::chrono::time_point<std::chrono::high_resolution_c
 int
 main()
 {
-	real_t t;
-	real_t x[x_dim];
+	Real_T t;
+	Real_T x[x_dim];
 	const auto start = std::chrono::high_resolution_clock::now();
 	rk4_solver::loop<Dynamics, t_dim, x_dim>(dyn, &Dynamics::ode_fun, t_init, x, time_step, &t, x);
 	print_elapsed_since(start);

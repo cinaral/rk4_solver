@@ -29,18 +29,18 @@
 
 namespace rk4_solver
 {
-using uint_t = unsigned long long int;
+using Uint_T = unsigned long long int;
 #ifdef __USE_SINGLE_PRECISION__
-using real_t = float;
+using Real_T = float;
 #else
-using real_t = double;
+using Real_T = double;
 #endif
 
-template <typename T, uint_t X_DIM>
-using ode_fun_t = void (T::*)(const real_t t, const real_t (&x)[X_DIM], const uint_t i, real_t (&dt__x)[X_DIM]);
+template <typename T, Uint_T X_DIM>
+using OdeFun_T = void (T::*)(const Real_T t, const Real_T (&x)[X_DIM], const Uint_T i, Real_T (&dt__x)[X_DIM]);
 
-template <typename T, uint_t X_DIM>
-using event_fun_t = bool (T::*)(const real_t t, const real_t (&x)[X_DIM], const uint_t i, real_t (&x_plus)[X_DIM]);
+template <typename T, Uint_T X_DIM>
+using EventFun_T = bool (T::*)(const Real_T t, const Real_T (&x)[X_DIM], const Uint_T i, Real_T (&x_plus)[X_DIM]);
 
 } // namespace rk4_solver
 

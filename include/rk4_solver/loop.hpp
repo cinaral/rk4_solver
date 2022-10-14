@@ -45,15 +45,15 @@ namespace rk4_solver
 //* OUT:
 //* 6. t - final time [s]
 //* 7. x - [X_DIM] final state
-template <typename T, uint_t T_DIM, uint_t X_DIM>
+template <typename T, Uint_T T_DIM, Uint_T X_DIM>
 void
-loop(T &obj, ode_fun_t<T, X_DIM> ode_fun, const real_t t0, const real_t (&x0)[X_DIM], const real_t h, real_t *t,
-     real_t (&x)[X_DIM])
+loop(T &obj, OdeFun_T<T, X_DIM> ode_fun, const Real_T t0, const Real_T (&x0)[X_DIM], const Real_T h, Real_T *t,
+     Real_T (&x)[X_DIM])
 {
 	matrix_op::replace_row<1>(0, x0, x); //* initialize x
 	*t = t0;                             //* initialize t
 
-	for (uint_t i = 0; i < T_DIM - 1; ++i) {
+	for (Uint_T i = 0; i < T_DIM - 1; ++i) {
 		step<T, X_DIM>(obj, ode_fun, *t, x, h, i, x); //* update x to the next x
 
 		*t = t0 + (i + 1) * h; //* update t to the next t
@@ -75,12 +75,12 @@ loop(T &obj, ode_fun_t<T, X_DIM> ode_fun, const real_t t0, const real_t (&x0)[X_
 //* 7. i - final index
 //* 8. t - final/event time [s]
 //* 9. x - [X_DIM] final/event state
-template <typename T, uint_t T_DIM, uint_t X_DIM>
-uint_t
-loop(T &obj, ode_fun_t<T, X_DIM> ode_fun, event_fun_t<T, X_DIM> event_fun, const real_t t0, const real_t (&x0)[X_DIM],
-     const real_t h, real_t *t, real_t (&x)[X_DIM])
+template <typename T, Uint_T T_DIM, Uint_T X_DIM>
+Uint_T
+loop(T &obj, OdeFun_T<T, X_DIM> ode_fun, EventFun_T<T, X_DIM> event_fun, const Real_T t0, const Real_T (&x0)[X_DIM],
+     const Real_T h, Real_T *t, Real_T (&x)[X_DIM])
 {
-	uint_t i = 0;
+	Uint_T i = 0;
 	matrix_op::replace_row<1>(0, x0, x); //* initialize x
 	*t = t0;                             //* initialize t
 

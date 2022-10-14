@@ -1,25 +1,25 @@
 #include "rk4_solver/loop.hpp"
 
-using uint_t = rk4_solver::uint_t;
-using real_t = rk4_solver::real_t;
+using Uint_T = rk4_solver::Uint_T;
+using Real_T = rk4_solver::Real_T;
 
 
-constexpr uint_t sample_freq = 1e5;
-constexpr real_t h = 1. / sample_freq;
-constexpr real_t t0 = 0.;
-constexpr real_t tf = 2.;
-constexpr uint_t t_dim = sample_freq*(tf - t0) + 1;
-constexpr uint_t x_dim = 2;
-constexpr real_t x0[x_dim] = {1., 0.};
-constexpr real_t e_restitution = .75;
-constexpr real_t gravity_const = 9.806;
+constexpr Uint_T sample_freq = 1e5;
+constexpr Real_T h = 1. / sample_freq;
+constexpr Real_T t0 = 0.;
+constexpr Real_T tf = 2.;
+constexpr Uint_T t_dim = sample_freq*(tf - t0) + 1;
+constexpr Uint_T x_dim = 2;
+constexpr Real_T x0[x_dim] = {1., 0.};
+constexpr Real_T e_restitution = .75;
+constexpr Real_T gravity_const = 9.806;
 
 
 struct Dynamics {
 	//* Ball in vertical axis:
 	//* dt__x =  [x2; -g]
 	void
-	ode_fun(const real_t, const real_t (&x)[x_dim], const uint_t, real_t (&dt__x)[x_dim])
+	ode_fun(const Real_T, const Real_T (&x)[x_dim], const Uint_T, Real_T (&dt__x)[x_dim])
 	{
 		dt__x[0] = x[1];
 		dt__x[1] = -gravity_const;
@@ -28,7 +28,7 @@ struct Dynamics {
 	//* x+ = 0
 	//* dt__x+ = -e * dt__x
 	bool
-	event_fun(const real_t, const real_t (&x)[x_dim], const uint_t, real_t (&x_plus)[x_dim])
+	event_fun(const Real_T, const Real_T (&x)[x_dim], const Uint_T, Real_T (&x_plus)[x_dim])
 	{
 		if (x[0] <= 0) {
 			x_plus[0] = 0;
@@ -43,8 +43,8 @@ Dynamics dyn;
 int
 main()
 {
-	real_t t;
-	real_t x[x_dim];
+	Real_T t;
+	Real_T x[x_dim];
 	//* integration loop with events
 	rk4_solver::loop<Dynamics, t_dim, x_dim>(dyn, &Dynamics::ode_fun, &Dynamics::event_fun, t0, x0, h, &t, x);
 
