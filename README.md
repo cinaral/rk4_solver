@@ -38,7 +38,7 @@ loop(	T &obj,
 	const Real_T h, 
 	Real_T *t,
      	Real_T (&x)[X_DIM]
-)
+);
 ```
 
 For an integration loop, call ```rk4_solver::loop(...)```:
@@ -52,7 +52,7 @@ loop(	T &obj,
 	const Real_T h, 
 	Real_T *t,
 	Real_T (&x)[X_DIM]
-)
+);
 ```
 
 If you want to use events with your integration loop, you may do so by using an event function:
@@ -69,7 +69,7 @@ loop(	T &obj,
      	const Real_T h, 
 	Real_T *t, 
 	Real_T (&x)[X_DIM]
-)
+);
 ```
 
 ```Uint_T```, ```Real_T```, ```OdeFun_T``` and ```EventFun_T``` are defined in ```types.hpp```.  
@@ -98,7 +98,7 @@ cum_loop(	T &obj,
 		const Real_T h, 
 		Real_T (&t_arr)[T_DIM], 
 		Real_T (&x_arr)[T_DIM * X_DIM]
-)
+);
 
 template <typename T, Uint_T T_DIM, Uint_T X_DIM>
 Uint_T
@@ -110,7 +110,7 @@ cum_loop(	T &obj,
 		const Real_T h, 
 		Real_T (&t_arr)[T_DIM], 
 		Real_T (&x_arr)[T_DIM * X_DIM]
-)
+);
 ```
 
 
