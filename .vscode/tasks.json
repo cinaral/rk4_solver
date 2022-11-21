@@ -1,45 +1,47 @@
 {
 	"tasks": [
 		{
-			"label": "Build",
-			"type": "cmake",
-			"group": "build",
-			"command": "build",
-			"options": {
-				"cwd": "${workspaceFolder}"
-			},
-			"problemMatcher": {
-				"owner": "cpp",
-				"fileLocation": [
-					"absolute"
-				],
-				"pattern": {
-					"regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
-					"file": 1,
-					"line": 2,
-					"column": 3,
-					"severity": 4,
-					"message": 5
-				}
-			}
-		},
-		{
-			"label": "Clear build",
+			"label": "Configure",
 			"type": "shell",
-			"command": "./scripts/clear_build.sh",
-			"options": {
-				"cwd": "${workspaceFolder}"
-			},
+			"command": "./scripts/build/configure.sh",
+			"group": "build",
 		},
 		{
-			"label": "Clear build and configure",
-			"type": "cmake",
+			"label": "Clear",
+			"type": "shell",
+			"command": "./scripts/build/clear.sh",
 			"group": "build",
-			"command": "configure",
+		},
+		{
+			"label": "Clear and configure",
+			"type": "shell",	
+			"command": "./scripts/build/configure.sh",
+			"group": "build",
 			"dependsOn": [
-                "Clear build"
+                "Clear"
             ],
-		}
+		},
+		{
+			"label": "Build",
+			"type": "shell",
+			"group": "build",
+			"command": "./scripts/build/build.sh",
+		},
+		{
+			"label": "Test",
+			"type": "shell",
+			"group": "build",
+			"command": "./scripts/build/test.sh",
+		},
+		{
+			"label": "Build and test",
+			"type": "shell",
+			"command": "./scripts/build/test.sh",
+			"group": "build",
+			"dependsOn": [
+                "Build"
+            ],
+		},
 	],
 	"version": "2.0.0",
 	"type": "shell",
@@ -47,7 +49,7 @@
 		"echo": true,
 		"clear": true,
 		"reveal": "always",
-		"focus": false,
+		"focus": true,
 		"panel": "shared",
 		"showReuseMessage": false
 	}
