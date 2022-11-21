@@ -46,9 +46,9 @@ namespace rk4_solver
 //* 6. i - time index
 //* OUT:
 //*	7. x_next - [X_DIM] next state
-template <typename T, Uint_T X_DIM>
+template <typename T, size_t X_DIM>
 void
-step(T &obj, OdeFun_T<T, X_DIM> ode_fun, const Real_T t, const Real_T (&x)[X_DIM], const Real_T h, const Uint_T i,
+step(T &obj, OdeFun_T<T, X_DIM> ode_fun, const Real_T t, const Real_T (&x)[X_DIM], const Real_T h, const size_t i,
      Real_T (&x_next)[X_DIM])
 {
 	constexpr Real_T rk4_weight_0 = 1. / 6.;
@@ -87,7 +87,7 @@ step(T &obj, OdeFun_T<T, X_DIM> ode_fun, const Real_T t, const Real_T (&x)[X_DIM
 	matrix_op::weighted_sum(h, k_2, 1., x, x_temp);
 	(obj.*ode_fun)(t + h, x_temp, i, k_3); //* ode_fun(ti + h, xi + k_2)
 
-	for (Uint_T i = 0; i < X_DIM; ++i) {
+	for (size_t i = 0; i < X_DIM; ++i) {
 		x_next[i] = x[i] +
 		    h * (rk4_weight_0 * k_0[i] + rk4_weight_1 * k_1[i] + rk4_weight_1 * k_2[i] + rk4_weight_0 * k_3[i]);
 	}

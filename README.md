@@ -29,7 +29,7 @@ Some of them require reference solutions which is provided in this repository wi
 
 For a single integration step, call ```rk4_solver::step(...)```:
 ```Cpp
-template <typename T, Uint_T T_DIM, Uint_T X_DIM>
+template <typename T, size_t T_DIM, size_t X_DIM>
 void 
 loop(	T &obj, 
 	OdeFun_T<T, X_DIM> ode_fun, 
@@ -43,7 +43,7 @@ loop(	T &obj,
 
 For an integration loop, call ```rk4_solver::loop(...)```:
 ```Cpp
-template <typename T, Uint_T T_DIM, Uint_T X_DIM>
+template <typename T, size_t T_DIM, size_t X_DIM>
 void
 loop(	T &obj, 
 	OdeFun_T<T, X_DIM> ode_fun, 
@@ -59,8 +59,8 @@ If you want to use events with your integration loop, you may do so by using an 
 
 **WARNING**: This is a fixed-step size method and therefore the event detection will be approximate within the time step size.
 ```Cpp
-template <typename T, Uint_T T_DIM, Uint_T X_DIM>
-Uint_T
+template <typename T, size_t T_DIM, size_t X_DIM>
+size_t
 loop(	T &obj, 
 	OdeFun_T<T, X_DIM> ode_fun, 
 	EventFun_T<T, X_DIM> event_fun, 
@@ -72,24 +72,24 @@ loop(	T &obj,
 );
 ```
 
-```Uint_T```, ```Real_T```, ```OdeFun_T``` and ```EventFun_T``` are defined in ```types.hpp```.  
+```size_t```, ```Real_T```, ```OdeFun_T``` and ```EventFun_T``` are defined in ```types.hpp```.  
 
-**WARNING:** By default, ```Uint_T``` is ```unsigned long long int``` and ```Real_T``` is ```double``` (```float``` with ```__USE_SINGLE_PRECISION__``` compiler flag). Their sizes in bytes may be system or compiler dependent.
+**WARNING:** By default, ```size_t``` is ```unsigned long long int``` and ```Real_T``` is ```double``` (```float``` with ```__USE_SINGLE_PRECISION__``` compiler flag). Their sizes in bytes may be system or compiler dependent.
 
 ```OdeFun_T``` and ```EventFun_T``` are function pointers defined as:
 ```Cpp
-template <typename T, Uint_T X_DIM>
-using OdeFun_T = void (T::*)(const Real_T t, const Real_T (&x)[X_DIM], const Uint_T i, Real_T (&dt__x)[X_DIM]);
+template <typename T, size_t X_DIM>
+using OdeFun_T = void (T::*)(const Real_T t, const Real_T (&x)[X_DIM], const size_t i, Real_T (&dt__x)[X_DIM]);
 
-template <typename T, Uint_T X_DIM>
-using EventFun_T = bool (T::*)(const Real_T t, const Real_T (&x)[X_DIM], const Uint_T i, Real_T (&x_plus)[X_DIM]);
+template <typename T, size_t X_DIM>
+using EventFun_T = bool (T::*)(const Real_T t, const Real_T (&x)[X_DIM], const size_t i, Real_T (&x_plus)[X_DIM]);
 
 ```
 where ```i < T_DIM``` is the current time step for the time step size ```h```. ```i``` is provided for time index dependent inputs such as pre-computed discrete control input.
 
 You may use cumulative loop functions with or without the event function to save the integration value at every time step:
 ```Cpp
-template <typename T, Uint_T T_DIM, Uint_T X_DIM>
+template <typename T, size_t T_DIM, size_t X_DIM>
 void
 cum_loop(	T &obj, 
 		OdeFun_T<T, X_DIM> ode_fun, 
@@ -100,8 +100,8 @@ cum_loop(	T &obj,
 		Real_T (&x_arr)[T_DIM * X_DIM]
 );
 
-template <typename T, Uint_T T_DIM, Uint_T X_DIM>
-Uint_T
+template <typename T, size_t T_DIM, size_t X_DIM>
+size_t
 cum_loop(	T &obj, 
 		OdeFun_T<T, X_DIM> ode_fun, 
 		EventFun_T<T, X_DIM> event_fun, 
@@ -120,7 +120,7 @@ cum_loop(	T &obj,
 ```Cpp
 #include "rk4_solver/step.hpp"
 //...
-void Dynamics::ode_fun(const Real_T, const Real_T x[], const Uint_T, Real_T dt__x[])
+void Dynamics::ode_fun(const Real_T, const Real_T x[], const size_t, Real_T dt__x[])
 {
 	dt__x[0] = x[1];
 	dt__x[1] = u;
@@ -142,7 +142,7 @@ See [example_step.cpp](./examples/example_step.cpp) for details.
 ```Cpp
 #include "rk4_solver/cum_loop.hpp"
 //...
-void Dynamics::ode_fun(const Real_T t, const Real_T[], const Uint_T, Real_T dt__x[])
+void Dynamics::ode_fun(const Real_T t, const Real_T[], const size_t, Real_T dt__x[])
 {
 	dt__x[0] = t;
 }
@@ -165,13 +165,13 @@ See [example_loop.cpp](./examples/example_loop.cpp) for details.
 //...
 struct Dynamics {
 	void
-	ode_fun(const Real_T, const Real_T (&x)[x_dim], const Uint_T, Real_T (&dt__x)[x_dim])
+	ode_fun(const Real_T, const Real_T (&x)[x_dim], const size_t, Real_T (&dt__x)[x_dim])
 	{
 		dt__x[0] = x[1];
 		dt__x[1] = -g;
 	}
 	bool
-	event_fun(const Real_T, const Real_T (&x)[x_dim], const Uint_T, Real_T (&x_plus)[x_dim])
+	event_fun(const Real_T, const Real_T (&x)[x_dim], const size_t, Real_T (&x_plus)[x_dim])
 	{
 		if (x[0] <= 0) {
 			x_plus[0] = 0;

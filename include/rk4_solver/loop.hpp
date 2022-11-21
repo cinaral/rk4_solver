@@ -45,7 +45,7 @@ namespace rk4_solver
 //* OUT:
 //* 6. t - final time [s]
 //* 7. x - [X_DIM] final state
-template <typename T, Uint_T T_DIM, Uint_T X_DIM>
+template <typename T, size_t T_DIM, size_t X_DIM>
 void
 loop(T &obj, OdeFun_T<T, X_DIM> ode_fun, const Real_T t0, const Real_T (&x0)[X_DIM], const Real_T h, Real_T *t,
      Real_T (&x)[X_DIM])
@@ -53,7 +53,7 @@ loop(T &obj, OdeFun_T<T, X_DIM> ode_fun, const Real_T t0, const Real_T (&x0)[X_D
 	matrix_op::replace_row<1>(0, x0, x); //* initialize x
 	*t = t0;                             //* initialize t
 
-	for (Uint_T i = 0; i < T_DIM - 1; ++i) {
+	for (size_t i = 0; i < T_DIM - 1; ++i) {
 		step<T, X_DIM>(obj, ode_fun, *t, x, h, i, x); //* update x to the next x
 
 		*t = t0 + (i + 1) * h; //* update t to the next t
@@ -75,12 +75,12 @@ loop(T &obj, OdeFun_T<T, X_DIM> ode_fun, const Real_T t0, const Real_T (&x0)[X_D
 //* 7. i - final index
 //* 8. t - final/event time [s]
 //* 9. x - [X_DIM] final/event state
-template <typename T, Uint_T T_DIM, Uint_T X_DIM>
-Uint_T
+template <typename T, size_t T_DIM, size_t X_DIM>
+size_t
 loop(T &obj, OdeFun_T<T, X_DIM> ode_fun, EventFun_T<T, X_DIM> event_fun, const Real_T t0, const Real_T (&x0)[X_DIM],
      const Real_T h, Real_T *t, Real_T (&x)[X_DIM])
 {
-	Uint_T i = 0;
+	size_t i = 0;
 	matrix_op::replace_row<1>(0, x0, x); //* initialize x
 	*t = t0;                             //* initialize t
 

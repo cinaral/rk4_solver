@@ -2,7 +2,7 @@
 #include "matrix_rw.hpp"
 #include "rk4_solver.hpp"
 
-using Uint_T = rk4_solver::Uint_T;
+using size_t = rk4_solver::size_t;
 using Real_T = rk4_solver::Real_T;
 
 //* setup
@@ -16,13 +16,13 @@ const std::string u_arr_fname = "u_arr.dat";
 const std::string x_arr_fname = "x_arr.dat";
 const std::string x_arr_chk_fname = "x_arr_chk.dat";
 
-constexpr Uint_T sample_freq = 1e3;
+constexpr size_t sample_freq = 1e3;
 constexpr Real_T time_step = 1. / sample_freq;
 constexpr Real_T t_init = 0;
 constexpr Real_T t_final = 1;
-constexpr Uint_T t_dim = sample_freq*(t_final - t_init) + 1;
-constexpr Uint_T x_dim = 3;
-constexpr Uint_T u_dim = 1;
+constexpr size_t t_dim = sample_freq*(t_final - t_init) + 1;
+constexpr size_t x_dim = 3;
+constexpr size_t u_dim = 1;
 constexpr Real_T x_init[x_dim] = {0,0,0};
 
 constexpr Real_T R = 1.4;      //* [ohm]
@@ -57,7 +57,7 @@ struct Dynamics {
 	//*      0,
 	//*      1/L];
 	void
-	ode_fun(const Real_T, const Real_T (&x)[x_dim], const Uint_T i, Real_T (&dt__x)[x_dim])
+	ode_fun(const Real_T, const Real_T (&x)[x_dim], const size_t i, Real_T (&dt__x)[x_dim])
 	{
 		Real_T temp0[x_dim];
 		Real_T temp1[x_dim];
@@ -94,11 +94,11 @@ main()
 	//* verify
 	Real_T max_error = 0.;
 
-	for (Uint_T i = 0; i < t_dim; ++i) {
+	for (size_t i = 0; i < t_dim; ++i) {
 		const Real_T(&x_)[x_dim] = *matrix_op::select_row<t_dim, x_dim>(i, x_arr);
 		const Real_T(&x_chk_)[x_dim] = *matrix_op::select_row<t_dim, x_dim>(i, x_arr_chk);
 
-		for (Uint_T j = 0; j < x_dim; ++j) {
+		for (size_t j = 0; j < x_dim; ++j) {
 			const Real_T error = std::abs(x_[j] - x_chk_[j]);
 
 			if (error > max_error) {
@@ -111,7 +111,7 @@ main()
 	Real_T max_loop_error = 0.;
 	const Real_T(&x_final)[x_dim] = *matrix_op::select_row<t_dim, x_dim>(t_dim - 1, x_arr);
 
-	for (Uint_T i = 0; i < x_dim; ++i) {
+	for (size_t i = 0; i < x_dim; ++i) {
 		const Real_T error = std::abs(x_final[i] - x[i]);
 
 		if (error > max_loop_error) {

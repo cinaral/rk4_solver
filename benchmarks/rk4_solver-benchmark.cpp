@@ -2,21 +2,21 @@
 #include <chrono>
 #include <iostream>
 
-using Uint_T = rk4_solver::Uint_T;
+using size_t = rk4_solver::size_t;
 using Real_T = rk4_solver::Real_T;
 
-constexpr Uint_T sample_freq = 1e9;
+constexpr size_t sample_freq = 1e9;
 constexpr Real_T time_step = 1. / sample_freq;
 constexpr Real_T t_init = 0.;
 constexpr Real_T t_final = 1.;
-constexpr Uint_T t_dim = sample_freq*(t_final - t_init) + 1;
-constexpr Uint_T x_dim = 4;
+constexpr size_t t_dim = sample_freq*(t_final - t_init) + 1;
+constexpr size_t x_dim = 4;
 
 struct Dynamics {
 	//* dt__x = f(t, x) = t, x(0) = 0
 	//* x = v*t^2
 	void
-	ode_fun(const Real_T t, const Real_T (&)[x_dim], const Uint_T, Real_T (&dt__x)[x_dim])
+	ode_fun(const Real_T t, const Real_T (&)[x_dim], const size_t, Real_T (&dt__x)[x_dim])
 	{
 		dt__x[0] = t;
 		dt__x[1] = .5 * t;

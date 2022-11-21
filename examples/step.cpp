@@ -1,19 +1,19 @@
 #include "rk4_solver/step.hpp"
 
-using Uint_T = rk4_solver::Uint_T;
+using size_t = rk4_solver::size_t;
 using Real_T = rk4_solver::Real_T;
 
-constexpr Uint_T x_dim = 2;
+constexpr size_t x_dim = 2;
 constexpr Real_T u = 1e3;
 constexpr Real_T h = 1e-3;
 constexpr Real_T t = 0;
 constexpr Real_T x[x_dim] = {0, 0};
-constexpr Uint_T i = 0;
+constexpr size_t i = 0;
 
 struct Dynamics {
 	//* dt__x = f(t, x) = [x[1]; u], x(0) = [0; 0];
 	void
-	ode_fun(const Real_T, const Real_T (&x)[x_dim], const Uint_T, Real_T (&dt__x)[x_dim])
+	ode_fun(const Real_T, const Real_T (&x)[x_dim], const size_t, Real_T (&dt__x)[x_dim])
 	{
 		dt__x[0] = x[1];
 		dt__x[1] = u;

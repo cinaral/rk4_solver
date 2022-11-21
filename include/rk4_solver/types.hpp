@@ -27,20 +27,22 @@
 #ifndef TYPES_HPP_CINARAL_220924_1756
 #define TYPES_HPP_CINARAL_220924_1756
 
+#include <cstddef>
+
 namespace rk4_solver
 {
-using Uint_T = unsigned long long int;
+using size_t = std::size_t;
 #ifdef __USE_SINGLE_PRECISION__
 using Real_T = float;
 #else
 using Real_T = double;
 #endif
 
-template <typename T, Uint_T X_DIM>
-using OdeFun_T = void (T::*)(const Real_T t, const Real_T (&x)[X_DIM], const Uint_T i, Real_T (&dt__x)[X_DIM]);
+template <typename T, size_t X_DIM>
+using OdeFun_T = void (T::*)(const Real_T t, const Real_T (&x)[X_DIM], const size_t i, Real_T (&dt__x)[X_DIM]);
 
-template <typename T, Uint_T X_DIM>
-using EventFun_T = bool (T::*)(const Real_T t, const Real_T (&x)[X_DIM], const Uint_T i, Real_T (&x_plus)[X_DIM]);
+template <typename T, size_t X_DIM>
+using EventFun_T = bool (T::*)(const Real_T t, const Real_T (&x)[X_DIM], const size_t i, Real_T (&x_plus)[X_DIM]);
 
 } // namespace rk4_solver
 

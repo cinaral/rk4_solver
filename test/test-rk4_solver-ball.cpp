@@ -2,7 +2,7 @@
 #include "matrix_rw.hpp"
 #include "rk4_solver.hpp"
 
-using Uint_T = rk4_solver::Uint_T;
+using size_t = rk4_solver::size_t;
 using Real_T = rk4_solver::Real_T;
 
 //* setup
@@ -15,12 +15,12 @@ const std::string t_arr_fname = "t_arr.dat";
 const std::string x_arr_fname = "x_arr.dat";
 const std::string x_arr_chk_fname = "x_arr_chk.dat";
 
-constexpr Uint_T sample_freq = 1e4;
+constexpr size_t sample_freq = 1e4;
 constexpr Real_T time_step = 1. / sample_freq;
 constexpr Real_T t_init = 0.;
 constexpr Real_T t_final = 2.;
-constexpr Uint_T t_dim = sample_freq*(t_final - t_init) + 1;
-constexpr Uint_T x_dim = 2;
+constexpr size_t t_dim = sample_freq*(t_final - t_init) + 1;
+constexpr size_t x_dim = 2;
 constexpr Real_T x_init[x_dim] = {1., 0.};
 constexpr Real_T e_restitution = .75;
 constexpr Real_T gravity_const = 9.806;
@@ -35,14 +35,14 @@ struct Dynamics {
 	//* Ball equations:
 	//* dt__x =  [x2; -g]
 	void
-	ode_fun(const Real_T, const Real_T (&x)[x_dim], const Uint_T, Real_T (&dt__x)[x_dim])
+	ode_fun(const Real_T, const Real_T (&x)[x_dim], const size_t, Real_T (&dt__x)[x_dim])
 	{
 		dt__x[0] = x[1];
 		dt__x[1] = -gravity_const;
 	}
 
 	bool
-	event_fun(const Real_T, const Real_T (&x)[x_dim], const Uint_T, Real_T (&x_plus)[x_dim])
+	event_fun(const Real_T, const Real_T (&x)[x_dim], const size_t, Real_T (&x_plus)[x_dim])
 	{
 		if (x[0] <= 0) {
 			x_plus[0] = 0;
@@ -76,11 +76,11 @@ main()
 	//* verify
 	Real_T max_error = 0.;
 
-	for (Uint_T i = 0; i < t_dim; ++i) {
+	for (size_t i = 0; i < t_dim; ++i) {
 		const Real_T(&x_)[x_dim] = *matrix_op::select_row<t_dim, x_dim>(i, x_arr);
 		const Real_T(&x_chk_)[x_dim] = *matrix_op::select_row<t_dim, x_dim>(i, x_arr_chk);
 
-		for (Uint_T j = 0; j < 1; ++j) {
+		for (size_t j = 0; j < 1; ++j) {
 			const Real_T error = std::abs(x_[j] - x_chk_[j]);
 
 			if (error > max_error) {
@@ -93,7 +93,7 @@ main()
 	Real_T max_loop_error = 0.;
 	const Real_T(&x_final)[x_dim] = *matrix_op::select_row<t_dim, x_dim>(t_dim - 1, x_arr);
 
-	for (Uint_T i = 0; i < x_dim; ++i) {
+	for (size_t i = 0; i < x_dim; ++i) {
 		const Real_T error = std::abs(x_final[i] - x[i]);
 
 		if (error > max_loop_error) {
