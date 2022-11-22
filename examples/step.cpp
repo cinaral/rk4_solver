@@ -1,7 +1,7 @@
 #include "rk4_solver/step.hpp"
 
-using size_t = rk4_solver::size_t;
-using Real_T = rk4_solver::Real_T;
+using rk4_solver::Real_T;
+using rk4_solver::size_t;
 
 constexpr size_t x_dim = 2;
 constexpr Real_T u = 1e3;

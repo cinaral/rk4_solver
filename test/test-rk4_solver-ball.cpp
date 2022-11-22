@@ -1,25 +1,15 @@
-#include "matrix_op.hpp"
-#include "matrix_rw.hpp"
-#include "rk4_solver.hpp"
-
-using size_t = rk4_solver::size_t;
-using Real_T = rk4_solver::Real_T;
+#include "test_config.hpp"
 
 //* setup
-const std::string dat_dir = "../dat";
-const std::string ref_dat_dir = "../../test/reference_dat";
 const std::string test_name = "test-rk4_solver-ball";
-const std::string dat_prefix = dat_dir + "/" + test_name + "-";
-const std::string ref_dat_prefix = ref_dat_dir + "/" + test_name + "-";
-const std::string t_arr_fname = "t_arr.dat";
-const std::string x_arr_fname = "x_arr.dat";
-const std::string x_arr_chk_fname = "x_arr_chk.dat";
+const std::string dat_prefix = test_config::dat_dir + "/" + test_name + "-";
+const std::string ref_dat_prefix = test_config::ref_dat_dir + "/" + test_name + "-";
 
 constexpr size_t sample_freq = 1e4;
 constexpr Real_T time_step = 1. / sample_freq;
 constexpr Real_T t_init = 0.;
 constexpr Real_T t_final = 2.;
-constexpr size_t t_dim = sample_freq*(t_final - t_init) + 1;
+constexpr size_t t_dim = sample_freq * (t_final - t_init) + 1;
 constexpr size_t x_dim = 2;
 constexpr Real_T x_init[x_dim] = {1., 0.};
 constexpr Real_T e_restitution = .75;
@@ -30,6 +20,7 @@ constexpr Real_T error_thres = 2e-3;
 #else
 constexpr Real_T error_thres = 1e-3;
 #endif
+constexpr size_t verify_idx = 0;
 
 struct Dynamics {
 	//* Ball equations:
@@ -56,38 +47,35 @@ Dynamics dyn;
 int
 main()
 {
-	//* read reference data
+	//* 1. read the reference data
 	Real_T x_arr_chk[t_dim * x_dim];
-	matrix_rw::read<t_dim, x_dim>(ref_dat_prefix + x_arr_chk_fname, x_arr_chk);
+	matrix_rw::read<t_dim, x_dim>(ref_dat_prefix + test_config::x_arr_chk_fname, x_arr_chk);
 
-	//* test
+	//* 2. test
 	Real_T t = 0;
 	Real_T x[x_dim];
 	Real_T t_arr[t_dim];
 	Real_T x_arr[t_dim * x_dim];
-	rk4_solver::loop<Dynamics, t_dim, x_dim>(dyn, &Dynamics::ode_fun, &Dynamics::event_fun, t_init, x_init, time_step, &t, x);
-	rk4_solver::cum_loop<Dynamics, t_dim, x_dim>(dyn, &Dynamics::ode_fun, &Dynamics::event_fun, t_init, x_init, time_step, t_arr,
-	                                             x_arr);
+	rk4_solver::loop<Dynamics, t_dim, x_dim>(dyn, &Dynamics::ode_fun, &Dynamics::event_fun, t_init, x_init,
+	                                         time_step, &t, x);
+	rk4_solver::cum_loop<Dynamics, t_dim, x_dim>(dyn, &Dynamics::ode_fun, &Dynamics::event_fun, t_init, x_init,
+	                                             time_step, t_arr, x_arr);
 
-	//* write test data
-	matrix_rw::write<t_dim, 1>(dat_prefix + t_arr_fname, t_arr);
-	matrix_rw::write<t_dim, x_dim>(dat_prefix + x_arr_fname, x_arr);
+	//* 3. write the test data
+	matrix_rw::write<t_dim, 1>(dat_prefix + test_config::t_arr_fname, t_arr);
+	matrix_rw::write<t_dim, x_dim>(dat_prefix + test_config::x_arr_fname, x_arr);
 
-	//* verify
-	Real_T max_error = 0.;
+	//* 4. verify the results
+	Real_T x_0_arr[t_dim * 1];
+	Real_T x_0_arr_chk[t_dim * 1];
 
 	for (size_t i = 0; i < t_dim; ++i) {
-		const Real_T(&x_)[x_dim] = *matrix_op::select_row<t_dim, x_dim>(i, x_arr);
-		const Real_T(&x_chk_)[x_dim] = *matrix_op::select_row<t_dim, x_dim>(i, x_arr_chk);
-
-		for (size_t j = 0; j < 1; ++j) {
-			const Real_T error = std::abs(x_[j] - x_chk_[j]);
-
-			if (error > max_error) {
-				max_error = error;
-			}
-		}
+		const Real_T(&x)[x_dim] = *matrix_op::select_row<t_dim, x_dim>(i, x_arr);
+		const Real_T(&x_chk)[x_dim] = *matrix_op::select_row<t_dim, x_dim>(i, x_arr_chk);
+		x_0_arr[i] = x[verify_idx];
+		x_0_arr_chk[i] = x_chk[verify_idx];
 	}
+	Real_T max_error = test_config::compute_max_error<t_dim, 1>(x_0_arr, x_0_arr_chk);
 
 	//* loop vs cum_loop sanity check
 	Real_T max_loop_error = 0.;

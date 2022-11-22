@@ -1,7 +1,7 @@
 #include "rk4_solver/cum_loop.hpp"
 
-using size_t = rk4_solver::size_t;
-using Real_T = rk4_solver::Real_T;
+using rk4_solver::size_t;
+using rk4_solver::Real_T;
 
 constexpr size_t sample_freq = 1e3;
 constexpr Real_T h = 1. / sample_freq;

@@ -1,8 +1,36 @@
+/build/**
 .cache/**
-build/**
 
-# Created by https://www.toptal.com/developers/gitignore/api/git,c++,cmake,matlab,jupyternotebooks,visualstudiocode,c
-# Edit at https://www.toptal.com/developers/gitignore?templates=git,c++,cmake,matlab,jupyternotebooks,visualstudiocode,c
+# Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode
+# Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode
+
+### VisualStudioCode ###
+.vscode/*
+.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+.vscode/extensions.json
+.vscode/*.code-snippets
+
+# Local History for Visual Studio Code
+.history/
+
+# Built Visual Studio Code Extensions
+*.vsix
+
+### VisualStudioCode Patch ###
+# Ignore all local history of files
+.history
+.ionide
+
+# End of https://www.toptal.com/developers/gitignore/api/visualstudiocode
+
+.vscode/.browse.c_cpp.db*
+.vscode/c_cpp_properties.json
+.vscode/ipch
+
+# Created by https://www.toptal.com/developers/gitignore/api/c,git,c++,cmake,matlab
+# Edit at https://www.toptal.com/developers/gitignore?templates=c,git,c++,cmake,matlab
 
 ### C ###
 # Prerequisites
@@ -109,20 +137,6 @@ _deps
 *_LOCAL_*.txt
 *_REMOTE_*.txt
 
-### JupyterNotebooks ###
-# gitignore template for Jupyter Notebooks
-# website: http://jupyter.org/
-
-.ipynb_checkpoints
-*/.ipynb_checkpoints/*
-
-# IPython
-profile_default/
-ipython_config.py
-
-# Remove previous ipynb_checkpoints
-#   git rm -r .ipynb_checkpoints/
-
 ### MATLAB ###
 # Windows default autosave extension
 *.asv
@@ -156,25 +170,4 @@ codegen/
 # Octave session info
 octave-workspace
 
-### VisualStudioCode ###
-.vscode/*
-.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-!.vscode/*.code-snippets
-
-# Local History for Visual Studio Code
-.history/
-
-# Built Visual Studio Code Extensions
-*.vsix
-
-### VisualStudioCode Patch ###
-# Ignore all local history of files
-.history
-.ionide
-
-# Support for Project snippet scope
-
-# End of https://www.toptal.com/developers/gitignore/api/git,c++,cmake,matlab,jupyternotebooks,visualstudiocode,c
+# End of https://www.toptal.com/developers/gitignore/api/c,git,c++,cmake,matlab

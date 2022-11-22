@@ -2,14 +2,14 @@
 #include <chrono>
 #include <iostream>
 
-using size_t = rk4_solver::size_t;
-using Real_T = rk4_solver::Real_T;
+using rk4_solver::Real_T;
+using rk4_solver::size_t;
 
-constexpr size_t sample_freq = 1e9;
+constexpr size_t sample_freq = 1e8;
 constexpr Real_T time_step = 1. / sample_freq;
 constexpr Real_T t_init = 0.;
 constexpr Real_T t_final = 1.;
-constexpr size_t t_dim = sample_freq*(t_final - t_init) + 1;
+constexpr size_t t_dim = sample_freq * (t_final - t_init) + 1;
 constexpr size_t x_dim = 4;
 
 struct Dynamics {
@@ -26,8 +26,7 @@ struct Dynamics {
 };
 Dynamics dyn;
 
-void
-print_elapsed_since(const std::chrono::time_point<std::chrono::high_resolution_clock> &start);
+void print_elapsed_since(const std::chrono::time_point<std::chrono::high_resolution_clock> &start);
 
 int
 main()
