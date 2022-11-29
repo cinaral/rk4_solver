@@ -8,6 +8,6 @@ AlwaysBreakAfterReturnType: AllDefinitions
 AlignOperands: DontAlign
 AccessModifierOffset: -6
 BreakBeforeConceptDeclarations: false
-ColumnLimit: 120
+ColumnLimit: 100
 AlignEscapedNewlines: DontAlign
 IndentPPDirectives: BeforeHash

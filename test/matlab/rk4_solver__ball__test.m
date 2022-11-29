@@ -2,10 +2,10 @@
 bin_dir = '../../build/bin';
 dat_dir = '../../build/dat';
 ref_dat_dir = "../reference_dat";
-test_name = 'test-rk4_solver-ball';
-dat_prefix = append(dat_dir, '/', test_name, '-');
-ref_dat_prefix = append(ref_dat_dir, '/', test_name, '-');
-exe_name = append(test_name, '.exe');
+test_name = 'rk4_solver-ball';
+dat_prefix = append(dat_dir, '/', test_name, '-test-');
+ref_dat_prefix = append(ref_dat_dir, '/', test_name, '-test-');
+exe_name = append(test_name, '-test.exe');
 t_arr_fname = 't_arr.dat';
 x_arr_fname = 'x_arr.dat';
 x_arr_chk_fname = 'x_arr_chk.dat';

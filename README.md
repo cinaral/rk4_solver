@@ -31,13 +31,14 @@ For a single integration step, call ```rk4_solver::step(...)```:
 ```Cpp
 template <typename T, size_t T_DIM, size_t X_DIM>
 void 
-loop(	T &obj, 
-	OdeFun_T<T, X_DIM> ode_fun, 
-	const Real_T t0, 
-	const Real_T (&x0)[X_DIM], 
-	const Real_T h, 
+loop(
+	T &obj,
+	OdeFun_T<T, X_DIM> ode_fun,
+	const Real_T t0,
+	const Real_T (&x0)[X_DIM],
+	const Real_T h,
 	Real_T *t,
-     	Real_T (&x)[X_DIM]
+    Real_T (&x)[X_DIM]
 );
 ```
 
@@ -45,11 +46,12 @@ For an integration loop, call ```rk4_solver::loop(...)```:
 ```Cpp
 template <typename T, size_t T_DIM, size_t X_DIM>
 void
-loop(	T &obj, 
-	OdeFun_T<T, X_DIM> ode_fun, 
-	const Real_T t0, 
-	const Real_T (&x0)[X_DIM], 
-	const Real_T h, 
+loop(
+	T &obj,
+	OdeFun_T<T, X_DIM> ode_fun,
+	const Real_T t0,
+	const Real_T (&x0)[X_DIM],
+	const Real_T h,
 	Real_T *t,
 	Real_T (&x)[X_DIM]
 );
@@ -61,13 +63,14 @@ If you want to use events with your integration loop, you may do so by using an 
 ```Cpp
 template <typename T, size_t T_DIM, size_t X_DIM>
 size_t
-loop(	T &obj, 
-	OdeFun_T<T, X_DIM> ode_fun, 
-	EventFun_T<T, X_DIM> event_fun, 
-	const Real_T t0, 
+loop(
+	T &obj,
+	OdeFun_T<T, X_DIM> ode_fun,
+	EventFun_T<T, X_DIM> event_fun,
+	const Real_T t0,
 	const Real_T (&x0)[X_DIM],
-     	const Real_T h, 
-	Real_T *t, 
+    const Real_T h,
+	Real_T *t,
 	Real_T (&x)[X_DIM]
 );
 ```
@@ -91,25 +94,27 @@ You may use cumulative loop functions with or without the event function to save
 ```Cpp
 template <typename T, size_t T_DIM, size_t X_DIM>
 void
-cum_loop(	T &obj, 
-		OdeFun_T<T, X_DIM> ode_fun, 
-		const Real_T t0,
-		const Real_T (&x0)[X_DIM], 
-		const Real_T h, 
-		Real_T (&t_arr)[T_DIM], 
-		Real_T (&x_arr)[T_DIM * X_DIM]
+cum_loop(	
+	T &obj, 	
+	OdeFun_T<T, X_DIM> ode_fun, 
+	const Real_T t0,
+	const Real_T (&x0)[X_DIM], 
+	const Real_T h, 
+	Real_T (&t_arr)[T_DIM], 
+	Real_T (&x_arr)[T_DIM * X_DIM]
 );
 
 template <typename T, size_t T_DIM, size_t X_DIM>
 size_t
-cum_loop(	T &obj, 
-		OdeFun_T<T, X_DIM> ode_fun, 
-		EventFun_T<T, X_DIM> event_fun, 
-		const Real_T t0,
-		const Real_T (&x0)[X_DIM], 
-		const Real_T h, 
-		Real_T (&t_arr)[T_DIM], 
-		Real_T (&x_arr)[T_DIM * X_DIM]
+cum_loop(	
+	T &obj, 
+	OdeFun_T<T, X_DIM> ode_fun, 
+	EventFun_T<T, X_DIM> event_fun, 
+	const Real_T t0,
+	const Real_T (&x0)[X_DIM], 
+	const Real_T h, 
+	Real_T (&t_arr)[T_DIM], 
+	Real_T (&x_arr)[T_DIM * X_DIM]
 );
 ```
 
