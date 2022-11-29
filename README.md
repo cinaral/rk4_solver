@@ -37,7 +37,7 @@ loop(
 	const Real_T (&x0)[X_DIM],
 	const Real_T h,
 	Real_T *t,
-    Real_T (&x)[X_DIM]
+	Real_T (&x)[X_DIM]
 );
 ```
 
@@ -68,7 +68,7 @@ loop(
 	EventFun_T<T, X_DIM> event_fun,
 	const Real_T t0,
 	const Real_T (&x0)[X_DIM],
-    const Real_T h,
+	const Real_T h,
 	Real_T *t,
 	Real_T (&x)[X_DIM]
 );
