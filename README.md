@@ -12,7 +12,7 @@ Include all or some of the headers in ```include/``` into your project.
 
 Alternatively, you can use [FetchContent()](https://cmake.org/cmake/help/latest/module/FetchContent.html) in your ```CMakeLists.txt```:
 ```CMake
-FetchContent_Declare(rk4_solver URL https://github.com/cinaral/rk4_solver/releases/download/<RELEASE_TAG>/rk4_solver-src.zip)
+FetchContent_Declare(rk4_solver URL https://github.com/cinaral/rk4_solver/releases/download/<RELEASE_TAG>/src.zip)
 FetchContent_MakeAvailable(rk4_solver)
 ```
 
