@@ -14,7 +14,6 @@ Alternatively, you can use [FetchContent()](https://cmake.org/cmake/help/latest/
 ```CMake
 FetchContent_Declare(rk4_solver URL https://github.com/cinaral/rk4_solver/releases/download/<RELEASE_TAG>/rk4_solver-src.zip)
 FetchContent_MakeAvailable(rk4_solver)
-set(rk4_solver_INCLUDE_DIR ${rk4_solver_SOURCE_DIR}/include)
 ```
 
 Use CTest to test the library before using. There are three included tests.
