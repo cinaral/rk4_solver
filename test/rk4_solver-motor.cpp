@@ -54,9 +54,9 @@ struct Dynamics {
 		Real_T temp1[x_dim];
 
 		const Real_T(&u)[u_dim] = *matrix_op::select_row<t_dim, u_dim>(i, u_arr);
-		matrix_op::right_multiply<x_dim, x_dim>(A, x, temp0);
-		matrix_op::right_multiply<x_dim, u_dim>(B, u, temp1);
-		matrix_op::sum<x_dim>(temp0, temp1, dt__x);
+		matrix_op::right_multiply(A, x, temp0);
+		matrix_op::right_multiply(B, u, temp1);
+		matrix_op::sum(temp0, temp1, dt__x);
 	}
 	Real_T u_arr[t_dim * u_dim];
 };

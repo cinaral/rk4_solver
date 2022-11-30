@@ -32,5 +32,6 @@ main()
 {
 	//* integration loop with cumulatively saved data arrays
 	rk4_solver::cum_loop<t_dim>(dyn, &Dynamics::ode_fun, t0, x0, h, t_arr, x_arr);
+	
 	return 0;
 }

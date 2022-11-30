@@ -9,7 +9,7 @@ project(
 #* dependencies
 include(FetchContent)
 
-set(matrix_op_VERSION 1.0.4) #* matrix_op, used for basic matrix operations
+set(matrix_op_VERSION 1.0.5) #* matrix_op, used for basic matrix operations
 set(matrix_rw_VERSION 1.0.3) #* matrix_rw, used for testing
 
 FetchContent_Declare(

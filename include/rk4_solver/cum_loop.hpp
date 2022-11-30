@@ -114,6 +114,7 @@ cum_loop(T &obj, OdeFun_T<X_DIM, T> ode_fun, EventFun_T<X_DIM, T> event_fun, con
 	bool stop_flag = (obj.*event_fun)(t, x, i, x);
 
 	t_arr[0] = t;
+
 	matrix_op::replace_row<T_DIM>(0, x, x_arr);
 
 	for (; !stop_flag && i < T_DIM - 1; ++i) {
@@ -124,6 +125,7 @@ cum_loop(T &obj, OdeFun_T<X_DIM, T> ode_fun, EventFun_T<X_DIM, T> event_fun, con
 		stop_flag = (obj.*event_fun)(t, x, i, x);
 
 		t_arr[i + 1] = t;
+
 		matrix_op::replace_row<T_DIM>(i + 1, x, x_arr);
 	}
 	return i;
