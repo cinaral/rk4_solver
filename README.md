@@ -28,7 +28,7 @@ Some of them require reference solutions which is provided in this repository wi
 
 For a single integration step, call ```rk4_solver::step(...)```:
 ```Cpp
-template <typename T, size_t T_DIM, size_t X_DIM>
+template <size_t T_DIM, size_t X_DIM, typename T>
 void 
 loop(
 	T &obj,
@@ -43,7 +43,7 @@ loop(
 
 For an integration loop, call ```rk4_solver::loop(...)```:
 ```Cpp
-template <typename T, size_t T_DIM, size_t X_DIM>
+template <size_t T_DIM, size_t X_DIM, typename T>
 void
 loop(
 	T &obj,
@@ -60,7 +60,7 @@ If you want to use events with your integration loop, you may do so by using an 
 
 **WARNING**: This is a fixed-step size method and therefore the event detection will be approximate within the time step size.
 ```Cpp
-template <typename T, size_t T_DIM, size_t X_DIM>
+template <size_t T_DIM, size_t X_DIM, typename T>
 size_t
 loop(
 	T &obj,
@@ -74,24 +74,22 @@ loop(
 );
 ```
 
-```size_t```, ```Real_T```, ```OdeFun_T``` and ```EventFun_T``` are defined in ```types.hpp```.  
+**WARNING:** By default, ```Real_T``` is ```double```. Use ```__USE_SINGLE_PRECISION__``` compiler flag) to set to ```float```.
 
-**WARNING:** By default, ```size_t``` is ```unsigned long long int``` and ```Real_T``` is ```double``` (```float``` with ```__USE_SINGLE_PRECISION__``` compiler flag). Their sizes in bytes may be system or compiler dependent.
-
-```OdeFun_T``` and ```EventFun_T``` are function pointers defined as:
+```OdeFun_T``` and ```EventFun_T``` are function pointers defined in [types.hpp](include/rk4_solver/types.hpp):  
 ```Cpp
-template <typename T, size_t X_DIM>
+template <size_t X_DIM, typename T>
 using OdeFun_T = void (T::*)(const Real_T t, const Real_T (&x)[X_DIM], const size_t i, Real_T (&dt__x)[X_DIM]);
 
-template <typename T, size_t X_DIM>
+template <size_t X_DIM, typename T>
 using EventFun_T = bool (T::*)(const Real_T t, const Real_T (&x)[X_DIM], const size_t i, Real_T (&x_plus)[X_DIM]);
 
 ```
-where ```i < T_DIM``` is the current time step for the time step size ```h```. ```i``` is provided for time index dependent inputs such as pre-computed discrete control input.
+Where ```i < T_DIM``` is the current time step for the time step size ```h```. ```i``` is provided for time index dependent inputs such as pre-computed discrete control input.
 
 You may use cumulative loop functions with or without the event function to save the integration value at every time step:
 ```Cpp
-template <typename T, size_t T_DIM, size_t X_DIM>
+template <size_t T_DIM, size_t X_DIM, typename T>
 void
 cum_loop(	
 	T &obj, 	
@@ -103,7 +101,7 @@ cum_loop(
 	Real_T (&x_arr)[T_DIM * X_DIM]
 );
 
-template <typename T, size_t T_DIM, size_t X_DIM>
+template <size_t T_DIM, size_t X_DIM, typename T>
 size_t
 cum_loop(	
 	T &obj, 
@@ -135,7 +133,7 @@ Dynamics dyn;
 int main()
 {
 	//* integration step
-	rk4_solver::step<Dynamics, x_dim>(dyn, &Dynamics::ode_fun, t, x, h, i, x_next);
+	rk4_solver::step(dyn, &Dynamics::ode_fun, t, x, h, i, x_next);
 	//...
 }
 ```
@@ -156,7 +154,7 @@ Dynamics dyn;
 int main()
 {
 	//* integration loop with cumulatively saved data arrays
-	rk4_solver::cum_loop<Dynamics, t_dim, x_dim>(dyn, &Dynamics::ode_fun, t0, x0, h, t_arr, x_arr);
+	rk4_solver::cum_loop<t_dim>(dyn, &Dynamics::ode_fun, t0, x0, h, t_arr, x_arr);
 	//...
 }
 ```
@@ -191,7 +189,7 @@ int
 main()
 {
 	//* integration loop with events
-	rk4_solver::loop<Dynamics,  t_dim, x_dim>(dyn, &Dynamics::ode_fun, &Dynamics::event_fun, t0, x0, h, &t, x);
+	rk4_solver::loop<t_dim>(dyn, &Dynamics::ode_fun, &Dynamics::event_fun, t0, x0, h, &t, x);
 	//...
 }
 ```

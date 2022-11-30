@@ -24,8 +24,10 @@ constexpr Real_T error_thres = 1e-9;
 #endif
 
 struct Dynamics {
-	//* dt__x = f(t, x) = 2*pi*f*cos(t*2*pi*f)
-	//* x = sin(t*2*pi*f)
+	/*
+	 * dt__x = f(t, x) = 2*pi*f*cos(t*2*pi*f)
+	 * x = sin(t*2*pi*f)
+	 */
 	void
 	ode_fun(const Real_T t, const Real_T (&)[x_dim], const size_t, Real_T (&dt__x)[x_dim])
 	{
@@ -45,8 +47,9 @@ main()
 	Real_T x[x_dim];
 	Real_T t_arr[t_dim];
 	Real_T x_arr[t_dim * x_dim];
-	rk4_solver::loop<Dynamics, t_dim, x_dim>(dyn, &Dynamics::ode_fun, t_init, x_init, time_step, &t, x);
-	rk4_solver::cum_loop<Dynamics, t_dim, x_dim>(dyn, &Dynamics::ode_fun, t_init, x_init, time_step, t_arr, x_arr);
+	rk4_solver::loop<t_dim>(dyn, &Dynamics::ode_fun, t_init, x_init, time_step, &t, x);
+	rk4_solver::cum_loop<t_dim>(dyn, &Dynamics::ode_fun, t_init, x_init, time_step, t_arr,
+	                            x_arr);
 
 	//* 3. write the test data
 	matrix_rw::write<t_dim, 1>(dat_prefix + test_config::t_arr_fname, t_arr);

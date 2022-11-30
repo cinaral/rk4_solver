@@ -30,21 +30,23 @@ constexpr Real_T error_thres = 1e-13;
 #endif
 
 struct Dynamics {
-	//* Motor equations:
-	//* dt2__th = -b/J*dt__th + K_t/J*i
-	//* dt__i = - K_b/L*dt__th - R/L*i + 1/L*e
-	//*
-	//* In state-space:
-	//* x = [th; dt__th; i]
-	//* u = [e]
-	//*
-	//* dt__x = A*x + B*u
-	//* A = [0, 1,      0;
-	//*      0, -b/J,   K_t/J;
-	//*      0, -K_b/L, -R/L];
-	//* B = [0,
-	//*      0,
-	//*      1/L];
+	/*
+	 * Motor equations:
+	 * dt2__th = -b/J*dt__th + K_t/J*i
+	 * dt__i = - K_b/L*dt__th - R/L*i + 1/L*e
+	 *
+	 * In state-space:
+	 * x = [th; dt__th; i]
+	 * u = [e]
+	 *
+	 * dt__x = A*x + B*u
+	 * A = [0, 1,      0;
+	 *      0, -b/J,   K_t/J;
+	 *      0, -K_b/L, -R/L];
+	 * B = [0,
+	 *      0,
+	 *      1/L];
+	 */
 	void
 	ode_fun(const Real_T, const Real_T (&x)[x_dim], const size_t i, Real_T (&dt__x)[x_dim])
 	{
@@ -73,8 +75,9 @@ main()
 	Real_T x[x_dim];
 	Real_T t_arr[t_dim];
 	Real_T x_arr[t_dim * x_dim];
-	rk4_solver::loop<Dynamics, t_dim, x_dim>(dyn, &Dynamics::ode_fun, t_init, x_init, time_step, &t, x);
-	rk4_solver::cum_loop<Dynamics, t_dim, x_dim>(dyn, &Dynamics::ode_fun, t_init, x_init, time_step, t_arr, x_arr);
+	rk4_solver::loop<t_dim>(dyn, &Dynamics::ode_fun, t_init, x_init, time_step, &t, x);
+	rk4_solver::cum_loop<t_dim>(dyn, &Dynamics::ode_fun, t_init, x_init, time_step, t_arr,
+	                            x_arr);
 
 	//* 3. write the test data
 	matrix_rw::write<t_dim, 1>(dat_prefix + test_config::t_arr_fname, t_arr);

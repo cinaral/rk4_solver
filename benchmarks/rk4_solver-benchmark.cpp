@@ -13,8 +13,10 @@ constexpr size_t t_dim = sample_freq * (t_final - t_init) + 1;
 constexpr size_t x_dim = 4;
 
 struct Dynamics {
-	//* dt__x = f(t, x) = t, x(0) = 0
-	//* x = v*t^2
+	/*
+	 * dt__x = f(t, x) = t, x(0) = 0
+	 * x = v*t^2
+	 */
 	void
 	ode_fun(const Real_T t, const Real_T (&)[x_dim], const size_t, Real_T (&dt__x)[x_dim])
 	{
@@ -34,7 +36,7 @@ main()
 	Real_T t;
 	Real_T x[x_dim];
 	const auto start = std::chrono::high_resolution_clock::now();
-	rk4_solver::loop<Dynamics, t_dim, x_dim>(dyn, &Dynamics::ode_fun, t_init, x, time_step, &t, x);
+	rk4_solver::loop<t_dim>(dyn, &Dynamics::ode_fun, t_init, x, time_step, &t, x);
 	print_elapsed_since(start);
 
 	return 0;

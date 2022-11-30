@@ -11,7 +11,9 @@ constexpr Real_T x[x_dim] = {0, 0};
 constexpr size_t i = 0;
 
 struct Dynamics {
-	//* dt__x = f(t, x) = [x[1]; u], x(0) = [0; 0];
+	/*
+	 * dt__x = f(t, x) = [x[1]; u], x(0) = [0; 0];
+	 */
 	void
 	ode_fun(const Real_T, const Real_T (&x)[x_dim], const size_t, Real_T (&dt__x)[x_dim])
 	{
@@ -26,7 +28,6 @@ main()
 {
 	Real_T x_next[x_dim];
 	//* integration step
-	rk4_solver::step<Dynamics, x_dim>(dyn, &Dynamics::ode_fun, t, x, h, i, x_next);
-
+	rk4_solver::step(dyn, &Dynamics::ode_fun, t, x, h, i, x_next);
 	return 0;
 }
