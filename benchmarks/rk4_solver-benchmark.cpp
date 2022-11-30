@@ -34,7 +34,8 @@ main()
 	Real_T t;
 	Real_T x[x_dim];
 	const auto start = std::chrono::high_resolution_clock::now();
-	rk4_solver::loop<Dynamics, t_dim, x_dim>(dyn, &Dynamics::ode_fun, t_init, x, time_step, &t, x);
+	rk4_solver::loop<Dynamics, t_dim, x_dim>(dyn, &Dynamics::ode_fun, t_init, x, time_step, &t,
+	                                         x);
 	print_elapsed_since(start);
 
 	return 0;

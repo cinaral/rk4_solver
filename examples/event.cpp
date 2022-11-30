@@ -1,7 +1,7 @@
 #include "rk4_solver/loop.hpp"
 
-using rk4_solver::size_t;
 using rk4_solver::Real_T;
+using rk4_solver::size_t;
 
 constexpr size_t sample_freq = 1e5;
 constexpr Real_T h = 1. / sample_freq;
@@ -44,7 +44,8 @@ main()
 	Real_T t;
 	Real_T x[x_dim];
 	//* integration loop with events
-	rk4_solver::loop<Dynamics, t_dim, x_dim>(dyn, &Dynamics::ode_fun, &Dynamics::event_fun, t0, x0, h, &t, x);
+	rk4_solver::loop<Dynamics, t_dim, x_dim>(dyn, &Dynamics::ode_fun, &Dynamics::event_fun, t0,
+	                                         x0, h, &t, x);
 
 	return 0;
 }

@@ -1,20 +1,20 @@
 /*
  * rk4_solver
- *  
+ *
  * MIT License
- * 
+ *
  * Copyright (c) 2022 cinaral
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
  * of the Software, and to permit persons to whom the Software is furnished to do
  * so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,14 +23,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
- 
- //* solves dx/dt = ode_fun(t, x(t)), x(0) = x_0 using Runge-Kutta 4th Order Method.
+
+//* solves dx/dt = ode_fun(t, x(t)), x(0) = x_0 using Runge-Kutta 4th Order Method.
 
 #ifndef RK4_SOLVER_HPP_CINARAL_220924_1754
 #define RK4_SOLVER_HPP_CINARAL_220924_1754
 
-#include "rk4_solver/step.hpp"
-#include "rk4_solver/loop.hpp"
 #include "rk4_solver/cum_loop.hpp"
+#include "rk4_solver/loop.hpp"
+#include "rk4_solver/step.hpp"
+#include "rk4_solver/types.hpp"
 
 #endif

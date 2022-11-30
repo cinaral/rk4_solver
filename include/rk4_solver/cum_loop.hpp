@@ -1,20 +1,20 @@
 /*
  * rk4_solver
- *  
+ *
  * MIT License
- * 
+ *
  * Copyright (c) 2022 cinaral
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
  * of the Software, and to permit persons to whom the Software is furnished to do
  * so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -47,12 +47,12 @@ namespace rk4_solver
 //* 7. x_arr - [T_DIM * X_DIM] state array
 template <typename T, size_t T_DIM, size_t X_DIM>
 void
-cum_loop(T &obj, OdeFun_T<T, X_DIM> ode_fun, const Real_T t0, const Real_T (&x0)[X_DIM], const Real_T h,
-         Real_T (&t_arr)[T_DIM], Real_T (&x_arr)[T_DIM * X_DIM])
+cum_loop(T &obj, OdeFun_T<T, X_DIM> ode_fun, const Real_T t0, const Real_T (&x0)[X_DIM],
+         const Real_T h, Real_T (&t_arr)[T_DIM], Real_T (&x_arr)[T_DIM * X_DIM])
 {
 #ifdef __DO_USE_HEAP__
-	static Real_T (*x_ptr)[X_DIM] = (Real_T(*)[X_DIM])new Real_T[X_DIM];
-	static Real_T (&x)[X_DIM] = *x_ptr;
+	static Real_T(*x_ptr)[X_DIM] = (Real_T(*)[X_DIM]) new Real_T[X_DIM];
+	static Real_T(&x)[X_DIM] = *x_ptr;
 #else
 	Real_T x[X_DIM];
 #endif
@@ -72,7 +72,8 @@ cum_loop(T &obj, OdeFun_T<T, X_DIM> ode_fun, const Real_T t0, const Real_T (&x0)
 	}
 }
 
-//* loops Runge-Kutta 4th Order step T_DIM times or until event_fun returns true and cumulatively saves all points.
+//* loops Runge-Kutta 4th Order step T_DIM times or until event_fun returns true and cumulatively
+//saves all points.
 //* event_fun can be used to modify x when certain conditions are met.
 //*
 //* OUT:i = cum_loop<T, T_DIM, X_DIM>(obj, ode_fun, t0, x0, h, OUT:t_arr, OUT:x_arr)
@@ -90,12 +91,13 @@ cum_loop(T &obj, OdeFun_T<T, X_DIM> ode_fun, const Real_T t0, const Real_T (&x0)
 template <typename T, size_t T_DIM, size_t X_DIM>
 size_t
 cum_loop(T &obj, OdeFun_T<T, X_DIM> ode_fun, EventFun_T<T, X_DIM> event_fun, const Real_T t0,
-         const Real_T (&x0)[X_DIM], const Real_T h, Real_T (&t_arr)[T_DIM], Real_T (&x_arr)[T_DIM * X_DIM])
+         const Real_T (&x0)[X_DIM], const Real_T h, Real_T (&t_arr)[T_DIM],
+         Real_T (&x_arr)[T_DIM * X_DIM])
 {
 	size_t i = 0;
 #ifdef __DO_USE_HEAP__
-	static Real_T (*x_ptr)[X_DIM] = (Real_T(*)[X_DIM])new Real_T[X_DIM];
-	static Real_T (&x)[X_DIM] = *x_ptr;
+	static Real_T(*x_ptr)[X_DIM] = (Real_T(*)[X_DIM]) new Real_T[X_DIM];
+	static Real_T(&x)[X_DIM] = *x_ptr;
 #else
 	Real_T x[X_DIM];
 #endif

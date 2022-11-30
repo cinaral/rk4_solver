@@ -1,20 +1,20 @@
 /*
  * rk4_solver
- *  
+ *
  * MIT License
- * 
+ *
  * Copyright (c) 2022 cinaral
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
  * of the Software, and to permit persons to whom the Software is furnished to do
  * so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -39,10 +39,12 @@ using Real_T = double;
 #endif
 
 template <typename T, size_t X_DIM>
-using OdeFun_T = void (T::*)(const Real_T t, const Real_T (&x)[X_DIM], const size_t i, Real_T (&dt__x)[X_DIM]);
+using OdeFun_T = void (T::*)(const Real_T t, const Real_T (&x)[X_DIM], const size_t i,
+                             Real_T (&dt__x)[X_DIM]);
 
 template <typename T, size_t X_DIM>
-using EventFun_T = bool (T::*)(const Real_T t, const Real_T (&x)[X_DIM], const size_t i, Real_T (&x_plus)[X_DIM]);
+using EventFun_T = bool (T::*)(const Real_T t, const Real_T (&x)[X_DIM], const size_t i,
+                               Real_T (&x_plus)[X_DIM]);
 
 } // namespace rk4_solver
 
