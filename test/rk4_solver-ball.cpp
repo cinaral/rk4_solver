@@ -1,9 +1,9 @@
 #include "test_config.hpp"
 
 //* setup
-const std::string test_name = "test-rk4_solver-ball";
-const std::string dat_prefix = test_config::dat_dir + "/" + test_name + "-";
-const std::string ref_dat_prefix = test_config::ref_dat_dir + "/" + test_name + "-";
+const std::string test_name = "rk4_solver-ball";
+const std::string dat_prefix = test_config::dat_dir + "/" + test_name + "-test-";
+const std::string ref_dat_prefix = test_config::ref_dat_dir + "/" + test_name + "-test-";
 
 constexpr size_t sample_freq = 1e4;
 constexpr Real_T time_step = 1. / sample_freq;

@@ -2,30 +2,28 @@ cmake_minimum_required(VERSION 3.13)
 
 project(
 	rk4_solver
-	VERSION 1.0.6 
+	VERSION 1.0.7
 	LANGUAGES CXX
 )
 
 #* dependencies
 include(FetchContent)
 
-set(matrix_op_VERSION 1.0.3) #* matrix_op, used for basic matrix operations
-set(matrix_rw_VERSION 1.0.2) #* matrix_rw, used for testing
+set(matrix_op_VERSION 1.0.4) #* matrix_op, used for basic matrix operations
+set(matrix_rw_VERSION 1.0.3) #* matrix_rw, used for testing
 
 FetchContent_Declare(
 	matrix_op 
-	URL https://github.com/cinaral/matrix_op/releases/download/v${matrix_op_VERSION}/matrix_op-src.zip
+	URL https://github.com/cinaral/matrix_op/releases/download/v${matrix_op_VERSION}/src.zip
 )
 FetchContent_MakeAvailable(matrix_op)
-set(matrix_op_INCLUDE_DIR ${matrix_op_SOURCE_DIR}/include)
 
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	FetchContent_Declare(
 		matrix_rw 
-		URL https://github.com/cinaral/matrix_rw/releases/download/v${matrix_rw_VERSION}/matrix_rw-src.zip
+		URL https://github.com/cinaral/matrix_rw/releases/download/v${matrix_rw_VERSION}/src.zip
 	)
 	FetchContent_MakeAvailable(matrix_rw)
-	set(matrix_rw_INCLUDE_DIR ${matrix_rw_SOURCE_DIR}/include)
 endif()
 
 
@@ -46,10 +44,10 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 
 	#* tests, examples, benchmarks to compile
 	set(TEST_NAMES
-		test-rk4_solver-sine
-		test-rk4_solver-motor
-		test-rk4_solver-ball
-		test-rk4_solver-first_order
+		rk4_solver-sine
+		rk4_solver-motor
+		rk4_solver-ball
+		rk4_solver-first_order
 	)
 	set(EXAMPLE_NAMES
 		step
@@ -109,8 +107,8 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 			target_include_directories(
 				${ELEMENT}-test PRIVATE 
 				${INCLUDE_DIR}
-				${matrix_op_INCLUDE_DIR}
-				${matrix_rw_INCLUDE_DIR}
+				${matrix_op_SOURCE_DIR}/include
+				${matrix_rw_SOURCE_DIR}/include
 			)
 			target_compile_options(
 				${ELEMENT}-test PRIVATE 
@@ -136,7 +134,7 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 			target_include_directories(
 				${ELEMENT} PRIVATE 
 				${INCLUDE_DIR}	
-				${matrix_op_INCLUDE_DIR}
+				${matrix_op_SOURCE_DIR}/include
 			)
 		endforeach(ELEMENT ${EXAMPLE_NAMES})
 	endif()
@@ -154,7 +152,7 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 			target_include_directories(
 				${ELEMENT}-benchmark  PRIVATE 
 				${INCLUDE_DIR}	
-				${matrix_op_INCLUDE_DIR}
+				${matrix_op_SOURCE_DIR}/include
 			)
 			target_compile_options(
 				${ELEMENT}-benchmark  PUBLIC
@@ -172,13 +170,13 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	#* Packaged source code *#
 	#************************#
 	add_custom_command(
-		OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-src.zip
-		COMMAND ${CMAKE_COMMAND} -E tar c ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-src.zip --format=zip -- ${PACKAGE_FILES}
+		OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/src.zip
+		COMMAND ${CMAKE_COMMAND} -E tar c ${CMAKE_CURRENT_BINARY_DIR}/src.zip --format=zip -- ${PACKAGE_FILES}
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 		DEPENDS ${PACKAGE_FILES}
 	)
 	add_custom_target(
 		src_package 
-		DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-src.zip
+		DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/src.zip
 	)
 endif()
