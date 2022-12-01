@@ -32,28 +32,37 @@
 
 namespace rk4_solver
 {
-
-//* Computes the next Runge-Kutta 4th Order step.
-//* ode_fun can be parametrized using the time (row) index i.
-//*
-//* step<T, X_DIM>(obj, ode_fun, t, x, h, i, OUT:x_next)
-//* IN:
-//* 1. obj - [T] dynamics object
-//* 2. ode_fun - [T::*] ode function, a member of obj
-//* 3. t - time [s]
-//* 4. x - [X_DIM] state
-//* 5. h - time step [s]
-//* 6. i - time index
-//* OUT:
-//*	7. x_next - [X_DIM] next state
-template <typename T, size_t X_DIM>
+/*
+ * Computes the next Runge-Kutta 4th Order step.
+ * `ode_fun` can be parametrized using the time (row) index `i`.
+ *
+ * `step<OPT: X_DIM, T>(obj, ode_fun, t, x, h, i, OUT:x_next)`
+ *
+ * 1. `obj`: dynamics object (type `T`)
+ * 2. `ode_fun`: ode function, member of `obj` (type `T::*`)
+ * 3. `t`: time [s]
+ * 4. `x`: state
+ * 5. `h`: time step [s]
+ * 6. `i`: time index corresponding to `t`
+ *
+ * OUT:
+ *	7. `x_next`: next state
+ */
+template <size_t X_DIM, typename T>
 void
-step(T &obj, OdeFun_T<T, X_DIM> ode_fun, const Real_T t, const Real_T (&x)[X_DIM], const Real_T h,
+step(T &obj, OdeFun_T<X_DIM, T> ode_fun, const Real_T t, const Real_T (&x)[X_DIM], const Real_T h,
      const size_t i, Real_T (&x_next)[X_DIM])
 {
 	constexpr Real_T rk4_weight_0 = 1. / 6.;
 	constexpr Real_T rk4_weight_1 = 1. / 3.;
 #ifdef __DO_USE_HEAP__
+	/*
+	 * `..._ptr`s are of type `Real_T(*)[X_DIM]`.
+	 * They point to `Real_T[X_DIM]`s which are allocated on the heap.
+	 * Dereferencing them gives us rvalue references to `Real_T[X_DIM]`s,
+	 * which can be substituted for `Real_T[X_DIM]`s allocated on the stack.
+	 * (Maybe typedef should be used more.)
+	 */
 	static Real_T(*k_0_ptr)[X_DIM] = (Real_T(*)[X_DIM]) new Real_T[X_DIM];
 	static Real_T(*k_1_ptr)[X_DIM] = (Real_T(*)[X_DIM]) new Real_T[X_DIM];
 	static Real_T(*k_2_ptr)[X_DIM] = (Real_T(*)[X_DIM]) new Real_T[X_DIM];
@@ -64,11 +73,7 @@ step(T &obj, OdeFun_T<T, X_DIM> ode_fun, const Real_T t, const Real_T (&x)[X_DIM
 	Real_T(&k_2)[X_DIM] = *k_2_ptr;
 	Real_T(&k_3)[X_DIM] = *k_3_ptr;
 	Real_T(&x_temp)[X_DIM] = *x_temp_ptr;
-		//* "..._ptr"s are of type "Real_T(*)[X_DIM]", they point to "Real_T[X_DIM]"s which
-		//are allocated on the heap,
-		//* dereferencing "..._ptr"s gives us rvalue references to "Real_T[X_DIM]"s, which
-		//can be substituted to "Real_T[X_DIM]"s allocated on the stack.
-		//* Yes, maybe typedef should have been used more
+
 #else
 	static Real_T k_0[X_DIM];
 	static Real_T k_1[X_DIM];
@@ -96,7 +101,6 @@ step(T &obj, OdeFun_T<T, X_DIM> ode_fun, const Real_T t, const Real_T (&x)[X_DIM
 		         rk4_weight_0 * k_3[i]);
 	}
 }
-
 } // namespace rk4_solver
 
 #endif

@@ -14,17 +14,21 @@ constexpr Real_T e_restitution = .75;
 constexpr Real_T gravity_const = 9.806;
 
 struct Dynamics {
-	//* Ball in vertical axis:
-	//* dt__x =  [x2; -g]
+	/*
+	 * Ball in vertical axis:
+	 * dt__x =  [x2; -g]
+	 */
 	void
 	ode_fun(const Real_T, const Real_T (&x)[x_dim], const size_t, Real_T (&dt__x)[x_dim])
 	{
 		dt__x[0] = x[1];
 		dt__x[1] = -gravity_const;
 	}
-	//* Impact event:
-	//* x+ = 0
-	//* dt__x+ = -e * dt__x
+	/*
+	 * Impact event:
+	 * x+ = 0
+	 * dt__x+ = -e * dt__x
+	 */
 	bool
 	event_fun(const Real_T, const Real_T (&x)[x_dim], const size_t, Real_T (&x_plus)[x_dim])
 	{
@@ -44,8 +48,7 @@ main()
 	Real_T t;
 	Real_T x[x_dim];
 	//* integration loop with events
-	rk4_solver::loop<Dynamics, t_dim, x_dim>(dyn, &Dynamics::ode_fun, &Dynamics::event_fun, t0,
-	                                         x0, h, &t, x);
-
+	rk4_solver::loop<t_dim>(dyn, &Dynamics::ode_fun, &Dynamics::event_fun, t0, x0, h, &t, x);
+	
 	return 0;
 }
