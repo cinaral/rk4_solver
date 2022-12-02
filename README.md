@@ -137,7 +137,7 @@ int main()
 	//...
 }
 ```
-See [example_step.cpp](./examples/step.cpp) for details.
+See [step-example.cpp](./examples/step-example.cpp) for details.
 
 
 ## Example 2: Integration loop
@@ -158,7 +158,7 @@ int main()
 	//...
 }
 ```
-See [example_loop.cpp](./examples/loop.cpp) for details.
+See [loop-example.cpp](./examples/loop-example.cpp) for details.
 
 
 ## Example 3: Events
@@ -193,7 +193,7 @@ main()
 	//...
 }
 ```
-See [example_event.cpp](./examples/event.cpp) for details.
+See [example-event.cpp](./examples/event-example.cpp) for details.
 
 
 # Testing
@@ -201,6 +201,6 @@ Reference solutions are required for some tests, which can be found in ```test/d
 
 [matrix_rw](https://github.com/cinaral/matrix_rw) library is used for testing, the ```*.dat``` files are comma and newline delimited. If you have access to MATLAB, the formatting is compatible with ```writematrix``` and ```readmatrix```. 
 
-You may need to generate new solutions in order to update the existing tests or to add new tests. [run_all_tests.m](./test/matlab/run_all_tests.m) may be used to generate solutions if you have access to MATLAB. By default, the data files are put in ```dat/```, which you may copy into ```test/dat/``` or use ```scripts/update_test_data.sh```.
+You may need to generate new solutions in order to update the existing tests or to add new tests. [run_test.m](./test/matlab/run_test.m) may be used to generate solutions if you have access to MATLAB. By default, the data files are put in ```dat/```, which you may copy into ```test/dat/``` or use ```scripts/update_test_data.sh```.
 
 The MATLAB tests are optional. The MATLAB scripts under ```test/matlab/``` can also be used to visually inspect the output. 

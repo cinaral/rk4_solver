@@ -1,6 +1,6 @@
 %* setup
 addpath('../');
-test_name = 'test-rk4_solver-first_order';
+test_name = 'rk4_solver-first_order-test';
 is_drawing = false;
 error_thres = 1e-12;
 %* Exact Integral

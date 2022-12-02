@@ -1,6 +1,6 @@
 %* setup
 addpath('../');
-test_name = 'test-rk4_solver-exact_integral';
+test_name = 'rk4_solver-exact_integral-test';
 is_drawing = false;
 error_thres = 1e-10;
 %* Exact Integral

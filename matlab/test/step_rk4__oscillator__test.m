@@ -1,6 +1,6 @@
 %* setup
 addpath('../');
-test_name = 'test-rk4_solver-oscillator';
+test_name = 'rk4_solver-oscillator-test';
 is_drawing = false;
 error_thres = 2e-3;
 %* Linear 1-DoF oscillator excited by sine
