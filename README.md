@@ -137,7 +137,7 @@ int main()
 	//...
 }
 ```
-See [example_step.cpp](./examples/example_step.cpp) for details.
+See [example_step.cpp](./examples/step.cpp) for details.
 
 
 ## Example 2: Integration loop
@@ -158,7 +158,7 @@ int main()
 	//...
 }
 ```
-See [example_loop.cpp](./examples/example_loop.cpp) for details.
+See [example_loop.cpp](./examples/loop.cpp) for details.
 
 
 ## Example 3: Events
@@ -193,7 +193,7 @@ main()
 	//...
 }
 ```
-See [example_event.cpp](./examples/example_event.cpp) for details.
+See [example_event.cpp](./examples/event.cpp) for details.
 
 
 # Testing
