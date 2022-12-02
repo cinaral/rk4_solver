@@ -1,9 +1,9 @@
 #include "test_config.hpp"
 
 //* setup
-const std::string test_name = "rk4_solver-motor";
-const std::string dat_prefix = test_config::dat_dir + "/" + test_name + "-test-";
-const std::string ref_dat_prefix = test_config::ref_dat_dir + "/" + test_name + "-test-";
+const std::string test_name = "rk4_solver-motor-test";
+const std::string dat_prefix = test_config::dat_dir + "/" + test_name + "-";
+const std::string ref_dat_prefix = test_config::ref_dat_dir + "/" + test_name + "-";
 
 constexpr size_t sample_freq = 1e3;
 constexpr Real_T time_step = 1. / sample_freq;

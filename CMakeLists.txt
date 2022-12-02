@@ -29,11 +29,12 @@ endif()
 
 
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-	option(SINGLE_PRECISION "Single precision" OFF)
-	option(HEAP_USAGE "Heap usage" ON)
+	option(DEBUG_BUILD "Build everything in debug mode" ON)
 	option(BUILD_TESTS "Build tests" ON)
 	option(BUILD_EXAMPLES "Build examples" ON)
-	option(BUILD_BENCHMARKS "Build bencmarks" ON)
+	option(BUILD_BENCHMARKS "Build benchmarks" ON)
+	option(SINGLE_PRECISION "Single precision" OFF)
+	option(HEAP_USAGE "Heap usage" ON)
 
 	#* where to look for the project header and source files
 	set(INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
@@ -44,16 +45,16 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 
 	#* tests, examples, benchmarks to compile
 	set(TEST_NAMES
-		rk4_solver-sine
-		rk4_solver-motor
-		rk4_solver-ball
-		rk4_solver-first_order
+		rk4_solver-sine-test
+		rk4_solver-motor-test
+		rk4_solver-ball-test
+		rk4_solver-first_order-test
 	)
 	set(EXAMPLE_NAMES
-		step
-		loop
-		event
-		first_order
+		step-example
+		loop-example
+		event-example
+		first_order-example
 	)
 	set(BENCHMARK_NAMES
 		rk4_solver-benchmark
@@ -84,6 +85,17 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 		-Wpedantic #* more warnings
 		-Wno-array-bounds #* disable false array bounds warning
 	)
+	
+	if(DEBUG_BUILD)
+		add_compile_options(
+			-g #* debug symbols
+			-Og #* debug optimization
+		)
+	else()
+		add_compile_options(
+			-O3 #* release optimization
+		)
+	endif()
 
 	if(SINGLE_PRECISION)
 		add_compile_options(-D__USE_SINGLE_PRECISION__) #* use single precision floats
@@ -101,21 +113,21 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 
 		foreach(ELEMENT ${TEST_NAMES})
 			add_executable(
-				${ELEMENT}-test
+				${ELEMENT}
 				${TEST_DIR}/${ELEMENT}.cpp						
 			)
 			target_include_directories(
-				${ELEMENT}-test PRIVATE 
+				${ELEMENT} PRIVATE 
 				${INCLUDE_DIR}
 				${matrix_op_SOURCE_DIR}/include
 				${matrix_rw_SOURCE_DIR}/include
 			)
 			target_compile_options(
-				${ELEMENT}-test PRIVATE 
+				${ELEMENT} PRIVATE 
 			)
 			add_test(
-				NAME ${ELEMENT}-test 
-				COMMAND ${ELEMENT}-test
+				NAME ${ELEMENT} 
+				COMMAND ${ELEMENT}
 				WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
 			)
 		endforeach(ELEMENT ${TEST_NAMES})
@@ -125,7 +137,6 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	#* Examples *#
 	#************#
 	if(BUILD_EXAMPLES)
-
 		foreach(ELEMENT ${EXAMPLE_NAMES})
 			add_executable(
 				${ELEMENT} 
@@ -143,19 +154,18 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	#* Benchmark *#
 	#*************#
 	if(BUILD_BENCHMARKS)
-
 		foreach(ELEMENT ${BENCHMARK_NAMES})
 			add_executable(
-				${ELEMENT}-benchmark 
+				${ELEMENT} 
 				${BENCHMARK_DIR}/${ELEMENT}.cpp
 			)
 			target_include_directories(
-				${ELEMENT}-benchmark  PRIVATE 
+				${ELEMENT} PRIVATE 
 				${INCLUDE_DIR}	
 				${matrix_op_SOURCE_DIR}/include
 			)
 			target_compile_options(
-				${ELEMENT}-benchmark  PUBLIC
+				${ELEMENT} PRIVATE
 				-O3 #* optimization level
 				-m64 #* x64
 				-mavx2 #* enable avx2
