@@ -89,7 +89,7 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	if(DEBUG_BUILD)
 		add_compile_options(
 			-g #* debug symbols
-			-Og #* debug optimization
+			-O0 #* no optimization, -Og may work better with some debuggers
 		)
 	else()
 		add_compile_options(
