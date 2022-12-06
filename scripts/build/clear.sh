@@ -14,9 +14,9 @@ popd () {
 pushd "$(dirname ${BASH_SOURCE:0})"
 trap popd EXIT #*
 
-#* remove
+#* remove dir
 if [[ -d "$CLEAR_DIR" ]]; then
-rm -r $CLEAR_DIR
+rm -r -f $CLEAR_DIR
 
 if [[ $? -eq 0 ]]; then
    echo "Removed $CLEAR_DIR"

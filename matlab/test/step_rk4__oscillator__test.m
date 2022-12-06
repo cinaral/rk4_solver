@@ -1,6 +1,6 @@
 %* setup
 addpath('../');
-test_name = 'test-rk4_solver-oscillator';
+test_name = 'rk4_solver-oscillator-test';
 is_drawing = false;
 error_thres = 2e-3;
 %* Linear 1-DoF oscillator excited by sine
@@ -37,7 +37,7 @@ for i = 1:t_dim - 1
 	x_arr(i + 1, :) = step_rk4(t, x, h, f_0).';
 end
 
-% verify
+%* verify
 ode_fun  = @(t, x) A*x + B*sin(pi*w_u*t); 
 [ode.t_arr, ode.x_arr] = ode45(ode_fun, t_arr, x_init); 
 
