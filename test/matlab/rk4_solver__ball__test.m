@@ -1,4 +1,10 @@
 %* setup
+%*
+%* See https://www.mathworks.com/help/matlab/math/ode-event-location.html
+%* for the official MATLAB example counterpart of what we are trying to achieve in this test.
+%* 
+%* This is very similar ballode but it is fixed-step integration here.
+%*
 bin_dir = '../../build/bin';
 dat_dir = '../../build/dat';
 ref_dat_dir = "../reference_dat";

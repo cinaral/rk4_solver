@@ -1,6 +1,10 @@
 #include "test_config.hpp"
 
 //* setup
+/*
+ * See https://www.mathworks.com/help/matlab/math/ode-event-location.html
+ * for the official MATLAB example counterpart of what we are trying to achieve in this test.
+ */
 const std::string test_name = "rk4_solver-ball-test";
 const std::string dat_prefix = test_config::dat_dir + "/" + test_name + "-";
 const std::string ref_dat_prefix = test_config::ref_dat_dir + "/" + test_name + "-";
