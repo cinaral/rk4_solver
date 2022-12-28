@@ -8,7 +8,7 @@
 bin_dir = '../../build/bin';
 dat_dir = '../../build/dat';
 ref_dat_dir = "../reference_dat";
-test_name = 'rk4_solver-ball-test';
+test_name = 'ball-test';
 dat_prefix = append(dat_dir, '/', test_name, '-');
 ref_dat_prefix = append(ref_dat_dir, '/', test_name, '-');
 exe_name = append(test_name, '.exe');

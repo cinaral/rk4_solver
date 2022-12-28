@@ -1,3 +1,0 @@
-rk4_solver__sine__test
-rk4_solver__motor__test
-rk4_solver__ball__test

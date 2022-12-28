@@ -45,10 +45,10 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 
 	#* tests, examples, benchmarks to compile
 	set(TEST_NAMES
-		rk4_solver-sine-test
-		rk4_solver-motor-test
-		rk4_solver-ball-test
-		rk4_solver-first_order-test
+		sine-test
+		motor-test
+		ball-test
+		first_order-test
 	)
 	set(EXAMPLE_NAMES
 		step-example
@@ -57,7 +57,7 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 		first_order-example
 	)
 	set(BENCHMARK_NAMES
-		rk4_solver-benchmark
+		benchmark
 	)
 
 	#* files to package

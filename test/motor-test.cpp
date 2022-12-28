@@ -1,7 +1,7 @@
 #include "test_config.hpp"
 
 //* setup
-const std::string test_name = "rk4_solver-motor-test";
+const std::string test_name = "motor-test";
 const std::string dat_prefix = test_config::dat_dir + "/" + test_name + "-";
 const std::string ref_dat_prefix = test_config::ref_dat_dir + "/" + test_name + "-";
 

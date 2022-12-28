@@ -1,17 +1,21 @@
 #include "test_config.hpp"
 
+#ifndef M_PI
+	#define M_PI 3.14159265358979323846
+#endif
+
 //* setup
-const std::string test_name = "rk4_solver-first_order-test";
+const std::string test_name = "sine-test";
 const std::string dat_prefix = test_config::dat_dir + "/" + test_name + "-";
 
 constexpr size_t sample_freq = 1e3;
 constexpr Real_T time_step = 1. / sample_freq;
-constexpr Real_T t_init = 0.;
-constexpr Real_T t_final = 1.;
+constexpr Real_T t_init = 0;
+constexpr Real_T t_final = 1;
 constexpr size_t t_dim = sample_freq * (t_final - t_init) + 1;
 constexpr size_t x_dim = 1;
-constexpr Real_T x_init[x_dim] = {1.};
-constexpr Real_T a_const = 1.;
+constexpr Real_T x_init[x_dim] = {0};
+constexpr Real_T sine_freq = 5.;
 
 #ifdef __USE_SINGLE_PRECISION__
 constexpr Real_T error_thres = 1e-5;
@@ -21,13 +25,13 @@ constexpr Real_T error_thres = 1e-9;
 
 struct Dynamics {
 	/*
-	 * dt__x = f(t, x) = a*x
-	 * x = exp(a*t)
+	 * dt__x = f(t, x) = 2*pi*f*cos(t*2*pi*f)
+	 * x = sin(t*2*pi*f)
 	 */
 	void
-	ode_fun(const Real_T, const Real_T (&x)[x_dim], const size_t, Real_T (&dt__x)[x_dim])
+	ode_fun(const Real_T t, const Real_T (&)[x_dim], const size_t, Real_T (&dt__x)[x_dim])
 	{
-		dt__x[0] = a_const * x[0];
+		dt__x[0] = 2 * M_PI * sine_freq * cos(t * 2 * M_PI * sine_freq);
 	}
 };
 Dynamics dyn;
@@ -55,7 +59,7 @@ main()
 	Real_T x_arr_chk[t_dim * x_dim];
 
 	for (size_t i = 0; i < t_dim; ++i) {
-		Real_T x_chk[x_dim] = {std::exp(a_const * t_arr[i])};
+		Real_T x_chk[x_dim] = {std::sin(t_arr[i] * 2 * M_PI * sine_freq)};
 		matrix_op::replace_row<t_dim, x_dim>(i, x_chk, x_arr_chk);
 	}
 	Real_T max_error = test_config::compute_max_error<t_dim, x_dim>(x_arr, x_arr_chk);
