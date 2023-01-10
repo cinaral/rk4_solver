@@ -74,7 +74,7 @@ loop(
 );
 ```
 
-**WARNING:** By default, ```Real_T``` is ```double```. Use ```__USE_SINGLE_PRECISION__``` compiler flag) to set to ```float```.
+**WARNING:** By default, ```Real_T``` is ```double```. Use ```__USE_SINGLE_PRECISION__``` compiler flag to set to ```float```.
 
 ```OdeFun_T``` and ```EventFun_T``` are function pointers defined in [types.hpp](include/rk4_solver/types.hpp):  
 ```Cpp
