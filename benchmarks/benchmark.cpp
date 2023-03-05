@@ -14,16 +14,16 @@ constexpr size_t x_dim = 4;
 
 struct Dynamics {
 	/*
-	 * dt__x = f(t, x) = t, x(0) = 0
+	 * dt_x = f(t, x) = t, x(0) = 0
 	 * x = v*t^2
 	 */
 	void
-	ode_fun(const Real_T t, const Real_T (&)[x_dim], const size_t, Real_T (&dt__x)[x_dim])
+	ode_fun(const Real_T t, const Real_T (&)[x_dim], const size_t, Real_T (&dt_x)[x_dim])
 	{
-		dt__x[0] = t;
-		dt__x[1] = .5 * t;
-		dt__x[2] = 2 * t;
-		dt__x[3] = .25 * t;
+		dt_x[0] = t;
+		dt_x[1] = .5 * t;
+		dt_x[2] = 2 * t;
+		dt_x[3] = .25 * t;
 	}
 };
 Dynamics dyn;

@@ -4,8 +4,8 @@ test_name = 'rk4_solver-oscillator-test';
 is_drawing = false;
 error_thres = 2e-3;
 %* Linear 1-DoF oscillator excited by sine
-%* dtdt__y + 2*zeta*w_n*dt__y + w_n^2*y = sin(t)
-%* x = [y; dt__y]
+%* dtdt_y + 2*zeta*w_n*dt_y + w_n^2*y = sin(t)
+%* x = [y; dt_y]
 
 
 sample_freq = 1e4;
@@ -19,7 +19,7 @@ zeta = 0.1;
 w_n = 1;
 A = [0, 1; -w_n^2, -2*zeta*w_n];
 B = [0; 1];
-dt__x_fun = @(x, u) A*x + B*u;
+dt_x_fun = @(x, u) A*x + B*u;
 x_init = [1; 0];
 w_u = 1;
 
@@ -33,7 +33,7 @@ for i = 1:t_dim - 1
 	x = x_arr(i, :).';
 	h = t_arr(i + 1) - t;
 	u_0 = u_arr(i, :).';
-	f_0 = @(t, x) dt__x_fun(x, u_0);
+	f_0 = @(t, x) dt_x_fun(x, u_0);
 	x_arr(i + 1, :) = step_rk4(t, x, h, f_0).';
 end
 

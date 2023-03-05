@@ -32,14 +32,14 @@
 namespace rk4_solver
 {
 using size_t = std::size_t;
-#ifdef __USE_SINGLE_PRECISION__
+#ifdef USE_SINGLE_PRECISION
 using Real_T = float;
 #else
 using Real_T = double;
 #endif
 
 template <size_t X_DIM, typename T>
-using OdeFun_T = void (T::*)(const Real_T t, const Real_T (&x)[X_DIM], const size_t i, Real_T (&dt__x)[X_DIM]);
+using OdeFun_T = void (T::*)(const Real_T t, const Real_T (&x)[X_DIM], const size_t i, Real_T (&dt_x)[X_DIM]);
 
 template <size_t X_DIM, typename T>
 using EventFun_T = bool (T::*)(const Real_T t, const Real_T (&x)[X_DIM], const size_t i, Real_T (&x_plus)[X_DIM]);

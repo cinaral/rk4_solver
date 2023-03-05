@@ -4,7 +4,7 @@ test_name = 'rk4_solver-exact_integral-test';
 is_drawing = false;
 error_thres = 1e-10;
 %* Exact Integral
-%* dt__y = t.^3 - t.^2
+%* dt_y = t.^3 - t.^2
 
 sample_freq = 1e3;
 time_step = 1/sample_freq;
@@ -13,7 +13,7 @@ t_final = 20;
 t_dim = sample_freq*(t_final - t_init) + 1;
 x_dim = 1;
 y_fun = @(t) t.^4/4 - t.^3/3;
-dt__y_fun = @(t) t.^3 - t.^2;
+dt_y_fun = @(t) t.^3 - t.^2;
 
 t_arr = linspace(t_init, t_final, t_dim).';
 y_arr = zeros(t_dim, x_dim);
@@ -23,7 +23,7 @@ for i = 1:t_dim - 1
 	t = t_arr(i, :).';
 	y = y_arr(i, :).';
 	h = t_arr(i + 1) - t;
-	f = @(t, x) dt__y_fun(t);
+	f = @(t, x) dt_y_fun(t);
 	y_arr(i + 1, :) = step_rk4(t, y, h, f).';
 end
 

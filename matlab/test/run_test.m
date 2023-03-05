@@ -1,3 +1,3 @@
-test__step_rk4__exact_integral
-test__step_rk4__first_order
-test__step_rk4__oscillator
+teststep_rk4exact_integral
+teststep_rk4first_order
+teststep_rk4oscillator

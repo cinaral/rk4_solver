@@ -55,7 +55,7 @@ step(T &obj, OdeFun_T<X_DIM, T> ode_fun, const Real_T t, const Real_T (&x)[X_DIM
 {
 	constexpr Real_T rk4_weight_0 = 1. / 6.;
 	constexpr Real_T rk4_weight_1 = 1. / 3.;
-#ifdef __DO_USE_HEAP__
+#ifdef DO_USE_HEAP
 	/*
 	 * `..._ptr`s are of type `Real_T(*)[X_DIM]`.
 	 * They point to `Real_T[X_DIM]`s which are allocated on the heap.

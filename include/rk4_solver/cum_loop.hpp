@@ -54,7 +54,7 @@ void
 cum_loop(T &obj, OdeFun_T<X_DIM, T> ode_fun, const Real_T t0, const Real_T (&x0)[X_DIM],
          const Real_T h, Real_T (&t_arr)[T_DIM], Real_T (&x_arr)[T_DIM * X_DIM])
 {
-#ifdef __DO_USE_HEAP__
+#ifdef DO_USE_HEAP
 	static Real_T(*x_ptr)[X_DIM] = (Real_T(*)[X_DIM]) new Real_T[X_DIM];
 	static Real_T(&x)[X_DIM] = *x_ptr;
 #else
@@ -101,7 +101,7 @@ cum_loop(T &obj, OdeFun_T<X_DIM, T> ode_fun, EventFun_T<X_DIM, T> event_fun, con
          Real_T (&x_arr)[T_DIM * X_DIM])
 {
 	size_t i = 0;
-#ifdef __DO_USE_HEAP__
+#ifdef DO_USE_HEAP
 	static Real_T(*x_ptr)[X_DIM] = (Real_T(*)[X_DIM]) new Real_T[X_DIM];
 	static Real_T(&x)[X_DIM] = *x_ptr;
 #else

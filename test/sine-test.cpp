@@ -17,7 +17,7 @@ constexpr size_t x_dim = 1;
 constexpr Real_T x_init[x_dim] = {0};
 constexpr Real_T sine_freq = 5.;
 
-#ifdef __USE_SINGLE_PRECISION__
+#ifdef USE_SINGLE_PRECISION
 constexpr Real_T error_thres = 1e-5;
 #else
 constexpr Real_T error_thres = 1e-9;
@@ -25,13 +25,13 @@ constexpr Real_T error_thres = 1e-9;
 
 struct Dynamics {
 	/*
-	 * dt__x = f(t, x) = 2*pi*f*cos(t*2*pi*f)
+	 * dt_x = f(t, x) = 2*pi*f*cos(t*2*pi*f)
 	 * x = sin(t*2*pi*f)
 	 */
 	void
-	ode_fun(const Real_T t, const Real_T (&)[x_dim], const size_t, Real_T (&dt__x)[x_dim])
+	ode_fun(const Real_T t, const Real_T (&)[x_dim], const size_t, Real_T (&dt_x)[x_dim])
 	{
-		dt__x[0] = 2 * M_PI * sine_freq * cos(t * 2 * M_PI * sine_freq);
+		dt_x[0] = 2 * M_PI * sine_freq * cos(t * 2 * M_PI * sine_freq);
 	}
 };
 Dynamics dyn;

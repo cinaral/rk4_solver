@@ -20,7 +20,7 @@ constexpr Real_T x_init[x_dim] = {1., 0.};
 constexpr Real_T e_restitution = .75;
 constexpr Real_T gravity_const = 9.806;
 
-#ifdef __USE_SINGLE_PRECISION__
+#ifdef USE_SINGLE_PRECISION
 constexpr Real_T error_thres = 2e-3;
 #else
 constexpr Real_T error_thres = 1e-3;
@@ -30,13 +30,13 @@ constexpr size_t verify_idx = 0;
 struct Dynamics {
 	/*
 	 * Ball equations:
-	 * dt__x =  [x2; -g]
+	 * dt_x =  [x2; -g]
 	 */
 	void
-	ode_fun(const Real_T, const Real_T (&x)[x_dim], const size_t, Real_T (&dt__x)[x_dim])
+	ode_fun(const Real_T, const Real_T (&x)[x_dim], const size_t, Real_T (&dt_x)[x_dim])
 	{
-		dt__x[0] = x[1];
-		dt__x[1] = -gravity_const;
+		dt_x[0] = x[1];
+		dt_x[1] = -gravity_const;
 	}
 
 	bool

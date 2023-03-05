@@ -17,7 +17,7 @@ x_dim = 1;
 a_constant = 1;
 x0 = 1;
 x_fun = @(t) exp(a_constant*t);
-dt__x_fun = @(t, x) a_constant*x;
+dt_x_fun = @(t, x) a_constant*x;
 
 t_arr = linspace(t_init, t_final, t_dim).';
 x_arr = zeros(t_dim, x_dim);
@@ -28,7 +28,7 @@ for i = 1:t_dim - 1
 	t = t_arr(i, :).';
 	y = x_arr(i, :).';
 	h = t_arr(i + 1) - t;
-	f = @(t, x) dt__x_fun(t, x);
+	f = @(t, x) dt_x_fun(t, x);
 	x_arr(i + 1, :) = step_rk4(t, y, h, f).';
 end
 

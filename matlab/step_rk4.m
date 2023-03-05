@@ -1,5 +1,5 @@
 function [x_new, t_new] = step_rk4(t, x, h, f)
-%* Integrates dt__x = ode_fun(t, x(t)), x(0) = x_0 for one time-step using Runge-Kutta 4th Order Method.
+%* Integrates dt_x = ode_fun(t, x(t)), x(0) = x_0 for one time-step using Runge-Kutta 4th Order Method.
 %* 
 %* [OUT:x_new, OUT:t_new] = step_rk4(t, x, h, f):
 %* IN:

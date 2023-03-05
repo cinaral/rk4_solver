@@ -16,18 +16,18 @@ constexpr Real_T gravity_const = 9.806;
 struct Dynamics {
 	/*
 	 * Ball in vertical axis:
-	 * dt__x =  [x2; -g]
+	 * dt_x =  [x2; -g]
 	 */
 	void
-	ode_fun(const Real_T, const Real_T (&x)[x_dim], const size_t, Real_T (&dt__x)[x_dim])
+	ode_fun(const Real_T, const Real_T (&x)[x_dim], const size_t, Real_T (&dt_x)[x_dim])
 	{
-		dt__x[0] = x[1];
-		dt__x[1] = -gravity_const;
+		dt_x[0] = x[1];
+		dt_x[1] = -gravity_const;
 	}
 	/*
 	 * Impact event:
 	 * x+ = 0
-	 * dt__x+ = -e * dt__x
+	 * dt_x+ = -e * dt_x
 	 */
 	bool
 	event_fun(const Real_T, const Real_T (&x)[x_dim], const size_t, Real_T (&x_plus)[x_dim])

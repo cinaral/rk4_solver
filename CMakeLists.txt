@@ -98,11 +98,11 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	endif()
 
 	if(SINGLE_PRECISION)
-		add_compile_options(-D__USE_SINGLE_PRECISION__) #* use single precision floats
+		add_compile_options(-DUSE_SINGLE_PRECISION) #* use single precision floats
 	endif()
 
 	if(HEAP_USAGE)
-		add_compile_options(-D__DO_USE_HEAP__)
+		add_compile_options(-DDO_USE_HEAP)
 	endif()
 	
 	#***********#

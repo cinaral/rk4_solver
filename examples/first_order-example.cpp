@@ -15,12 +15,12 @@ constexpr Real_T a_constant = 1;
 struct Dynamics {
 	/*
 	 * first order ode:
-	 * dt__x = a*x
+	 * dt_x = a*x
 	 */
 	void
-	ode_fun(const Real_T, const Real_T (&x)[x_dim], const size_t, Real_T (&dt__x)[x_dim])
+	ode_fun(const Real_T, const Real_T (&x)[x_dim], const size_t, Real_T (&dt_x)[x_dim])
 	{
-		dt__x[0] = a_constant * x[0];
+		dt_x[0] = a_constant * x[0];
 	}
 };
 Dynamics dyn;

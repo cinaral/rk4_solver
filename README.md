@@ -3,7 +3,7 @@ Simple [Runge-Kutta 4th Order Method](https://en.wikipedia.org/wiki/Runge%E2%80%
 
 It numerically solves a system of ordinary differential equations (ODE) given as $\dot{\mathbf{x}} = \mathbf{f}(t, \mathbf{x}(t)),\quad \mathbf{x}(0)=\mathbf{x}_0$.
 
-This library and its only dependency [matrix_op](https://github.com/cinaral/matrix_op) was written with hard real-time embedded applications in mind (excluding [Testing](#testing)), e.g. it does not use dynamic memory allocation, RTTI or exceptions. It can be compiled for ```float```s by enabling the ```__USE_SINGLE_PRECISION__``` compiler flag.
+This library and its only dependency [matrix_op](https://github.com/cinaral/matrix_op) was written with hard real-time embedded applications in mind (excluding [Testing](#testing)), e.g. it does not use dynamic memory allocation, RTTI or exceptions. It can be compiled for ```float```s by enabling the ```USE_SINGLE_PRECISION``` compiler flag.
 
 
 # Installation
@@ -74,12 +74,12 @@ loop(
 );
 ```
 
-**WARNING:** By default, ```Real_T``` is ```double```. Use ```__USE_SINGLE_PRECISION__``` compiler flag to set to ```float```.
+**WARNING:** By default, ```Real_T``` is ```double```. Use ```USE_SINGLE_PRECISION``` compiler flag to set to ```float```.
 
 ```OdeFun_T``` and ```EventFun_T``` are function pointers defined in [types.hpp](include/rk4_solver/types.hpp):  
 ```Cpp
 template <size_t X_DIM, typename T>
-using OdeFun_T = void (T::*)(const Real_T t, const Real_T (&x)[X_DIM], const size_t i, Real_T (&dt__x)[X_DIM]);
+using OdeFun_T = void (T::*)(const Real_T t, const Real_T (&x)[X_DIM], const size_t i, Real_T (&dt_x)[X_DIM]);
 
 template <size_t X_DIM, typename T>
 using EventFun_T = bool (T::*)(const Real_T t, const Real_T (&x)[X_DIM], const size_t i, Real_T (&x_plus)[X_DIM]);
@@ -122,10 +122,10 @@ cum_loop(
 ```Cpp
 #include "rk4_solver/step.hpp"
 //...
-void Dynamics::ode_fun(const Real_T, const Real_T x[], const size_t, Real_T dt__x[])
+void Dynamics::ode_fun(const Real_T, const Real_T x[], const size_t, Real_T dt_x[])
 {
-	dt__x[0] = x[1];
-	dt__x[1] = u;
+	dt_x[0] = x[1];
+	dt_x[1] = u;
 }
 //...
 Dynamics dyn;
@@ -144,9 +144,9 @@ See [step-example.cpp](./examples/step-example.cpp) for details.
 ```Cpp
 #include "rk4_solver/cum_loop.hpp"
 //...
-void Dynamics::ode_fun(const Real_T t, const Real_T[], const size_t, Real_T dt__x[])
+void Dynamics::ode_fun(const Real_T t, const Real_T[], const size_t, Real_T dt_x[])
 {
-	dt__x[0] = t;
+	dt_x[0] = t;
 }
 //...
 Dynamics dyn;
@@ -167,10 +167,10 @@ See [loop-example.cpp](./examples/loop-example.cpp) for details.
 //...
 struct Dynamics {
 	void
-	ode_fun(const Real_T, const Real_T (&x)[x_dim], const size_t, Real_T (&dt__x)[x_dim])
+	ode_fun(const Real_T, const Real_T (&x)[x_dim], const size_t, Real_T (&dt_x)[x_dim])
 	{
-		dt__x[0] = x[1];
-		dt__x[1] = -g;
+		dt_x[0] = x[1];
+		dt_x[1] = -g;
 	}
 	bool
 	event_fun(const Real_T, const Real_T (&x)[x_dim], const size_t, Real_T (&x_plus)[x_dim])

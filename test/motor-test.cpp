@@ -23,7 +23,7 @@ constexpr Real_T K_b = 6.4e-2; //*  [V s]
 constexpr Real_T A[x_dim * x_dim] = {0, 1, 0, 0, -b / J, K_t / J, 0, -K_b / L, -R / L};
 constexpr Real_T B[x_dim * u_dim] = {0, 0, 1 / L};
 
-#ifdef __USE_SINGLE_PRECISION__
+#ifdef USE_SINGLE_PRECISION
 constexpr Real_T error_thres = 1e-5;
 #else
 constexpr Real_T error_thres = 1e-13;
@@ -32,14 +32,14 @@ constexpr Real_T error_thres = 1e-13;
 struct Dynamics {
 	/*
 	 * Motor equations:
-	 * dt2__th = -b/J*dt__th + K_t/J*i
-	 * dt__i = - K_b/L*dt__th - R/L*i + 1/L*e
+	 * dt2th = -b/J*dt_th + K_t/J*i
+	 * dt_i = - K_b/L*dt_th - R/L*i + 1/L*e
 	 *
 	 * In state-space:
-	 * x = [th; dt__th; i]
+	 * x = [th; dt_th; i]
 	 * u = [e]
 	 *
-	 * dt__x = A*x + B*u
+	 * dt_x = A*x + B*u
 	 * A = [0, 1,      0;
 	 *      0, -b/J,   K_t/J;
 	 *      0, -K_b/L, -R/L];
@@ -48,7 +48,7 @@ struct Dynamics {
 	 *      1/L];
 	 */
 	void
-	ode_fun(const Real_T, const Real_T (&x)[x_dim], const size_t i, Real_T (&dt__x)[x_dim])
+	ode_fun(const Real_T, const Real_T (&x)[x_dim], const size_t i, Real_T (&dt_x)[x_dim])
 	{
 		Real_T temp0[x_dim];
 		Real_T temp1[x_dim];
@@ -56,7 +56,7 @@ struct Dynamics {
 		const Real_T(&u)[u_dim] = *matrix_op::select_row<t_dim, u_dim>(i, u_arr);
 		matrix_op::right_multiply(A, x, temp0);
 		matrix_op::right_multiply(B, u, temp1);
-		matrix_op::sum(temp0, temp1, dt__x);
+		matrix_op::sum(temp0, temp1, dt_x);
 	}
 	Real_T u_arr[t_dim * u_dim];
 };
