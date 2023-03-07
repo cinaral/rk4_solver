@@ -11,9 +11,6 @@ constexpr size_t t_dim = sample_freq * (tf - t0) + 1;
 constexpr size_t x_dim = 1;
 constexpr Real_T x0[x_dim] = {1.};
 
-Real_T t_arr[t_dim];
-Real_T x_arr[t_dim * x_dim];
-
 struct Dynamics {
 	/*
 	 * dt_x = f(t, x) = t, x(0) = 0
@@ -30,6 +27,8 @@ Dynamics dyn;
 int
 main()
 {
+	Real_T t_arr[t_dim];
+	Real_T x_arr[t_dim * x_dim];
 	//* integration loop with cumulatively saved data arrays
 	rk4_solver::cum_loop<t_dim>(dyn, &Dynamics::ode_fun, t0, x0, h, t_arr, x_arr);
 	
