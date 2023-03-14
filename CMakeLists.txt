@@ -2,15 +2,15 @@ cmake_minimum_required(VERSION 3.13)
 
 project(
 	rk4_solver
-	VERSION 1.0.10
+	VERSION 1.0.11
 	LANGUAGES CXX
 )
 
 #* dependencies
 include(FetchContent)
 
-set(matrix_op_VERSION 1.0.5) #* matrix_op, used for basic matrix operations
-set(matrix_rw_VERSION 1.0.3) #* matrix_rw, used for testing
+set(matrix_op_VERSION 1.0.7) #* matrix_op, used for basic matrix operations
+set(matrix_rw_VERSION 1.0.5) #* matrix_rw, used for testing
 
 FetchContent_Declare(
 	matrix_op 
@@ -34,7 +34,7 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	option(BUILD_EXAMPLES "Build examples" ON)
 	option(BUILD_BENCHMARKS "Build benchmarks" ON)
 	option(SINGLE_PRECISION "Single precision" OFF)
-	option(HEAP_USAGE "Heap usage" ON)
+	option(HEAP_USAGE "Heap usage" OFF)
 
 	#* where to look for the project header and source files
 	set(INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
