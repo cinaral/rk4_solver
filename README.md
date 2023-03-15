@@ -8,7 +8,7 @@
 	- [5.2. Example 2: Integration loop](#52-example-2-integration-loop)
 	- [5.3. Example 3: Events](#53-example-3-events)
 - [6. Benchmarks](#6-benchmarks)
-	- [6.1. Conclusions](#61-conclusions)
+	- [6.1. Discussion.](#61-discussion)
 
 # 1. About ```rk4_solver```
 This is a simple header-only C++ library for solving ordinary differential equations (ODE) with events using the [Runge-Kutta 4th Order Method](https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods). The objective is to solve a system of ODEs given as $\dot{\mathbf{x}} = \mathbf{f}(t, \mathbf{x}(t)),\quad \mathbf{x}(0)=\mathbf{x}_0$. 
@@ -229,7 +229,7 @@ The simulated system is a 3rd order linear system, and an Intel i7-9700K at 3.60
 
 
 
-## 6.1. Conclusions
+## 6.1. Discussion.
 1. Using the ```USE_SINGLE_PRECISION``` flag to use single-precision floats does not affect the performance.
 2. Using the ```DO_NOT_USE_HEAP``` flag can negatively affect performance of integration loops without final time.
 3. If the problem size can fit the stack size, then using the ```DO_NOT_USE_HEAP``` flag to disable heap allocation can provide a significant performance boost for cumulative integration loops. 
