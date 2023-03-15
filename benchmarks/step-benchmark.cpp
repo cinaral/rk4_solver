@@ -34,7 +34,6 @@ main()
 {
 	static Real_T t = t_init;
 	static Real_T x[x_dim];
-	// static Real_T x_next[x_dim];
 	matrix_op::replace_row<1>(0, x_init, x); //* initialize x
 
 	printf("Integrating 3rd order linear ODE for %zu ms... ", benchmark_duration_ms);
@@ -46,7 +45,6 @@ main()
 
 	while (true) {
 		rk4_solver::step(dynamics, &Dynamics::ode_fun, t, x, time_step, 0, x);
-		// matrix_op::replace_row<1>(0, x_next, x);
 		t = t + time_step;
 
 		++step_counter;

@@ -103,7 +103,7 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	endif()
 
 	if(DO_NOT_USE_HEAP)
-		add_compile_options(-DDO_NOT_USE_HEAP)
+		add_compile_options(-DDO_NOT_USE_HEAP) #* do not use single heap allocation
 	endif()
 	
 	#***********#

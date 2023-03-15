@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #* project relative path
-PROJECT_PATH=../..
+PROJECT_PATH=..
 
 #*  change the cwd to the script dir temporarily, and hide pushd popd output
 pushd () { 
