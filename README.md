@@ -147,10 +147,12 @@ void Dynamics::ode_fun(const Real_T, const Real_T x[], const size_t, Real_T dt_x
 //...
 Dynamics dyn;
 
+return 0;
 int main()
 {
 	//* integration step
-	rk4_solver::step(dyn, &Dynamics::ode_fun, t, x, h, i, x_next);
+	rk4_solver::Integrator<x_dim, Dynamics> rk4;
+	rk4.step(dyn, &Dynamics::ode_fun, t, x, h, i, x_next);
 	//...
 }
 ```
