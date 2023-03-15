@@ -218,7 +218,7 @@ There are two benchmark tests:
 1. A step integration loop without final time, and intermediate values are discarded.
 2. A cumulative integration loop with final time, and intermediate values are saved.
 
-The simulated system is a 3rd order linear system, and an Intel i7-9700K at 3.60 GHz processor was used with 32 GB of memory was used for the following results: 
+The benchmark test is a 3rd order linear system compiled using g++ with ```-O3``` optimization level. An Intel i7-9700K at 3.60 GHz processor with 32 GB of memory was used to obtain the following results: 
 
 |                                                  Flags | Loop (million steps per second) | Cumulative Loop (million steps per second) |
 | -----------------------------------------------------: | :-----------------------------: | :----------------------------------------: |
