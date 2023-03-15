@@ -1,3 +1,0 @@
-teststep_rk4exact_integral
-teststep_rk4first_order
-teststep_rk4oscillator
