@@ -45,13 +45,13 @@
 		{
 			"label": "Benchmark",
 			"type": "shell",
-			"command": "./scripts/build/benchmark.sh",
+			"command": "./scripts/benchmark.sh",
 			"group": "build",
 		},
 		{
 			"label": "Build and benchmark",
 			"type": "shell",
-			"command": "./scripts/build/benchmark.sh",
+			"command": "./scripts/benchmark.sh",
 			"group": "build",
 			"dependsOn": [
 				"Build"

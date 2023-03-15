@@ -74,11 +74,13 @@ step(T &obj, OdeFun_T<X_DIM, T> ode_fun, const Real_T t, const Real_T (&x)[X_DIM
 	static Real_T(*k_2_ptr)[X_DIM] = (Real_T(*)[X_DIM]) new Real_T[X_DIM];
 	static Real_T(*k_3_ptr)[X_DIM] = (Real_T(*)[X_DIM]) new Real_T[X_DIM];
 	static Real_T(*x_temp_ptr)[X_DIM] = (Real_T(*)[X_DIM]) new Real_T[X_DIM];
+	Real_T(*dx_ptr)[X_DIM] = (Real_T(*)[X_DIM]) new Real_T[X_DIM]{}; //* not static, needs to be zeroed before every loop
 	Real_T(&k_0)[X_DIM] = *k_0_ptr;
 	Real_T(&k_1)[X_DIM] = *k_1_ptr;
 	Real_T(&k_2)[X_DIM] = *k_2_ptr;
 	Real_T(&k_3)[X_DIM] = *k_3_ptr;
 	Real_T(&x_temp)[X_DIM] = *x_temp_ptr;
+	Real_T(&dx)[X_DIM] = *dx_ptr;
 #endif
 
 	(obj.*ode_fun)(t, x, i, k_0); //* ode_fun(ti, xi)
@@ -93,11 +95,14 @@ step(T &obj, OdeFun_T<X_DIM, T> ode_fun, const Real_T t, const Real_T (&x)[X_DIM
 	matrix_op::weighted_sum(h, k_2, 1., x, x_temp);
 	(obj.*ode_fun)(t + h, x_temp, i, k_3); //* ode_fun(ti + h, xi + k_2)
 
+	//* compensated summation (Kahan summation), probably ffast-math would break it
 	for (size_t i = 0; i < X_DIM; ++i) {
-		x_next[i] = x[i] +
-		    h *
-			(rk4_weight_0 * k_0[i] + rk4_weight_1 * k_1[i] + rk4_weight_1 * k_2[i] +
-		         rk4_weight_0 * k_3[i]);
+		dx[i] += h *
+		    (rk4_weight_0 * k_0[i] + rk4_weight_1 * k_1[i] + rk4_weight_1 * k_2[i] +
+		     rk4_weight_0 * k_3[i]);      //* dx accumulates floating point errors
+		x_temp[i] = x[i];                 //* stores x when x_next is pointing to x's address
+		x_next[i] = x[i] + dx[i];         //* uncompensated summation
+		dx[i] -= (x_next[i] - x_temp[i]); //* removes the uncompensated summation from the accumulated error
 	}
 }
 } // namespace rk4_solver
