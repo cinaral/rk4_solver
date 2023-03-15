@@ -59,7 +59,7 @@ main()
 	Real_T x_arr_chk[t_dim * x_dim];
 
 	for (size_t i = 0; i < t_dim; ++i) {
-		Real_T x_chk[x_dim] = {std::sin(t_arr[i] * 2 * M_PI * sine_freq)};
+		Real_T x_chk[x_dim] = {static_cast<Real_T>(std::sin(t_arr[i] * 2 * M_PI * sine_freq))};
 		matrix_op::replace_row<t_dim, x_dim>(i, x_chk, x_arr_chk);
 	}
 	Real_T max_error = test_config::compute_max_error<t_dim, x_dim>(x_arr, x_arr_chk);

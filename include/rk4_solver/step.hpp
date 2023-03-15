@@ -55,7 +55,13 @@ step(T &obj, OdeFun_T<X_DIM, T> ode_fun, const Real_T t, const Real_T (&x)[X_DIM
 {
 	constexpr Real_T rk4_weight_0 = 1. / 6.;
 	constexpr Real_T rk4_weight_1 = 1. / 3.;
-#ifdef DO_USE_HEAP
+#ifdef DO_NOT_USE_HEAP
+	static Real_T k_0[X_DIM];
+	static Real_T k_1[X_DIM];
+	static Real_T k_2[X_DIM];
+	static Real_T k_3[X_DIM];
+	static Real_T x_temp[X_DIM];
+#else
 	/*
 	 * `..._ptr`s are of type `Real_T(*)[X_DIM]`.
 	 * They point to `Real_T[X_DIM]`s which are allocated on the heap.
@@ -73,13 +79,6 @@ step(T &obj, OdeFun_T<X_DIM, T> ode_fun, const Real_T t, const Real_T (&x)[X_DIM
 	Real_T(&k_2)[X_DIM] = *k_2_ptr;
 	Real_T(&k_3)[X_DIM] = *k_3_ptr;
 	Real_T(&x_temp)[X_DIM] = *x_temp_ptr;
-
-#else
-	static Real_T k_0[X_DIM];
-	static Real_T k_1[X_DIM];
-	static Real_T k_2[X_DIM];
-	static Real_T k_3[X_DIM];
-	static Real_T x_temp[X_DIM];
 #endif
 
 	(obj.*ode_fun)(t, x, i, k_0); //* ode_fun(ti, xi)

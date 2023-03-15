@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.13)
 
 project(
 	rk4_solver
-	VERSION 1.0.11
+	VERSION 1.1.0
 	LANGUAGES CXX
 )
 
@@ -33,8 +33,8 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	option(BUILD_TESTS "Build tests" ON)
 	option(BUILD_EXAMPLES "Build examples" ON)
 	option(BUILD_BENCHMARKS "Build benchmarks" ON)
-	option(SINGLE_PRECISION "Single precision" OFF)
-	option(HEAP_USAGE "Heap usage" OFF)
+	option(USE_SINGLE_PRECISION "Use single precision floats" OFF)
+	option(DO_NOT_USE_HEAP "Disable heap allocation" OFF)
 
 	#* where to look for the project header and source files
 	set(INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
@@ -57,7 +57,8 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 		first_order-example
 	)
 	set(BENCHMARK_NAMES
-		benchmark
+		step-benchmark
+		cum_loop-benchmark
 	)
 
 	#* files to package
@@ -97,12 +98,12 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 		)
 	endif()
 
-	if(SINGLE_PRECISION)
+	if(USE_SINGLE_PRECISION)
 		add_compile_options(-DUSE_SINGLE_PRECISION) #* use single precision floats
 	endif()
 
-	if(HEAP_USAGE)
-		add_compile_options(-DDO_USE_HEAP)
+	if(DO_NOT_USE_HEAP)
+		add_compile_options(-DDO_NOT_USE_HEAP)
 	endif()
 	
 	#***********#
