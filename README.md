@@ -11,7 +11,7 @@
 	- [6.1. Discussion](#61-discussion)
 
 # 1. About ```rk4_solver```
-This is a simple header-only C++ library for solving ordinary differential equations (ODE) with events using the [Runge-Kutta 4th Order Method](https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods). The objective is to solve a system of ODEs given as $\dot{\mathbf{x}} = \mathbf{f}(t, \mathbf{x}(t)),\quad \mathbf{x}(0)=\mathbf{x}_0$. 
+This is a simple header-only C++ library for solving ordinary differential equations (ODEs) with events using the [Runge-Kutta 4th Order Method](https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods). The objective is to solve a system of ODEs given as $\dot{\mathbf{x}} = \mathbf{f}(t, \mathbf{x}(t))$, $\mathbf{x}(0)=\mathbf{x}_0$. 
 
 This library and its only dependency [matrix_op](https://github.com/cinaral/matrix_op) was written with hard real-time embedded applications in mind (excluding [Testing](#testing)), e.g. it does not use dynamic memory allocation, RTTI or exceptions. It can be compiled for ```float```s by enabling the ```USE_SINGLE_PRECISION``` compiler flag.
 
