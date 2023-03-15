@@ -229,7 +229,7 @@ The simulated system is a 3rd order linear system, and an Intel i7-9700K at 3.60
 
 
 
-## 6.1. Discussion.
+## 6.1. Discussion
 1. Using the ```USE_SINGLE_PRECISION``` flag to use single-precision floats does not affect the performance.
 2. Using the ```DO_NOT_USE_HEAP``` flag can negatively affect performance of integration loops without final time.
 3. If the problem size can fit the stack size, then using the ```DO_NOT_USE_HEAP``` flag to disable heap allocation can provide a significant performance boost for cumulative integration loops. 
