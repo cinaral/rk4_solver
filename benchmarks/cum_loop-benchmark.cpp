@@ -33,8 +33,9 @@ Dynamics dynamics;
 int
 main()
 {
-	Real_T t_arr[t_dim];
-	Real_T x_arr[t_dim * x_dim];
+	Real_T(&t_arr)[t_dim] = *(Real_T(*)[t_dim]) new Real_T[t_dim];
+	Real_T(&x_arr)[t_dim * x_dim] = *(Real_T(*)[t_dim * x_dim]) new Real_T[t_dim * x_dim];
+
 	printf("Cumulatively integrating 3rd order linear ODE for %.3g steps... ",
 	       static_cast<Real_T>(t_dim));
 
@@ -48,7 +49,8 @@ main()
 
 	const Real_T(&x_final)[x_dim] = *matrix_op::select_row<t_dim, x_dim>(t_dim - 1, x_arr);
 
-	printf("Done.\nx at t = %.3g s: [%.3g; %.3g; %.3g]\n", t_arr[t_dim - 1], x_final[0], x_final[1], x_final[2]);
+	printf("Done.\nx at t = %.3g s: [%.3g; %.3g; %.3g]\n", t_arr[t_dim - 1], x_final[0],
+	       x_final[1], x_final[2]);
 	printf("Score: %.3g steps per second (%g ms)\n",
 	       static_cast<Real_T>(t_dim) / since_sample_ns.count() * 1e9,
 	       static_cast<Real_T>(since_sample_ns.count()) / 1e6);

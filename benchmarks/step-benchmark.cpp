@@ -43,8 +43,10 @@ main()
 	auto now_tp = std::chrono::high_resolution_clock::now();
 	auto since_sample = sample_tp - now_tp;
 
+	rk4_solver::Integrator<x_dim, Dynamics> rk4;
+
 	while (true) {
-		rk4_solver::step(dynamics, &Dynamics::ode_fun, t, x, time_step, 0, x);
+		rk4.step(dynamics, &Dynamics::ode_fun, t, x, time_step, 0, x);
 		t = t + time_step;
 
 		++step_counter;

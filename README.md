@@ -222,16 +222,15 @@ The benchmark test is a 3rd order linear system compiled using g++ with ```-O3``
 
 |                                                  Flags | Loop (million steps per second) | Cumulative Loop (million steps per second) |
 | -----------------------------------------------------: | :-----------------------------: | :----------------------------------------: |
-|                                       None *(Default)* |              22.7               |                    27.5                    |
-|                             ```USE_SINGLE_PRECISION``` |              23.4               |                    28.7                    |
-|                                  ```DO_NOT_USE_HEAP``` |              19.7               |                    36.1                    |
-| ```DO_NOT_USE_HEAP``` *and* ```USE_SINGLE_PRECISION``` |              19.7               |                    34.1                    |
+|                                       None *(Default)* |              18.6               |                    33.3                    |
+|                             ```USE_SINGLE_PRECISION``` |              18.6               |                    36.1                    |
+|                                  ```DO_NOT_USE_HEAP``` |              22.8               |                    28.9                    |
+| ```DO_NOT_USE_HEAP``` *and* ```USE_SINGLE_PRECISION``` |              22.3               |                    28.6                    |
 
 
 
 ## 6.1. Discussion
 1. Using the ```USE_SINGLE_PRECISION``` flag to use single-precision floats does not affect the performance.
-2. Using the ```DO_NOT_USE_HEAP``` flag can negatively affect performance of integration loops without final time.
-3. If the problem size can fit the stack size, then using the ```DO_NOT_USE_HEAP``` flag to disable heap allocation can provide a significant performance boost for cumulative integration loops. 
-
+2. Using the ```DO_NOT_USE_HEAP``` flag seems to benefit loops without final time, but it hurts cumulative loops. However, what is happening here could be simply due to different memory layouts, so take these results with a grain of salt.
+3. If the problem size can fit the stack size, then using the ```DO_NOT_USE_HEAP``` flag to disable heap allocation can provide a performance boost to loops without final time.
 **WARNING**: Your stack can easily overflow for large problems with the ```DO_NOT_USE_HEAP``` flag.

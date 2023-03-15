@@ -28,7 +28,8 @@ main()
 {
 	Real_T x_next[x_dim];
 	//* integration step
-	rk4_solver::step(dyn, &Dynamics::ode_fun, t, x, h, i, x_next);
+	rk4_solver::Integrator<x_dim, Dynamics> rk4;
+	rk4.step(dyn, &Dynamics::ode_fun, t, x, h, i, x_next);
 	
 	return 0;
 }

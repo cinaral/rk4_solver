@@ -67,8 +67,10 @@ cum_loop(T &obj, OdeFun_T<X_DIM, T> ode_fun, const Real_T t0, const Real_T (&x0)
 	t_arr[0] = t;
 	matrix_op::replace_row<T_DIM>(0, x, x_arr);
 
+	rk4_solver::Integrator<X_DIM, T> integrator;
+
 	for (size_t i = 0; i < T_DIM - 1; ++i) {
-		step<X_DIM, T>(obj, ode_fun, t, x, h, i, x); //* update x to the next x
+		integrator.step(obj, ode_fun, t, x, h, i, x); //* update x to the next x
 
 		t = t0 + (i + 1) * h; //* update t to the next t
 
@@ -117,9 +119,10 @@ cum_loop(T &obj, OdeFun_T<X_DIM, T> ode_fun, EventFun_T<X_DIM, T> event_fun, con
 	t_arr[0] = t;
 
 	matrix_op::replace_row<T_DIM>(0, x, x_arr);
+	rk4_solver::Integrator<X_DIM, T> integrator;
 
 	for (; !stop_flag && i < T_DIM - 1; ++i) {
-		step(obj, ode_fun, t, x, h, i, x); //* update x to the next x
+		integrator.step(obj, ode_fun, t, x, h, i, x); //* update x to the next x
 
 		t = t0 + (i + 1) * h; //* update t to the next t
 

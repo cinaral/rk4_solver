@@ -56,8 +56,10 @@ loop(T &obj, OdeFun_T<X_DIM, T> ode_fun, const Real_T t0, const Real_T (&x0)[X_D
 	matrix_op::replace_row<1>(0, x0, x); //* initialize x
 	*t = t0;                             //* initialize t
 
+	rk4_solver::Integrator<X_DIM, T> integrator;
+
 	for (size_t i = 0; i < T_DIM - 1; ++i) {
-		step<X_DIM, T>(obj, ode_fun, *t, x, h, i, x); //* update x to the next x
+		integrator.step(obj, ode_fun, *t, x, h, i, x); //* update x to the next x
 
 		*t = t0 + (i + 1) * h; //* update t to the next t
 	}
@@ -92,9 +94,10 @@ loop(T &obj, OdeFun_T<X_DIM, T> ode_fun, EventFun_T<X_DIM, T> event_fun, const R
 
 	//* check for events at the initial condition
 	bool stop_flag = (obj.*event_fun)(*t, x, i, x);
+	rk4_solver::Integrator<X_DIM, T> integrator;
 
 	for (; !stop_flag && i < T_DIM - 1; ++i) {
-		step(obj, ode_fun, *t, x, h, i, x); //* update x to the next x
+		integrator.step(obj, ode_fun, *t, x, h, i, x); //* update x to the next x
 
 		*t = t0 + (i + 1) * h; //* update t to the next t
 
