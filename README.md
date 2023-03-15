@@ -8,7 +8,7 @@
 	- [5.2. Example 2: Integration loop](#52-example-2-integration-loop)
 	- [5.3. Example 3: Events](#53-example-3-events)
 - [6. Benchmarks](#6-benchmarks)
-	- [6.1. Discussion.](#61-discussion)
+	- [6.1. Discussion](#61-discussion)
 
 # 1. About ```rk4_solver```
 This is a simple header-only C++ library for solving ordinary differential equations (ODE) with events using the [Runge-Kutta 4th Order Method](https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods). The objective is to solve a system of ODEs given as $\dot{\mathbf{x}} = \mathbf{f}(t, \mathbf{x}(t)),\quad \mathbf{x}(0)=\mathbf{x}_0$. 
@@ -216,7 +216,7 @@ See [example-event.cpp](./examples/event-example.cpp) for details.
 
 There are two benchmark tests: 
 1. A step integration loop without final time, and intermediate values are discarded.
-2. A cumulative integration loop with final time, and intermediate values saved.
+2. A cumulative integration loop with final time, and intermediate values are saved.
 
 The simulated system is a 3rd order linear system, and an Intel i7-9700K at 3.60 GHz processor was used with 32 GB of memory was used for the following results: 
 
