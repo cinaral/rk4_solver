@@ -10,7 +10,7 @@ exe_name = append(test_name, '.exe');
 t_arr_fname = 't_arr.dat';
 x_arr_fname = 'x_arr.dat';
 u_arr_fname = 'u_arr.dat';
-x_arr_chk_fname = 'x_arr_chk.dat';
+x_arr_ref_fname = 'x_arr_ref.dat';
 
 is_drawing = false;
 is_single_precision = true;
@@ -45,26 +45,26 @@ B = [0;
 C = [1, 0, 0];
 D = 0;
 
-t_arr_chk = linspace(t_init, t_final, t_dim).';
+t_arr_ref = linspace(t_init, t_final, t_dim).';
 motor_system = @(x, u) A*x + B*u;
 
-x_arr_chk = zeros(t_dim, x_dim);
+x_arr_ref = zeros(t_dim, x_dim);
 u_arr = zeros(t_dim, u_dim);
 
 for i = 1:t_dim 
-	t = t_arr_chk(i, :).';
-	x = x_arr_chk(i, :).';
-	u = sin(t_arr_chk(i)*2*pi*f);
+	t = t_arr_ref(i, :).';
+	x = x_arr_ref(i, :).';
+	u = sin(t_arr_ref(i)*2*pi*f);
 
 	if i < t_dim
-		h = t_arr_chk(i + 1) - t;	
-		x_arr_chk(i + 1, :) = step_rk4(t, x, h, @(t, x) motor_system(x, u)).';
+		h = t_arr_ref(i + 1) - t;	
+		x_arr_ref(i + 1, :) = step_rk4(t, x, h, @(t, x) motor_system(x, u)).';
 	end
 	u_arr(i, :) = u.';
 end
 
 writematrix(u_arr, append(ref_dat_prefix, u_arr_fname));  
-writematrix(x_arr_chk, append(ref_dat_prefix, x_arr_chk_fname));  
+writematrix(x_arr_ref, append(ref_dat_prefix, x_arr_ref_fname));  
 
 disp(append('Created reference data for ', test_name));
 
@@ -81,8 +81,8 @@ if isfile(exe_name)
 	x_arr = readmatrix(append(dat_prefix, x_arr_fname));
 
 	%* verify
-	max_error = max(vecnorm(x_arr - x_arr_chk, 2, 2));
-	mean_error = mean(vecnorm(x_arr - x_arr_chk, 2, 2));
+	max_error = max(vecnorm(x_arr - x_arr_ref, 2, 2));
+	mean_error = mean(vecnorm(x_arr - x_arr_ref, 2, 2));
 
 	if max_error < error_thres
 		disp(append(test_name, '	ok'));
@@ -94,7 +94,7 @@ if isfile(exe_name)
 		figure('Name', 'x');
 		hold on;
 		plot(t_arr, x_arr(:, 1));
-		plot(t_arr_chk, x_arr_chk(:, 1), '--');
+		plot(t_arr_ref, x_arr_ref(:, 1), '--');
 	end
 else
 	error(append(bin_dir, '/', exe_name, ' does not exist. Use CMake to build the test.'));

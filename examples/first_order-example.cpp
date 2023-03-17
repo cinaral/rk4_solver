@@ -23,7 +23,7 @@ struct Dynamics {
 		dt_x[0] = a_constant * x[0];
 	}
 };
-Dynamics dyn;
+Dynamics dynamics;
 
 int
 main()
@@ -31,7 +31,7 @@ main()
 	Real_T t;
 	Real_T x[x_dim];
 	//* integration loop
-	rk4_solver::loop<t_dim>(dyn, &Dynamics::ode_fun, t0, x0, h, &t, x);
+	rk4_solver::loop<t_dim>(dynamics, &Dynamics::ode_fun, t0, x0, h, &t, x);
 	
 	return 0;
 }

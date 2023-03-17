@@ -14,7 +14,7 @@ ref_dat_prefix = append(ref_dat_dir, '/', test_name, '-');
 exe_name = append(test_name, '.exe');
 t_arr_fname = 't_arr.dat';
 x_arr_fname = 'x_arr.dat';
-x_arr_chk_fname = 'x_arr_chk.dat';
+x_arr_ref_fname = 'x_arr_ref.dat';
 
 is_drawing = false;
 is_single_precision = false;
@@ -40,11 +40,11 @@ ball_system = @(~, x) [x(2); -gravity_const];
 refine = 16;
 options = odeset('Events', @event, 'Refine', refine);
 
-t_arr_chk = linspace(t_init, t_final, t_dim).';
-x_arr_chk = zeros(t_dim, x_dim);
+t_arr_ref = linspace(t_init, t_final, t_dim).';
+x_arr_ref = zeros(t_dim, x_dim);
 
 idx_begin = 1;
-t_arr_part = t_arr_chk;
+t_arr_part = t_arr_ref;
 t = 0;
 
 while t < t_final && ~isempty(t_arr_part)
@@ -56,12 +56,12 @@ while t < t_final && ~isempty(t_arr_part)
 	x_init(2) = -e_restitution * x_arr_part(end, 2);
 
 	%* Accumulate output
-	x_arr_chk(idx_begin:idx_begin + len - 1, :) = x_arr_part;
+	x_arr_ref(idx_begin:idx_begin + len - 1, :) = x_arr_part;
 	idx_begin = idx_begin + len;
-	t_arr_part = t_arr_chk(idx_begin:end);
+	t_arr_part = t_arr_ref(idx_begin:end);
 end
 
-writematrix(x_arr_chk, append(ref_dat_prefix, x_arr_chk_fname));  
+writematrix(x_arr_ref, append(ref_dat_prefix, x_arr_ref_fname));  
 
 disp(append('Created reference data for ', test_name));
 
@@ -78,8 +78,8 @@ if isfile(exe_name)
 	x_arr = readmatrix(append(dat_prefix, x_arr_fname));
 
 	%* verify
-	max_error = max(vecnorm(x_arr(:, 1) - x_arr_chk(:, 1), 1, 2));
-	mean_error = mean(vecnorm(x_arr(:, 1) - x_arr_chk(:, 1), 1, 2));
+	max_error = max(vecnorm(x_arr(:, 1) - x_arr_ref(:, 1), 1, 2));
+	mean_error = mean(vecnorm(x_arr(:, 1) - x_arr_ref(:, 1), 1, 2));
 
 	if max_error < error_thres
 		disp(append(test_name, '	ok'));
@@ -91,7 +91,7 @@ if isfile(exe_name)
 		figure('Name', 'x');
 		hold on;
 		plot(t_arr, x_arr(:, 1));
-		plot(t_arr_chk, x_arr_chk(:, 1), '--');
+		plot(t_arr_ref, x_arr_ref(:, 1), '--');
 	end
 else
 	error(append(bin_dir, '/', exe_name, ' does not exist. Use CMake to build the test.'));

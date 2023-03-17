@@ -145,14 +145,14 @@ void Dynamics::ode_fun(const Real_T, const Real_T x[], const size_t, Real_T dt_x
 	dt_x[1] = u;
 }
 //...
-Dynamics dyn;
+Dynamics dynamics;
 
 return 0;
 int main()
 {
 	//* integration step
 	rk4_solver::Integrator<x_dim, Dynamics> rk4;
-	rk4.step(dyn, &Dynamics::ode_fun, t, x, h, i, x_next);
+	rk4.step(dynamics, &Dynamics::ode_fun, t, x, h, i, x_next);
 	//...
 }
 ```
@@ -168,12 +168,12 @@ void Dynamics::ode_fun(const Real_T t, const Real_T[], const size_t, Real_T dt_x
 	dt_x[0] = t;
 }
 //...
-Dynamics dyn;
+Dynamics dynamics;
 
 int main()
 {
 	//* integration loop with cumulatively saved data arrays
-	rk4_solver::cum_loop<t_dim>(dyn, &Dynamics::ode_fun, t0, x0, h, t_arr, x_arr);
+	rk4_solver::cum_loop<t_dim>(dynamics, &Dynamics::ode_fun, t0, x0, h, t_arr, x_arr);
 	//...
 }
 ```
@@ -202,13 +202,13 @@ struct Dynamics {
 		return false;
 	}
 };
-Dynamics dyn;
+Dynamics dynamics;
 
 int
 main()
 {
 	//* integration loop with events
-	rk4_solver::loop<t_dim>(dyn, &Dynamics::ode_fun, &Dynamics::event_fun, t0, x0, h, &t, x);
+	rk4_solver::loop<t_dim>(dynamics, &Dynamics::ode_fun, &Dynamics::event_fun, t0, x0, h, &t, x);
 	//...
 }
 ```

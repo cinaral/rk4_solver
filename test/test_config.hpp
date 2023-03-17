@@ -32,7 +32,7 @@
 #include "rk4_solver.hpp"
 #include <chrono>
 #include <cmath>
-#include <iostream>
+#include <cstdio>
 #include <string>
 
 using rk4_solver::Real_T;
@@ -45,21 +45,21 @@ const std::string dat_dir = "../dat";                       //* temporary data d
 const std::string ref_dat_dir = "../../test/reference_dat"; //* reference data directory
 const std::string t_arr_fname = "t_arr.dat";                //* file name for the time array
 const std::string x_arr_fname = "x_arr.dat";                //* file name for the x array
-const std::string x_arr_chk_fname = "x_arr_chk.dat";        //* file name for the reference x array
+const std::string x_arr_ref_fname = "x_arr_ref.dat";        //* file name for the reference x array
 const std::string u_arr_fname = "u_arr.dat";                //* file name for the u array
 
 template <size_t T_DIM, size_t X_DIM>
 Real_T
-compute_max_error(const Real_T (&arr)[T_DIM * X_DIM], const Real_T (&arr_chk)[T_DIM * X_DIM])
+compute_max_error(const Real_T (&arr)[T_DIM * X_DIM], const Real_T (&arr_ref)[T_DIM * X_DIM])
 {
 	Real_T max_error = 0.;
 
 	for (size_t i = 0; i < T_DIM; ++i) {
 		const Real_T(&a)[X_DIM] = *matrix_op::select_row<T_DIM, X_DIM>(i, arr);
-		const Real_T(&a_chk)[X_DIM] = *matrix_op::select_row<T_DIM, X_DIM>(i, arr_chk);
+		const Real_T(&a_ref)[X_DIM] = *matrix_op::select_row<T_DIM, X_DIM>(i, arr_ref);
 
 		for (size_t j = 0; j < X_DIM; ++j) {
-			const Real_T error = std::abs(a[j] - a_chk[j]);
+			const Real_T error = std::abs(a[j] - a_ref[j]);
 
 			if (error > max_error) {
 				max_error = error;

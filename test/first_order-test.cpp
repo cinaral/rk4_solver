@@ -30,7 +30,7 @@ struct Dynamics {
 		dt_x[0] = a_const * x[0];
 	}
 };
-Dynamics dyn;
+Dynamics dynamics;
 
 int
 main()
@@ -43,8 +43,8 @@ main()
 	Real_T x[x_dim];
 	Real_T t_arr[t_dim];
 	Real_T x_arr[t_dim * x_dim];
-	rk4_solver::loop<t_dim>(dyn, &Dynamics::ode_fun, t_init, x_init, time_step, &t, x);
-	rk4_solver::cum_loop<t_dim>(dyn, &Dynamics::ode_fun, t_init, x_init, time_step, t_arr,
+	rk4_solver::loop<t_dim>(dynamics, &Dynamics::ode_fun, t_init, x_init, time_step, &t, x);
+	rk4_solver::cum_loop<t_dim>(dynamics, &Dynamics::ode_fun, t_init, x_init, time_step, t_arr,
 	                            x_arr);
 
 	//* 3. write the test data
@@ -52,13 +52,13 @@ main()
 	matrix_rw::write<t_dim, x_dim>(dat_prefix + test_config::x_arr_fname, x_arr);
 
 	//* 4. verify the results
-	Real_T x_arr_chk[t_dim * x_dim];
+	Real_T x_arr_ref[t_dim * x_dim];
 
 	for (size_t i = 0; i < t_dim; ++i) {
-		Real_T x_chk[x_dim] = {std::exp(a_const * t_arr[i])};
-		matrix_op::replace_row<t_dim, x_dim>(i, x_chk, x_arr_chk);
+		Real_T x_ref[x_dim] = {std::exp(a_const * t_arr[i])};
+		matrix_op::replace_row<t_dim, x_dim>(i, x_ref, x_arr_ref);
 	}
-	Real_T max_error = test_config::compute_max_error<t_dim, x_dim>(x_arr, x_arr_chk);
+	Real_T max_error = test_config::compute_max_error<t_dim, x_dim>(x_arr, x_arr_ref);
 
 	//* loop vs cum_loop sanity check
 	Real_T max_loop_error = 0.;

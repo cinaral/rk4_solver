@@ -60,23 +60,23 @@ struct Dynamics {
 	}
 	Real_T u_arr[t_dim * u_dim];
 };
-Dynamics dyn;
+Dynamics dynamics;
 
 int
 main()
 {
 	//* 1. read the reference data
-	Real_T x_arr_chk[t_dim * x_dim];
-	matrix_rw::read<t_dim, u_dim>(ref_dat_prefix + test_config::u_arr_fname, dyn.u_arr);
-	matrix_rw::read<t_dim, x_dim>(ref_dat_prefix + test_config::x_arr_chk_fname, x_arr_chk);
+	Real_T x_arr_ref[t_dim * x_dim];
+	matrix_rw::read<t_dim, u_dim>(ref_dat_prefix + test_config::u_arr_fname, dynamics.u_arr);
+	matrix_rw::read<t_dim, x_dim>(ref_dat_prefix + test_config::x_arr_ref_fname, x_arr_ref);
 
 	//* 2. test
 	Real_T t = 0;
 	Real_T x[x_dim];
 	Real_T t_arr[t_dim];
 	Real_T x_arr[t_dim * x_dim];
-	rk4_solver::loop<t_dim>(dyn, &Dynamics::ode_fun, t_init, x_init, time_step, &t, x);
-	rk4_solver::cum_loop<t_dim>(dyn, &Dynamics::ode_fun, t_init, x_init, time_step, t_arr,
+	rk4_solver::loop<t_dim>(dynamics, &Dynamics::ode_fun, t_init, x_init, time_step, &t, x);
+	rk4_solver::cum_loop<t_dim>(dynamics, &Dynamics::ode_fun, t_init, x_init, time_step, t_arr,
 	                            x_arr);
 
 	//* 3. write the test data
@@ -84,7 +84,7 @@ main()
 	matrix_rw::write<t_dim, x_dim>(dat_prefix + test_config::x_arr_fname, x_arr);
 
 	//* 4. verify the results
-	Real_T max_error = test_config::compute_max_error<t_dim, x_dim>(x_arr, x_arr_chk);
+	Real_T max_error = test_config::compute_max_error<t_dim, x_dim>(x_arr, x_arr_ref);
 
 	//* loop vs cum_loop sanity check
 	Real_T max_loop_error = 0.;
