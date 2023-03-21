@@ -25,8 +25,7 @@ Dynamics dynamics;
 int
 main()
 {
-	rk4_solver::Integrator<x_dim, Dynamics> integrator(dynamics, &Dynamics::ode_fun, time_step,
-	                                                   t_init);
+	rk4_solver::Integrator<x_dim, Dynamics> integrator(dynamics, &Dynamics::ode_fun, time_step);
 	Real_T t;
 	Real_T x[x_dim];
 	integrator.step(t_init, x_init, t, x); //* integration step

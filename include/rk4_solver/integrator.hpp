@@ -33,22 +33,6 @@
 
 namespace rk4_solver
 {
-/*
- * Computes the next Runge-Kutta 4th Order step.
- * `ode_fun` can be parametrized using the time (row) index `i`.
- *
- * `step<OPT: X_DIM, T>(obj, ode_fun, t, x, h, (i), OUT:x_next)`
- *
- * 1. `obj`: dynamics object (type `T`)
- * 2. `ode_fun`: ode function, member of `obj` (type `T::*`)
- * 3. `t`: time [s]
- * 4. `x`: state
- * 5. `h`: time step [s]
- * 6. `i`: time index corresponding to `t`
- *
- * OUT:
- *	7. `x_next`: next state
- */
 template <size_t X_DIM, typename T> class Integrator
 {
   public:
@@ -59,6 +43,17 @@ template <size_t X_DIM, typename T> class Integrator
 		reset();
 	}
 
+	/*
+	 * Computes the next Runge-Kutta 4th Order step.
+	 * `ode_fun` can be parametrized using the time (row) index `i`.
+	 *
+	 * 1. `t`: time [s]
+	 * 2. `x`: state
+	 *
+	 * OUT:
+	 * 3. `t_next`: next time [s]
+	 * 4. `x_next`: next_state
+	 */
 	void
 	step(const Real_T &t, const Real_T (&x)[X_DIM], Real_T &t_next, Real_T (&x_next)[X_DIM])
 	{

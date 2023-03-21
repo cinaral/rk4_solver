@@ -50,7 +50,6 @@ const std::string ref_dat_dir = "../../test/reference_dat"; //* reference data d
 const std::string t_arr_fname = "t_arr.dat";                //* file name for the time array
 const std::string x_arr_fname = "x_arr.dat";                //* file name for the x array
 const std::string x_arr_ref_fname = "x_arr_ref.dat";        //* file name for the reference x array
-const std::string u_arr_fname = "u_arr.dat";                //* file name for the u array
 
 template <size_t T_DIM, size_t X_DIM>
 Real_T

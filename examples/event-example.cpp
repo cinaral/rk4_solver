@@ -15,7 +15,7 @@ constexpr Real_T gravity_const = 9.806;
 
 struct Dynamics {
 	/*
-	 * Ball in vertical axis:
+	 * Bouncing ball in one dimension:
 	 * dt_x =  [x2; -g]
 	 */
 	void
@@ -49,9 +49,9 @@ main()
 {
 	rk4_solver::Integrator<x_dim, Dynamics> integrator(dynamics, &Dynamics::ode_fun, time_step);
 	rk4_solver::Event<x_dim, Dynamics> event(dynamics, &Dynamics::event_fun);
-
 	Real_T t;
 	Real_T x[x_dim];
+	//* discard the intermediate values and stop at first event
 	rk4_solver::loop<t_dim>(integrator, event, t_init, x_init, t, x, true);
 
 	return 0;

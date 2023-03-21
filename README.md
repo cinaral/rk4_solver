@@ -1,19 +1,23 @@
 
-- [1. About ```rk4_solver```](#1-about-rk4solver)
+- [1. About rk4_solver](#1-about-rk4solver)
 - [2. Installation](#2-installation)
 - [3. Usage](#3-usage)
-- [4. Testing](#4-testing)
-- [5. Examples](#5-examples)
-	- [5.1. Example 1: Single integration step](#51-example-1-single-integration-step)
-	- [5.2. Example 2: Integration loop](#52-example-2-integration-loop)
-	- [5.3. Example 3: Events](#53-example-3-events)
-- [6. Benchmarks](#6-benchmarks)
-	- [6.1. Discussion](#61-discussion)
+	- [3.1. Single integration step](#31-single-integration-step)
+	- [3.2. Integration loop](#32-integration-loop)
+	- [3.3. Integration loop with intermediate values](#33-integration-loop-with-intermediate-values)
+- [4. Examples](#4-examples)
+	- [4.1. Example 1: Single integration step](#41-example-1-single-integration-step)
+	- [4.2. Example 2: Integration loop](#42-example-2-integration-loop)
+	- [4.3. Example 3: Events](#43-example-3-events)
+- [5. Benchmarks](#5-benchmarks)
+- [6. Testing](#6-testing)
 
-# 1. About ```rk4_solver```
-This is a simple header-only C++ library for solving ordinary differential equations (ODEs) with events using the [Runge-Kutta 4th Order Method](https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods). The objective is to solve a system of ODEs given as $\dot{\mathbf{x}} = \mathbf{f}(t, \mathbf{x}(t))$, $\mathbf{x}(0)=\mathbf{x}_0$. 
+# 1. About rk4_solver
+This is a simple header-only C++ library for solving ordinary differential equations using the [fixed-step 4th order Runge-Kutta method](https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods). It offers a rudimentary RK4 solver that is light-weight, fast and hopefully easy to use. The objective is to solve a system of ordinary differential equations (ODEs) given as $\dot{\mathbf{x}} = \mathbf{f}(t, \mathbf{x}(t))$, $\mathbf{x}(0)=\mathbf{x}_0$. 
 
-This library and its only dependency [matrix_op](https://github.com/cinaral/matrix_op) was written with hard real-time embedded applications in mind (excluding [Testing](#testing)), e.g. it does not use dynamic memory allocation, RTTI or exceptions. It can be compiled for ```float```s by enabling the ```USE_SINGLE_PRECISION``` compiler flag.
+Some event functionality is included for hybrid dynamics, but it should not be trusted as this is a fixed-step size method.  Kahan summation algorithm is used in the integration to compensate for the accumulation of floating point errors. 
+
+This library and its only dependency [matrix_op](https://github.com/cinaral/matrix_op) was written with embedded systems in mind, and it has been tested on hard real-time embedded systems. It does not use RTTI or exceptions, and you can disable all dynamic heap allocations using the ```DO_NOT_USE_HEAP``` compiler flag, but beware of stack overflows. Use the ```USE_SINGLE_PRECISION``` compiler flag to compile for single precision systems.  
 
 # 2. Installation
 
@@ -25,170 +29,138 @@ FetchContent_Declare(rk4_solver URL https://github.com/cinaral/rk4_solver/releas
 FetchContent_MakeAvailable(rk4_solver)
 ```
 
-Use CTest to test the library before using. There are three included tests.
-- Sine wave
-- Motor response 
-- Bouncing ball
+Use CTest to test the library before using. Currently, four tests are available:
+1. Integrating a sine function,
+2. Solving a first-order system,
+3. Solving for the time response of a motor that is driven by a sinusoidal input,
+4. Solving for the motion of a bouncing ball (hybrid dynamics).
   
-Some of them require reference solutions which is provided in this repository without the need for MATLAB, see [Testing](#testing) for details.
-
+Some of the tests require reference solutions which is included in this repository, see [Testing](#testing) for details. For the minimum examples, see ```examples/```.
 
 # 3. Usage
 
-For integration, create an integrator object first:
+You must first create an integrator object:
 ```Cpp
-rk4_solver::Integrator<X_DIM, T> integrator(T &obj, OdeFun_T<X_DIM, T> ode_fun, const Real_T step_size, const Real_T t0 = 0);
+rk4_solver::Integrator<x_dim, Dynamics> integrator(dynamics, &Dynamics::ode_fun, time_step, t_init = 0);
 ```
 
-For a single integration step, call ```Integrator::step(...)```:
+ODE function should be a member of ```Dynamics```, which is a class you will provide for the dynamics of your system. The ODE function must be of type ```OdeFun_T```:
 ```Cpp
-void
-step(
-	const Real_T t, 
-	const Real_T (&x)[X_DIM], 
-	const size_t i, 
-	Real_T (&x_next)[X_DIM]
-);
+//* dx/dt = ode_fun(t, x)
+void Dynamics::ode_fun(t, x, OUT: dt_x); 
 ```
-If you want to loop, call ```rk4_solver::loop(...)```:
+If you need an event function, you can use an event function of type ```EventFun_T```. It is fine to use the same object for both the integrator and the event function:
 ```Cpp
-void
-loop(
-	Integrator integrator, 
-	const Real_T t0,
-	const Real_T (&x0)[X_DIM], 
-	Real_T *t, 
-	Real_T (&x)[X_DIM]
-);
-```
-
-If you need events, you want an event object:
-```Cpp
-	rk4_solver::Event<X_DIM, T> event(T &obj, EventFun_T<X_DIM, T> event_fun);
+//* x_plus = event_fun(t, x)
+void Events::check(t, x, OUT: x_plus); 
 ```
 **WARNING**: This is a fixed-step size method and therefore the event detection will be approximate within the time step size.
-```Cpp
-size_t
-loop(
-	Integrator integrator, 
-	Event event, 
-	const Real_T t0,
-	const Real_T (&x0)[X_DIM], 
-	Real_T *t, 
-	Real_T (&x)[X_DIM]
-);
-```
-
-**WARNING:** By default, ```Real_T``` is ```double```. Use ```USE_SINGLE_PRECISION``` compiler flag to set to ```float```.
-
 ```OdeFun_T``` and ```EventFun_T``` are function pointers defined in [types.hpp](include/rk4_solver/types.hpp):  
 ```Cpp
 using OdeFun_T = void (T::*)(const Real_T t, const Real_T (&x)[X_DIM], const size_t i, Real_T (&dt_x)[X_DIM]);
 using EventFun_T = bool (T::*)(const Real_T t, const Real_T (&x)[X_DIM], const size_t i, Real_T (&x_plus)[X_DIM]);
 ```
-Where ```i < T_DIM``` is the current time step for the time step size ```h```. ```i``` is provided for time index dependent inputs such as pre-computed discrete control input.
+**WARNING:** By default, ```Real_T``` is ```double```. Use ```USE_SINGLE_PRECISION``` compiler flag to set to ```float```.
 
-You may use cumulative integration loop functions with or without the event function to save the integration value at every time step:
+## 3.1. Single integration step
+Call ```Integrator::step(...)```:
 ```Cpp
 void
-cum_loop(
-	Integrator integrator, 
-	const Real_T t0,
-	const Real_T (&x0)[X_DIM], 
-	Real_T (&t_arr)[T_DIM], 
-	Real_T (&x_arr)[T_DIM * X_DIM]
-);
-
-size_t
-cum_loop(
-	Integrator integrator, 
-	Event event, 
-	const Real_T t0,
-	const Real_T (&x0)[X_DIM], 
-	Real_T (&t_arr)[T_DIM], 
-	Real_T (&x_arr)[T_DIM * X_DIM]
+step(
+	const Real_T t, 
+	const Real_T (&x)[X_DIM], 
+	Real_T (&x_next)[X_DIM]
 );
 ```
 
-# 4. Testing
-Reference solutions are required for some tests, which can be found in ```test/dat/```. 
+## 3.2. Integration loop
+Call ```rk4_solver::loop(...)``` as follows if you want to discard all intermediate values except the final state:
+```Cpp
+void
+loop(
+	Integrator integrator, 
+	OPTIONAL: Event event,
+	const Real_T t_init,
+	const Real_T (&x0)[X_DIM], 
+	Real_T &t, 
+	Real_T (&x)[X_DIM]
+);
+```
+## 3.3. Integration loop with intermediate values
+Otherwise, you can use the overloaded version of ```loop(...)``` that takes an array for time and another array for state history to save all intermediate values of the solution:
+```Cpp
+void
+loop(
+	Integrator integrator, 
+	OPTIONAL: Event event,
+	const Real_T t_init,
+	const Real_T (&x0)[X_DIM], 
+	Real_T (&t)[T_DIM], 
+	Real_T (&x)[T_DIM * X_DIM]
+);
+```
+Where ```i < T_DIM``` is the current time step. 
 
-[matrix_rw](https://github.com/cinaral/matrix_rw) library is used for testing, the ```*.dat``` files are comma and newline delimited. If you have access to MATLAB, the formatting is compatible with ```writematrix``` and ```readmatrix```. 
+# 4. Examples
 
-You may need to generate new solutions in order to update the existing tests or to add new tests. [run_test.m](./test/matlab/run_test.m) may be used to generate solutions if you have access to MATLAB. By default, the data files are put in ```dat/```, which you may copy into ```test/dat/``` or use ```scripts/update_test_data.sh```.
-
-The MATLAB tests are optional, and the scripts under ```test/matlab/``` can be used to visualize the results. 
-
-# 5. Examples
-
-## 5.1. Example 1: Single integration step
+## 4.1. Example 1: Single integration step
 ```Cpp
 #include "rk4_solver/integrator.hpp"
 //...
-void Dynamics::ode_fun(const Real_T, const Real_T x[], const size_t, Real_T dt_x[])
-{
-	dt_x[0] = x[1];
-	dt_x[1] = u;
-}
+	Dynamics::ode_fun(const Real_T, const Real_T (&x)[x_dim], Real_T (&dt_x)[x_dim])
+	{
+		dt_x[0] = x[1];
+		dt_x[1] = u;
+	}
 //...
 Dynamics dynamics;
 
-return 0;
 int main()
 {
-	rk4_solver::Integrator<x_dim, Dynamics> integrator(dynamics, &Dynamics::ode_fun, h);
-	Real_T x_next[x_dim];
-	integrator.step(t, x, i, x_next); //* integration step
+	rk4_solver::Integrator<x_dim, Dynamics> integrator(dynamics, &Dynamics::ode_fun, time_step);
+	Real_T t;
+	Real_T x[x_dim];
+	integrator.step(t_init, x_init, t, x); //* integration step
 	//...
 }
 ```
 See [step-example.cpp](./examples/step-example.cpp) for details.
 
 
-## 5.2. Example 2: Integration loop
+## 4.2. Example 2: Integration loop
 ```Cpp
 #include "rk4_solver/cum_loop.hpp"
 //...
-void Dynamics::ode_fun(const Real_T t, const Real_T[], const size_t, Real_T dt_x[])
-{
-	dt_x[0] = t;
-}
-//...
-Dynamics dynamics;
-
 int main()
 {
-	rk4_solver::Integrator<x_dim, Dynamics> integrator(dynamics, &Dynamics::ode_fun, h);
+	rk4_solver::Integrator<x_dim, Dynamics> integrator(dynamics, &Dynamics::ode_fun, time_step);
 	Real_T t_arr[t_dim];
 	Real_T x_arr[t_dim * x_dim];
-	//* integration loop with cumulatively saved data arrays
-	rk4_solver::cum_loop<t_dim>(integrator, t0, x0, t_arr, x_arr);
+	//* save the intermediate values
+	rk4_solver::loop<t_dim>(integrator, t_init, x_init, t_arr, x_arr);
 	//...
 }
 ```
 See [loop-example.cpp](./examples/loop-example.cpp) for details.
 
 
-## 5.3. Example 3: Events
+## 4.3. Example 3: Events
 ```Cpp
 #include "rk4_solver.hpp"
 //...
 struct Dynamics {
-	void
-	ode_fun(const Real_T, const Real_T (&x)[x_dim], const size_t, Real_T (&dt_x)[x_dim])
-	{
-		dt_x[0] = x[1];
-		dt_x[1] = -g;
-	}
+	//...
 	bool
-	event_fun(const Real_T, const Real_T (&x)[x_dim], const size_t, Real_T (&x_plus)[x_dim])
+	event_fun(const Real_T, const Real_T (&x)[x_dim], Real_T (&x_plus)[x_dim])
 	{
+		bool did_occur = false;
+
 		if (x[0] <= 0) {
 			x_plus[0] = 0;
-			x_plus[1] = -e * x[1];
+			x_plus[1] = -e_restitution * x[1];
+			did_occur = true;
 		}
-		//* don't stop the integration
-		return false;
+		return did_occur;
 	}
 };
 Dynamics dynamics;
@@ -196,36 +168,39 @@ Dynamics dynamics;
 int
 main()
 {
-	rk4_solver::Integrator<x_dim, Dynamics> integrator(dynamics, &Dynamics::ode_fun, h);
+	rk4_solver::Integrator<x_dim, Dynamics> integrator(dynamics, &Dynamics::ode_fun, time_step);
 	rk4_solver::Event<x_dim, Dynamics> event(dynamics, &Dynamics::event_fun);
 	Real_T t;
 	Real_T x[x_dim];
-	//* integration loop with events
-	rk4_solver::loop<t_dim>(integrator, event, t0, x0, &t, x);
+	//* discard the intermediate values and stop at first event
+	rk4_solver::loop<t_dim>(integrator, event, t_init, x_init, t, x, true);
 	//...
 }
 ```
 See [example-event.cpp](./examples/event-example.cpp) for details.
 
-# 6. Benchmarks
+# 5. Benchmarks
 
 There are two benchmark tests: 
 1. A step integration loop without final time, and intermediate values are discarded.
 2. A cumulative integration loop with final time, and intermediate values are saved.
 
-The benchmark test is a 3rd order linear system compiled using g++ with ```-O3``` optimization level. An Intel i7-9700K at 3.60 GHz processor with 32 GB of memory was used to obtain the following results: 
+The benchmark test is a 3rd order linear system compiled using g++ with ```-O3``` optimization level. A desktop Intel i7-9700K at 3.60 GHz processor with 32 GB of memory was used to obtain the following samples: 
 
 |                                                  Flags | Loop (million steps per second) | Cumulative Loop (million steps per second) |
 | -----------------------------------------------------: | :-----------------------------: | :----------------------------------------: |
-|                                       None *(Default)* |              18.6               |                    33.3                    |
-|                             ```USE_SINGLE_PRECISION``` |              18.6               |                    36.1                    |
-|                                  ```DO_NOT_USE_HEAP``` |              18.6               |                    25.6                    |
-| ```DO_NOT_USE_HEAP``` *and* ```USE_SINGLE_PRECISION``` |              22.3               |                    28.6                    |
+|                                       None *(Default)* |              18.5               |                    28.6                    |
+|                             ```USE_SINGLE_PRECISION``` |              18.5               |                    30.5                    |
+|                                  ```DO_NOT_USE_HEAP``` |              18.6               |                    28.2                    |
+| ```DO_NOT_USE_HEAP``` *and* ```USE_SINGLE_PRECISION``` |              18.6               |                    30.7                    |
 
 
+Using ```USE_SINGLE_PRECISION``` or the ```DO_NOT_USE_HEAP``` flag does not affect the performance meaningfully.
 
-## 6.1. Discussion
-1. Using the ```USE_SINGLE_PRECISION``` flag to use single-precision floats does not affect the performance.
-2. Using the ```DO_NOT_USE_HEAP``` flag seems to benefit loops without final time, but it hurts cumulative loops. However, what is happening here could be simply due to different memory layouts, so take these results with a grain of salt.
-3. If the problem size can fit the stack size, then using the ```DO_NOT_USE_HEAP``` flag to disable heap allocation can provide a performance boost to loops without final time.
-**WARNING**: Your stack can easily overflow for large problems with the ```DO_NOT_USE_HEAP``` flag.
+**WARNING**: Your stack can easily overflow for large problems with the ```DO_NOT_USE_HEAP``` flag and should be avoided if it is not necessary.
+
+# 6. Testing
+Reference solutions are required for some tests, which are included in ```test/dat/```. [matrix_rw](https://github.com/cinaral/matrix_rw) library is used to read and write from file, the ```*.dat``` files are comma and newline delimited. If you have access to MATLAB, the formatting is compatible with ```writematrix``` and ```readmatrix```.
+
+You may need to generate new reference solutions to update the existing tests or add new tests. [run_test.m](./test/matlab/run_test.m) can be used to (re)generate the reference solutions if you have MATLAB. The MATLAB tests in ```test/matlab/``` are optional, but they can be used to visually verify the results. 
+

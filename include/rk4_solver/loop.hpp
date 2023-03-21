@@ -37,17 +37,13 @@ namespace rk4_solver
 /*
  * Loops Runge-Kutta 4th Order step `T_DIM` times.
  *
- * `loop<T_DIM, OPT: X_DIM, T>(obj, ode_fun, t0, x0, h, OUT:t, OUT:x)`
- *
- * 1. `obj`: dynamics object (type `T`)
- * 2. `ode_fun`: ode function, member of `obj` (type `T::*`)
- * 3. `t0`: initial time [s]
- * 4. `x0`: initial state
- * 5. `h`: time step [s]
+ * 1. `integrator`: integrator object
+ * 2. `t_init`: initial time [s]
+ * 3. `x_init`: initial state
  *
  * OUT:
- * 6. `t`: final time [s]
- * 7. `x`: final state
+ * 4. `t`: final time [s]
+ * 5. `x`: final state
  */
 template <size_t T_DIM, size_t X_DIM, typename T>
 void
@@ -62,6 +58,17 @@ loop(Integrator<X_DIM, T> integrator, const Real_T &t_init, const Real_T (&x_ini
 	}
 }
 
+/*
+ * Loops Runge-Kutta 4th Order step `T_DIM` times and cumulatively saves the results
+ *
+ * 1. `integrator`: integrator object
+ * 2. `t_init`: initial time [s]
+ * 3. `x_init`: initial state
+ *
+ * OUT:
+ * 4. `t_arr`: time history
+ * 5. `x_arr`: state history
+ */
 template <size_t T_DIM, size_t X_DIM, typename T>
 void
 loop(Integrator<X_DIM, T> integrator, const Real_T &t_init, const Real_T (&x_init)[X_DIM],
@@ -86,19 +93,14 @@ loop(Integrator<X_DIM, T> integrator, const Real_T &t_init, const Real_T (&x_ini
  * Loops Runge-Kutta 4th Order step `T_DIM` times or until event_fun returns true.
  * `event_fun` can be used to modify x when certain conditions are met.
  *
- * `i = loop<T_DIM, OPT:  X_DIM, T>(obj, ode_fun, event_fun, t0, x0, h, OUT:t, OUT:x)`
- * `i`: final index
- *
- * 1. `obj`: dynamics object (type `T`)
- * 2. `ode_fun`: ode function, member of `obj` (type `T::*`)
- * 3. `event_fun`: event function, member of `obj` (type `T::*`)
- * 4. `t0`: initial time [s]
- * 5. `x0`: initial state
- * 6. `h`: time step [s]
+ * 1. `integrator`: integrator object
+ * 2. `integrator`: event object
+ * 3. `t_init`: initial time [s]
+ * 4. `x_init`: initial state
  *
  * OUT:
- * 6. `t`: final/event time [s]
- * 7. `x`: final/event state
+ * 5. `t`: final time
+ * 6. `x`: final state
  */
 template <size_t T_DIM, size_t X_DIM, typename T>
 size_t
@@ -122,6 +124,19 @@ loop(Integrator<X_DIM, T> integrator, Event<X_DIM, T> event, const Real_T &t_ini
 	return integrator.get_step_count();
 }
 
+/*
+ * Loops Runge-Kutta 4th Order step `T_DIM` times or until event_fun returns true and cumulatively
+ * saves all points. `event_fun` can be used to modify x when certain conditions are met.
+ *
+ * 1. `integrator`: integrator object
+ * 2. `integrator`: event object
+ * 3. `t_init`: initial time [s]
+ * 4. `x_init`: initial state
+ *
+ * OUT:
+ * 5. `t_arr`: time history
+ * 6. `x_arr`: state history
+ */
 template <size_t T_DIM, size_t X_DIM, typename T>
 size_t
 loop(Integrator<X_DIM, T> integrator, Event<X_DIM, T> event, const Real_T &t_init,
