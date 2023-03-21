@@ -16,7 +16,7 @@ trap popd EXIT #*
 pushd $PROJECT_PATH/build/bin
 ./step-benchmark.exe
 echo ""
-./cum_loop-benchmark.exe
+./loop-benchmark.exe
 echo ""
 
 echo "$0 done."

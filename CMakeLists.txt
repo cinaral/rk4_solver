@@ -52,13 +52,13 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	)
 	set(EXAMPLE_NAMES
 		step-example
-		cum_loop-example
+		loop-example
 		event-example
 		first_order-example
 	)
 	set(BENCHMARK_NAMES
 		step-benchmark
-		cum_loop-benchmark
+		loop-benchmark
 	)
 
 	#* files to package

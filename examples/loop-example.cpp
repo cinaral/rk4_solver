@@ -6,21 +6,20 @@ using rk4_solver::size_t;
 constexpr size_t sample_freq = 1e3;
 constexpr Real_T time_step = 1. / sample_freq;
 constexpr Real_T t_init = 0.;
-constexpr Real_T t_final = 10.;
+constexpr Real_T t_final = 1.;
 constexpr size_t t_dim = sample_freq * (t_final - t_init) + 1;
 constexpr size_t x_dim = 1;
 constexpr Real_T x_init[x_dim] = {1.};
-constexpr Real_T a_constant = 1;
 
 struct Dynamics {
 	/*
-	 * first order ode:
-	 * dt_x = a*x
+	 * dt_x = f(t, x) = t, x(0) = 0
+	 * x = 1/2*t^2
 	 */
 	void
-	ode_fun(const Real_T, const Real_T (&x)[x_dim], Real_T (&dt_x)[x_dim])
+	ode_fun(const Real_T t, const Real_T (&)[x_dim], Real_T (&dt_x)[x_dim])
 	{
-		dt_x[0] = a_constant * x[0];
+		dt_x[0] = t;
 	}
 };
 Dynamics dynamics;
@@ -30,9 +29,9 @@ main()
 {
 	rk4_solver::Integrator<x_dim, Dynamics> integrator(dynamics, &Dynamics::ode_fun, time_step);
 
-	Real_T t;
-	Real_T x[x_dim];
-	rk4_solver::loop<t_dim>(integrator, t_init, x_init, t, x);
+	Real_T t_arr[t_dim];
+	Real_T x_arr[t_dim * x_dim];
+	rk4_solver::loop<t_dim>(integrator, t_init, x_init, t_arr, x_arr);
 
 	return 0;
 }

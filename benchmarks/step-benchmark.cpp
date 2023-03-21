@@ -17,7 +17,7 @@ struct Dynamics {
 	 * dt_x = A * x
 	 */
 	void
-	ode_fun(const Real_T, const Real_T (&x)[x_dim], const size_t, Real_T (&dt_x)[x_dim])
+	ode_fun(const Real_T, const Real_T (&x)[x_dim], Real_T (&dt_x)[x_dim])
 	{
 		dt_x[0] = x[1];
 		dt_x[1] = x[2];
@@ -32,13 +32,11 @@ Dynamics dynamics;
 int
 main()
 {
-	static Real_T t = t_init;
-	static Real_T x[x_dim];
+	Real_T t = t_init;
+	Real_T x[x_dim];
 	matrix_op::replace_row<1>(0, x_init, x); //* initialize x
 
 	printf("Integrating 3rd order linear ODE for %zu ms... ", benchmark_duration_ms);
-
-	auto step_counter = 0;
 	auto sample_tp = std::chrono::high_resolution_clock::now();
 	auto now_tp = std::chrono::high_resolution_clock::now();
 	auto since_sample = sample_tp - now_tp;
@@ -46,19 +44,17 @@ main()
 	rk4_solver::Integrator<x_dim, Dynamics> integrator(dynamics, &Dynamics::ode_fun, time_step);
 
 	while (true) {
-		integrator.step(t, x, 0, x);
-		t = t + time_step;
+		integrator.step(t, x, t, x);
 
-		++step_counter;
 		now_tp = std::chrono::high_resolution_clock::now();
 		since_sample = now_tp - sample_tp;
 
 		if (since_sample >= std::chrono::milliseconds(benchmark_duration_ms)) {
+			const size_t step_count = integrator.get_step_count();
 			printf("Done.\nx at t = %.3g s: [%.3g; %.3g; %.3g]\n", t, x[0], x[1], x[2]);
 			printf("Score: %.3g steps per second (%.3g steps)\n",
-			       static_cast<Real_T>(step_counter) / benchmark_duration_ms * 1e3,
-			       static_cast<Real_T>(step_counter));
-			step_counter = 0;
+			       static_cast<Real_T>(step_count) / benchmark_duration_ms * 1e3,
+			       static_cast<Real_T>(step_count));
 			sample_tp = std::chrono::high_resolution_clock::now();
 			break;
 		}

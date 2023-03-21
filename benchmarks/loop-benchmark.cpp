@@ -1,4 +1,4 @@
-#include "rk4_solver/cum_loop.hpp"
+#include "rk4_solver/loop.hpp"
 #include <chrono>
 #include <iostream>
 
@@ -18,7 +18,7 @@ struct Dynamics {
 	 * dt_x = A * x
 	 */
 	void
-	ode_fun(const Real_T, const Real_T (&x)[x_dim], const size_t, Real_T (&dt_x)[x_dim])
+	ode_fun(const Real_T, const Real_T (&x)[x_dim], Real_T (&dt_x)[x_dim])
 	{
 		dt_x[0] = x[1];
 		dt_x[1] = x[2];
@@ -42,7 +42,7 @@ main()
 	const auto start_tp = std::chrono::high_resolution_clock::now();
 	rk4_solver::Integrator<x_dim, Dynamics> integrator(dynamics, &Dynamics::ode_fun, time_step);
 	
-	rk4_solver::cum_loop<t_dim>(integrator, t_init, x_init, t_arr, x_arr);
+	rk4_solver::loop<t_dim>(integrator, t_init, x_init, t_arr, x_arr);
 
 	const auto now_tp = std::chrono::high_resolution_clock::now();
 	const auto since_sample_ns =

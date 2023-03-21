@@ -16,7 +16,7 @@ t_arr_fname = 't_arr.dat';
 x_arr_fname = 'x_arr.dat';
 x_arr_ref_fname = 'x_arr_ref.dat';
 
-is_drawing = false;
+is_drawing = true;
 is_single_precision = false;
 sample_freq = 1e4;
 t_init = 0;
@@ -38,7 +38,7 @@ end
 ball_system = @(~, x) [x(2); -gravity_const];
 
 refine = 16;
-options = odeset('Events', @event, 'Refine', refine);
+options = odeset('Events', @event, 'RelTol', 1e-10, 'AbsTol', 1e-12); %* 'RelTol', 1e-10, 'AbsTol', 1e-12
 
 t_arr_ref = linspace(t_init, t_final, t_dim).';
 x_arr_ref = zeros(t_dim, x_dim);

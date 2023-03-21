@@ -25,7 +25,7 @@ struct Dynamics {
 	 * x = sin(t*2*pi*f)
 	 */
 	void
-	ode_fun(const Real_T t, const Real_T (&)[x_dim], const size_t, Real_T (&dt_x)[x_dim])
+	ode_fun(const Real_T t, const Real_T (&)[x_dim], Real_T (&dt_x)[x_dim])
 	{
 		dt_x[0] = 2 * M_PI * sine_freq * cos(t * 2 * M_PI * sine_freq);
 	}
@@ -43,11 +43,12 @@ main()
 	Real_T x[x_dim];
 	Real_T t_arr[t_dim];
 	Real_T x_arr[t_dim * x_dim];
-	rk4_solver::Integrator<x_dim, Dynamics> integrator(dynamics, &Dynamics::ode_fun, time_step);
 
-	rk4_solver::loop<t_dim>(integrator, t_init, x_init, &t, x);
-	integrator.reset_accumulator();
-	rk4_solver::cum_loop<t_dim>(integrator, t_init, x_init, t_arr, x_arr);
+	rk4_solver::Integrator<x_dim, Dynamics> integrator(dynamics, &Dynamics::ode_fun, time_step);
+	rk4_solver::loop<t_dim>(integrator, t_init, x_init, t, x);
+
+	integrator.reset();
+	rk4_solver::loop<t_dim>(integrator, t_init, x_init, t_arr, x_arr);
 
 	//* 3. write the test data
 	matrix_rw::write<t_dim, 1>(dat_prefix + test_config::t_arr_fname, t_arr);
@@ -63,7 +64,7 @@ main()
 	}
 	Real_T max_error = test_config::compute_max_error<t_dim, x_dim>(x_arr, x_arr_ref);
 
-	//* loop vs cum_loop sanity check
+	//* cumulative loop sanity check
 	Real_T max_loop_error = 0.;
 	const Real_T(&x_final)[x_dim] = *matrix_op::select_row<t_dim, x_dim>(t_dim - 1, x_arr);
 

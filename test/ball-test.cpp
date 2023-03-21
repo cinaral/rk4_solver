@@ -33,20 +33,23 @@ struct Dynamics {
 	 * dt_x =  [x2; -g]
 	 */
 	void
-	ode_fun(const Real_T, const Real_T (&x)[x_dim], const size_t, Real_T (&dt_x)[x_dim])
+	ode_fun(const Real_T, const Real_T (&x)[x_dim], Real_T (&dt_x)[x_dim])
 	{
 		dt_x[0] = x[1];
 		dt_x[1] = -gravity_const;
 	}
 
 	bool
-	event_fun(const Real_T, const Real_T (&x)[x_dim], const size_t, Real_T (&x_plus)[x_dim])
+	event_fun(const Real_T, const Real_T (&x)[x_dim], Real_T (&x_plus)[x_dim])
 	{
+		bool did_occur = false;
+
 		if (x[0] <= 0) {
 			x_plus[0] = 0;
 			x_plus[1] = -e_restitution * x[1];
+			did_occur = true;
 		}
-		return false;
+		return did_occur;
 	}
 };
 Dynamics dynamics;
@@ -67,10 +70,10 @@ main()
 	rk4_solver::Integrator<x_dim, Dynamics> integrator(dynamics, &Dynamics::ode_fun, time_step);
 	rk4_solver::Event<x_dim, Dynamics> event(dynamics, &Dynamics::event_fun);
 
-	rk4_solver::loop<t_dim>(integrator, event, t_init, x_init, &t, x);
-	
-	integrator.reset_accumulator();
-	rk4_solver::cum_loop<t_dim>(integrator, event, t_init, x_init, t_arr, x_arr);
+	rk4_solver::loop<t_dim>(integrator, event, t_init, x_init, t, x);
+
+	integrator.reset();
+	rk4_solver::loop<t_dim>(integrator, event, t_init, x_init, t_arr, x_arr);
 
 	//* 3. write the test data
 	matrix_rw::write<t_dim, 1>(dat_prefix + test_config::t_arr_fname, t_arr);

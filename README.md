@@ -166,7 +166,7 @@ int main()
 	//...
 }
 ```
-See [cum_loop-example.cpp](./examples/cum_loop-example.cpp) for details.
+See [loop-example.cpp](./examples/loop-example.cpp) for details.
 
 
 ## 5.3. Example 3: Events

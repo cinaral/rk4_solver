@@ -22,11 +22,13 @@ constexpr Real_T K_t = 6.4e-2; //*  [N m A-1]
 constexpr Real_T K_b = 6.4e-2; //*  [V s]
 constexpr Real_T A[x_dim * x_dim] = {0, 1, 0, 0, -b / J, K_t / J, 0, -K_b / L, -R / L};
 constexpr Real_T B[x_dim * u_dim] = {0, 0, 1 / L};
+constexpr Real_T since_ampl = 10; //* input amplitude
+constexpr Real_T sine_freq = 10;  //*  input frequency
 
 #ifdef USE_SINGLE_PRECISION
 constexpr Real_T error_thres = 1e-5;
 #else
-constexpr Real_T error_thres = 1e-13;
+constexpr Real_T error_thres = 1e-12;
 #endif
 
 struct Dynamics {
@@ -48,17 +50,18 @@ struct Dynamics {
 	 *      1/L];
 	 */
 	void
-	ode_fun(const Real_T, const Real_T (&x)[x_dim], const size_t i, Real_T (&dt_x)[x_dim])
+	ode_fun(const Real_T t, const Real_T (&x)[x_dim], Real_T (&dt_x)[x_dim])
 	{
 		Real_T temp0[x_dim];
 		Real_T temp1[x_dim];
 
-		const Real_T(&u)[u_dim] = *matrix_op::select_row<t_dim, u_dim>(i, u_arr);
+		const Real_T u[u_dim] = {
+		    static_cast<Real_T>(since_ampl * std::sin(t * 2 * M_PI * sine_freq))};
 		matrix_op::right_multiply(A, x, temp0);
 		matrix_op::right_multiply(B, u, temp1);
 		matrix_op::sum(temp0, temp1, dt_x);
 	}
-	Real_T u_arr[t_dim * u_dim];
+	// Real_T u_arr[t_dim * u_dim];
 };
 Dynamics dynamics;
 
@@ -67,7 +70,6 @@ main()
 {
 	//* 1. read the reference data
 	Real_T x_arr_ref[t_dim * x_dim];
-	matrix_rw::read<t_dim, u_dim>(ref_dat_prefix + test_config::u_arr_fname, dynamics.u_arr);
 	matrix_rw::read<t_dim, x_dim>(ref_dat_prefix + test_config::x_arr_ref_fname, x_arr_ref);
 
 	//* 2. test
@@ -77,9 +79,9 @@ main()
 	Real_T x_arr[t_dim * x_dim];
 	rk4_solver::Integrator<x_dim, Dynamics> integrator(dynamics, &Dynamics::ode_fun, time_step);
 
-	rk4_solver::loop<t_dim>(integrator, t_init, x_init, &t, x);
-	integrator.reset_accumulator();
-	rk4_solver::cum_loop<t_dim>(integrator, t_init, x_init, t_arr, x_arr);
+	rk4_solver::loop<t_dim>(integrator, t_init, x_init, t, x);
+	integrator.reset();
+	rk4_solver::loop<t_dim>(integrator, t_init, x_init, t_arr, x_arr);
 
 	//* 3. write the test data
 	matrix_rw::write<t_dim, 1>(dat_prefix + test_config::t_arr_fname, t_arr);

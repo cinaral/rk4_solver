@@ -12,7 +12,7 @@ x_arr_fname = 'x_arr.dat';
 u_arr_fname = 'u_arr.dat';
 x_arr_ref_fname = 'x_arr_ref.dat';
 
-is_drawing = false;
+is_drawing = true;
 is_single_precision = true;
 sample_freq = 1e3;
 t_init = 0;
@@ -24,11 +24,12 @@ u_dim = 1;
 if is_single_precision
 	error_thres = 1e-3;
 else 
-	error_thres = 1e-4;
+	error_thres = 1e-12;
 end
 
 %* create reference data 
-f = 1000; %* input frequency
+a = 10; %* input amplitude
+f = 10; %* input frequency
 R = 1.4; %* [ohm]
 L = 1.7e-3; %* [ohm s] 
 J = 1.29e-4; %* [kg m-2]
@@ -46,24 +47,21 @@ C = [1, 0, 0];
 D = 0;
 
 t_arr_ref = linspace(t_init, t_final, t_dim).';
-motor_system = @(x, u) A*x + B*u;
+motor_system = @(t, x) A*x + B*a*sin(t*2*pi*f);
 
 x_arr_ref = zeros(t_dim, x_dim);
-u_arr = zeros(t_dim, u_dim);
 
 for i = 1:t_dim 
 	t = t_arr_ref(i, :).';
 	x = x_arr_ref(i, :).';
-	u = sin(t_arr_ref(i)*2*pi*f);
+	u = a*sin(t_arr_ref(i)*2*pi*f);
 
 	if i < t_dim
 		h = t_arr_ref(i + 1) - t;	
-		x_arr_ref(i + 1, :) = step_rk4(t, x, h, @(t, x) motor_system(x, u)).';
+		x_arr_ref(i + 1, :) = step_rk4(t, x, h, @(t, x) motor_system(t, x)).';
 	end
-	u_arr(i, :) = u.';
 end
 
-writematrix(u_arr, append(ref_dat_prefix, u_arr_fname));  
 writematrix(x_arr_ref, append(ref_dat_prefix, x_arr_ref_fname));  
 
 disp(append('Created reference data for ', test_name));
@@ -93,8 +91,8 @@ if isfile(exe_name)
 	if is_drawing
 		figure('Name', 'x');
 		hold on;
-		plot(t_arr, x_arr(:, 1));
-		plot(t_arr_ref, x_arr_ref(:, 1), '--');
+		plot(t_arr, x_arr(:, 3));
+		plot(t_arr_ref, x_arr_ref(:,3), '--');
 	end
 else
 	error(append(bin_dir, '/', exe_name, ' does not exist. Use CMake to build the test.'));

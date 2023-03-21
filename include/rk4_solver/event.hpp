@@ -39,9 +39,9 @@ template <size_t X_DIM, typename T> class Event
 	}
 
 	int
-	check(const Real_T t, const Real_T (&x)[X_DIM], const size_t i, Real_T (&x_next)[X_DIM])
+	check(const Real_T t, const Real_T (&x)[X_DIM], Real_T (&x_plus)[X_DIM])
 	{
-		return (obj.*event_fun)(t, x, i, x_next);
+		return (obj.*event_fun)(t, x, x_plus);
 	}
 
   private:

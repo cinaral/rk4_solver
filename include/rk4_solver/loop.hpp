@@ -51,17 +51,34 @@ namespace rk4_solver
  */
 template <size_t T_DIM, size_t X_DIM, typename T>
 void
-loop(Integrator<X_DIM, T> integrator, const Real_T t0, const Real_T (&x0)[X_DIM], Real_T *t,
-     Real_T (&x)[X_DIM])
+loop(Integrator<X_DIM, T> integrator, const Real_T &t_init, const Real_T (&x_init)[X_DIM],
+     Real_T &t, Real_T (&x)[X_DIM])
 {
-	static const Real_T h = integrator.get_step_size();
-
-	matrix_op::replace_row<1>(0, x0, x); //* initialize x
-	*t = t0;                             //* initialize t
+	t = t_init;                              //* initialize t
+	matrix_op::replace_row<1>(0, x_init, x); //* initialize x
 
 	for (size_t i = 0; i < T_DIM - 1; ++i) {
-		integrator.step(*t, x, i, x); //* update x to the next x
-		*t = t0 + (i + 1) * h;        //* update t to the next t
+		integrator.step(t, x, t, x); //* update t, x to the next t, x
+	}
+}
+
+template <size_t T_DIM, size_t X_DIM, typename T>
+void
+loop(Integrator<X_DIM, T> integrator, const Real_T &t_init, const Real_T (&x_init)[X_DIM],
+     Real_T (&t_arr)[T_DIM], Real_T (&x_arr)[T_DIM * X_DIM])
+{
+	t_arr[0] = t_init;                               //* initialize t
+	matrix_op::replace_row<T_DIM>(0, x_init, x_arr); //* initialize x
+
+	Real_T t_next;
+	Real_T x_next[X_DIM];
+
+	for (size_t i = 0; i < T_DIM - 1; ++i) {
+		const Real_T t = t_arr[i];
+		const Real_T(&x)[X_DIM] = *matrix_op::select_row<T_DIM, X_DIM>(i, x_arr);
+		integrator.step(t, x, t_next, x_next); //* update t, x to the next t, x
+		t_arr[i + 1] = t_next;
+		matrix_op::replace_row<T_DIM>(i + 1, x_next, x_arr);
 	}
 }
 
@@ -85,20 +102,58 @@ loop(Integrator<X_DIM, T> integrator, const Real_T t0, const Real_T (&x0)[X_DIM]
  */
 template <size_t T_DIM, size_t X_DIM, typename T>
 size_t
-loop(Integrator<X_DIM, T> integrator, Event<X_DIM, T> event, const Real_T t0,
-     const Real_T (&x0)[X_DIM], Real_T *t, Real_T (&x)[X_DIM])
+loop(Integrator<X_DIM, T> integrator, Event<X_DIM, T> event, const Real_T &t_init,
+     const Real_T (&x_init)[X_DIM], Real_T &t, Real_T (&x)[X_DIM], bool halt_on_event = false)
 {
-	static const Real_T h = integrator.get_step_size();
+	t = t_init;                              //* initialize t
+	matrix_op::replace_row<1>(0, x_init, x); //* initialize x
+	Real_T x_plus[X_DIM];
 
-	size_t i = 0;
-	matrix_op::replace_row<1>(0, x0, x); //* initialize x
-	*t = t0;                             //* initialize t
+	for (size_t i = 0; i < T_DIM - 1; ++i) {
+		if (event.check(t, x, x_plus)) {
+			matrix_op::replace_row<1>(0, x_plus, x);
 
-	for (; i < T_DIM - 1 && !event.check(*t, x, i, x); ++i) {
-		integrator.step(*t, x, i, x); //* update x to the next x
-		*t = t0 + (i + 1) * h;        //* update t to the next t
+			if (halt_on_event) {
+				break;
+			}
+		}
+		integrator.step(t, x, t, x); //* update t, x to the next t, x
 	}
-	return i;
+	return integrator.get_step_count();
 }
+
+template <size_t T_DIM, size_t X_DIM, typename T>
+size_t
+loop(Integrator<X_DIM, T> integrator, Event<X_DIM, T> event, const Real_T &t_init,
+     const Real_T (&x_init)[X_DIM], Real_T (&t_arr)[T_DIM], Real_T (&x_arr)[T_DIM * X_DIM],
+     bool halt_on_event = false)
+{
+	t_arr[0] = t_init;                               //* initialize t
+	matrix_op::replace_row<T_DIM>(0, x_init, x_arr); //* initialize x
+	Real_T t_next;
+	Real_T x_next[X_DIM];
+	Real_T x_plus[X_DIM];
+
+	for (size_t i = 0; i < T_DIM - 1; ++i) {
+		const Real_T t = t_arr[i];
+		const Real_T(&x)[X_DIM] = *matrix_op::select_row<T_DIM, X_DIM>(i, x_arr);
+
+		if (event.check(t, x, x_plus)) {
+			integrator.step(t, x_plus, t_next, x_next);
+			t_arr[i + 1] = t_next;
+			matrix_op::replace_row<T_DIM>(i + 1, x_next, x_arr);
+
+			if (halt_on_event) {
+				break;
+			}
+		} else {
+			integrator.step(t, x, t_next, x_next); //* update t, x to the next t, x
+			t_arr[i + 1] = t_next;
+			matrix_op::replace_row<T_DIM>(i + 1, x_next, x_arr);
+		}
+	}
+	return integrator.get_step_count();
+}
+
 } // namespace rk4_solver
 #endif

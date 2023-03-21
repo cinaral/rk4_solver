@@ -28,6 +28,7 @@
 #define INTEGRATOR_HPP_CINARAL_220924_1756
 
 #include "matrix_op.hpp"
+#include "matrix_op/row_operations.hpp"
 #include "types.hpp"
 
 namespace rk4_solver
@@ -51,63 +52,78 @@ namespace rk4_solver
 template <size_t X_DIM, typename T> class Integrator
 {
   public:
-	Integrator(T &obj, OdeFun_T<X_DIM, T> ode_fun, const Real_T step_size, const Real_T t0 = 0)
-	    : obj(obj), ode_fun(ode_fun), t0(t0), step_size(step_size)
+	Integrator(T &obj, OdeFun_T<X_DIM, T> ode_fun, const Real_T time_step,
+	           const Real_T t_init = 0)
+	    : obj(obj), ode_fun(ode_fun), time_step(time_step), t_init(t_init)
 	{
-		reset_accumulator();
+		reset();
 	}
 
 	void
-	step(const Real_T t, const Real_T (&x)[X_DIM], const size_t i, Real_T (&x_next)[X_DIM])
+	step(const Real_T &t, const Real_T (&x)[X_DIM], Real_T &t_next, Real_T (&x_next)[X_DIM])
 	{
-		(obj.*ode_fun)(t, x, i, k_0); //* ode_fun(ti, xi)
+		//* ode_fun(ti, xi)
+		(obj.*ode_fun)(t, x, k_0);
 
 		//* zero-order hold, i.e. no ODE_FUN(,, i+.5), ODE_FUN(,, i+1,) etc.
-		matrix_op::weighted_sum(step_size / 2, k_0, 1., x, x_temp);
-		(obj.*ode_fun)(t + step_size / 2, x_temp, i,
-		               k_1); //* ode_fun(ti + h/2, xi + h/2*k_0)
+		//* ode_fun(ti + h/2, xi + h/2*k_0)
+		matrix_op::weighted_sum(time_step / 2, k_0, 1., x, x_temp);
+		(obj.*ode_fun)(t + time_step / 2, x_temp, k_1);
 
-		matrix_op::weighted_sum(step_size / 2, k_1, 1., x, x_temp);
-		(obj.*ode_fun)(t + step_size / 2, x_temp, i,
-		               k_2); //* ode_fun(ti + h/2, xi + h/2*k_1)
+		//* ode_fun(ti + h/2, xi + h/2*k_1)
+		matrix_op::weighted_sum(time_step / 2, k_1, 1., x, x_temp);
+		(obj.*ode_fun)(t + time_step / 2, x_temp, k_2);
 
-		matrix_op::weighted_sum(step_size, k_2, 1., x, x_temp);
-		(obj.*ode_fun)(t + step_size, x_temp, i, k_3); //* ode_fun(ti + h, xi + k_2)
+		//* ode_fun(ti + h, xi + k_2)
+		matrix_op::weighted_sum(time_step, k_2, 1., x, x_temp);
+		(obj.*ode_fun)(t + time_step, x_temp, k_3);
 
 		constexpr Real_T w0 = 1. / 6.;
 		constexpr Real_T w1 = 1. / 3.;
 
 		for (size_t i = 0; i < X_DIM; ++i) {
-			dx = step_size * (w0 * k_0[i] + w1 * k_1[i] + w1 * k_2[i] + w0 * k_3[i]);
+			dx_i = time_step * (w0 * k_0[i] + w1 * k_1[i] + w1 * k_2[i] + w0 * k_3[i]);
 			//* compensated (Kahan) summation, ffast-math might break this
-			compensated_dx = dx - accumulator[i];
-			x_temp[i] = x[i] + compensated_dx;
-			accumulator[i] = (x_temp[i] - x[i]) - compensated_dx;
+			compensated_dx_i = dx_i - accumulator[i];
+			x_temp[i] = x[i] + compensated_dx_i;
+			accumulator[i] = (x_temp[i] - x[i]) - compensated_dx_i;
 			x_next[i] = x_temp[i];
+		}
+
+		t_next = t_init + (step_counter + 1) * time_step;
+		++step_counter;
+	}
+
+	void
+	reset()
+	{
+		step_counter = 0;
+
+		for (size_t i = 0; i < X_DIM; ++i) {
+			accumulator[i] = 0;
 		}
 	}
 
 	Real_T
 	get_step_size() const
 	{
-		return step_size;
+		return time_step;
 	}
 
-	void
-	reset_accumulator()
+	size_t
+	get_step_count() const
 	{
-		for (size_t i = 0; i < X_DIM; ++i) {
-			accumulator[i] = 0;
-		}
+		return step_counter;
 	}
 
   private:
 	T &obj;
 	const OdeFun_T<X_DIM, T> ode_fun;
-	const Real_T t0;
-	const Real_T step_size;
-	Real_T dx;
-	Real_T compensated_dx;
+	const Real_T time_step;
+	const Real_T t_init;
+	size_t step_counter;
+	Real_T dx_i;
+	Real_T compensated_dx_i;
 
 #ifdef DO_NOT_USE_HEAP
 	Real_T k_0[X_DIM];
