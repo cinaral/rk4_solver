@@ -45,10 +45,12 @@ Dynamics dynamics;
 int
 main()
 {
+	rk4_solver::Integrator<x_dim, Dynamics> integrator(dynamics, &Dynamics::ode_fun, h);
+	rk4_solver::Event<x_dim, Dynamics> event(dynamics, &Dynamics::event_fun);
 	Real_T t;
 	Real_T x[x_dim];
 	//* integration loop with events
-	rk4_solver::loop<t_dim>(dynamics, &Dynamics::ode_fun, &Dynamics::event_fun, t0, x0, h, &t, x);
-	
+	rk4_solver::loop<t_dim>(integrator, event, t0, x0, &t, x);
+
 	return 0;
 }

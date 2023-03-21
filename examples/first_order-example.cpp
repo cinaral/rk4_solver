@@ -30,8 +30,9 @@ main()
 {
 	Real_T t;
 	Real_T x[x_dim];
+	rk4_solver::Integrator<x_dim, Dynamics> integrator(dynamics, &Dynamics::ode_fun, h);
 	//* integration loop
-	rk4_solver::loop<t_dim>(dynamics, &Dynamics::ode_fun, t0, x0, h, &t, x);
-	
+	rk4_solver::loop<t_dim>(integrator, t0, x0, &t, x);
+
 	return 0;
 }

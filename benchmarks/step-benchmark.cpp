@@ -1,4 +1,4 @@
-#include "rk4_solver/step.hpp"
+#include "rk4_solver/integrator.hpp"
 #include <chrono>
 #include <cstdio>
 
@@ -43,10 +43,10 @@ main()
 	auto now_tp = std::chrono::high_resolution_clock::now();
 	auto since_sample = sample_tp - now_tp;
 
-	rk4_solver::Integrator<x_dim, Dynamics> rk4;
+	rk4_solver::Integrator<x_dim, Dynamics> integrator(dynamics, &Dynamics::ode_fun, time_step);
 
 	while (true) {
-		rk4.step(dynamics, &Dynamics::ode_fun, t, x, time_step, 0, x);
+		integrator.step(t, x, 0, x);
 		t = t + time_step;
 
 		++step_counter;

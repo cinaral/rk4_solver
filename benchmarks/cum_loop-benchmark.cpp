@@ -40,9 +40,10 @@ main()
 	       static_cast<Real_T>(t_dim));
 
 	const auto start_tp = std::chrono::high_resolution_clock::now();
+	rk4_solver::Integrator<x_dim, Dynamics> integrator(dynamics, &Dynamics::ode_fun, time_step);
+	
+	rk4_solver::cum_loop<t_dim>(integrator, t_init, x_init, t_arr, x_arr);
 
-	rk4_solver::cum_loop<t_dim>(dynamics, &Dynamics::ode_fun, t_init, x_init, time_step, t_arr,
-	                            x_arr);
 	const auto now_tp = std::chrono::high_resolution_clock::now();
 	const auto since_sample_ns =
 	    std::chrono::duration_cast<std::chrono::nanoseconds>(now_tp - start_tp);
@@ -53,7 +54,7 @@ main()
 	       x_final[1], x_final[2]);
 	printf("Score: %.3g steps per second (%g ms)\n",
 	       static_cast<Real_T>(t_dim) / since_sample_ns.count() * 1e9,
-	       static_cast<Real_T>(since_sample_ns.count()) / 1e6);
+	       static_cast<Real_T>(since_sample_ns.count()) / 1e9);
 
 	return 0;
 }

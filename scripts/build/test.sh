@@ -13,6 +13,6 @@ popd () {
 pushd "$(dirname ${BASH_SOURCE:0})"
 trap popd EXIT #*
 
-ctest --test-dir $PROJECT_PATH/build -t test
+ctest --test-dir $PROJECT_PATH/build -t test --output-on-failure
 
 echo "$0 done."

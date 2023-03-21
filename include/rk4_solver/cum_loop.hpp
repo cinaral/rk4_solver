@@ -27,9 +27,9 @@
 #ifndef CUM_LOOP_HPP_CINARAL_220924_1755
 #define CUM_LOOP_HPP_CINARAL_220924_1755
 
+#include "event.hpp"
+#include "integrator.hpp"
 #include "matrix_op.hpp"
-#include "rk4_solver/step.hpp"
-#include "step.hpp"
 #include "types.hpp"
 
 namespace rk4_solver
@@ -51,9 +51,10 @@ namespace rk4_solver
  */
 template <size_t T_DIM, size_t X_DIM, typename T>
 void
-cum_loop(T &obj, OdeFun_T<X_DIM, T> ode_fun, const Real_T t0, const Real_T (&x0)[X_DIM],
-         const Real_T h, Real_T (&t_arr)[T_DIM], Real_T (&x_arr)[T_DIM * X_DIM])
+cum_loop(Integrator<X_DIM, T> integrator, const Real_T t0, const Real_T (&x0)[X_DIM],
+         Real_T (&t_arr)[T_DIM], Real_T (&x_arr)[T_DIM * X_DIM])
 {
+	static const Real_T h = integrator.get_step_size();
 #ifdef DO_NOT_USE_HEAP
 	Real_T x[X_DIM];
 #else
@@ -67,17 +68,26 @@ cum_loop(T &obj, OdeFun_T<X_DIM, T> ode_fun, const Real_T t0, const Real_T (&x0)
 	t_arr[0] = t;
 	matrix_op::replace_row<T_DIM>(0, x, x_arr);
 
-	rk4_solver::Integrator<X_DIM, T> integrator;
-
 	for (size_t i = 0; i < T_DIM - 1; ++i) {
-		integrator.step(obj, ode_fun, t, x, h, i, x); //* update x to the next x
-
-		t = t0 + (i + 1) * h; //* update t to the next t
+		integrator.step(t, x, i, x); //* update x to the next x
+		t = t0 + (i + 1) * h;        //* update t to the next t
 
 		t_arr[i + 1] = t;
 		matrix_op::replace_row<T_DIM>(i + 1, x, x_arr);
 	}
 }
+
+//{
+//	static const Real_T h = integrator.get_step_size();
+
+//	matrix_op::replace_row<1>(0, x0, x); //* initialize x
+//	*t = t0;                             //* initialize t
+
+//	for (size_t i = 0; i < T_DIM - 1; ++i) {
+//		integrator.step(*t, x, i, x); //* update x to the next x
+//		*t = t0 + (i + 1) * h;        //* update t to the next t
+//	}
+//}
 
 /*
  * Loops Runge-Kutta 4th Order step `T_DIM` times or until event_fun returns true and cumulatively
@@ -99,10 +109,10 @@ cum_loop(T &obj, OdeFun_T<X_DIM, T> ode_fun, const Real_T t0, const Real_T (&x0)
  */
 template <size_t T_DIM, size_t X_DIM, typename T>
 size_t
-cum_loop(T &obj, OdeFun_T<X_DIM, T> ode_fun, EventFun_T<X_DIM, T> event_fun, const Real_T t0,
-         const Real_T (&x0)[X_DIM], const Real_T h, Real_T (&t_arr)[T_DIM],
-         Real_T (&x_arr)[T_DIM * X_DIM])
+cum_loop(Integrator<X_DIM, T> integrator, Event<X_DIM, T> event, const Real_T t0,
+         const Real_T (&x0)[X_DIM], Real_T (&t_arr)[T_DIM], Real_T (&x_arr)[T_DIM * X_DIM])
 {
+	static const Real_T h = integrator.get_step_size();
 	size_t i = 0;
 #ifdef DO_NOT_USE_HEAP
 	Real_T x[X_DIM];
@@ -111,25 +121,17 @@ cum_loop(T &obj, OdeFun_T<X_DIM, T> ode_fun, EventFun_T<X_DIM, T> event_fun, con
 	static Real_T(&x)[X_DIM] = *x_ptr;
 #endif
 	matrix_op::replace_row<1>(0, x0, x); //* initialize x
-	Real_T t = t0;                       //* initialize t
-
-	//* check for events at the initial condition
-	bool stop_flag = (obj.*event_fun)(t, x, i, x);
-
-	t_arr[0] = t;
-
 	matrix_op::replace_row<T_DIM>(0, x, x_arr);
-	rk4_solver::Integrator<X_DIM, T> integrator;
+	Real_T t = t0; //* initialize t
+	t_arr[0] = t;
+	//* check for events at the initial condition
+	bool stop_flag = event.check(t, x, i, x);
 
 	for (; !stop_flag && i < T_DIM - 1; ++i) {
-		integrator.step(obj, ode_fun, t, x, h, i, x); //* update x to the next x
-
-		t = t0 + (i + 1) * h; //* update t to the next t
-
-		stop_flag = (obj.*event_fun)(t, x, i, x);
-
+		integrator.step(t, x, i, x); //* update x to the next x
+		t = t0 + (i + 1) * h;        //* update t to the next t
+		stop_flag = event.check(t, x, i, x);
 		t_arr[i + 1] = t;
-
 		matrix_op::replace_row<T_DIM>(i + 1, x, x_arr);
 	}
 	return i;

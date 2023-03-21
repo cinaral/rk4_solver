@@ -38,6 +38,10 @@
 using rk4_solver::Real_T;
 using rk4_solver::size_t;
 
+#ifndef M_PI
+	#define M_PI 3.14159265358979323846
+#endif
+
 namespace test_config
 {
 //* relative to the directory of the executable

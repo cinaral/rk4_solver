@@ -24,15 +24,29 @@
  * SOFTWARE.
  */
 
-//* solves dx/dt = ode_fun(t, x(t)), x(0) = x_0 using Runge-Kutta 4th Order Method.
+#ifndef EVENT_HPP_CINARAL_230321_1039
+#define EVENT_HPP_CINARAL_230321_1039
 
-#ifndef RK4_SOLVER_HPP_CINARAL_220924_1754
-#define RK4_SOLVER_HPP_CINARAL_220924_1754
+#include "types.hpp"
 
+namespace rk4_solver
+{
+template <size_t X_DIM, typename T> class Event
+{
+  public:
+	Event(T &obj, EventFun_T<X_DIM, T> event_fun) : obj(obj), event_fun(event_fun)
+	{
+	}
 
-#include "rk4_solver/cum_loop.hpp"
-#include "rk4_solver/loop.hpp"
-#include "rk4_solver/integrator.hpp"
-#include "rk4_solver/types.hpp"
+	int
+	check(const Real_T t, const Real_T (&x)[X_DIM], const size_t i, Real_T (&x_next)[X_DIM])
+	{
+		return (obj.*event_fun)(t, x, i, x_next);
+	}
 
+  private:
+	T &obj;
+	EventFun_T<X_DIM, T> event_fun;
+};
+} // namespace rk4_solver
 #endif

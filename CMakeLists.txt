@@ -52,7 +52,7 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	)
 	set(EXAMPLE_NAMES
 		step-example
-		loop-example
+		cum_loop-example
 		event-example
 		first_order-example
 	)

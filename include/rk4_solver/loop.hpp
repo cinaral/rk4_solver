@@ -27,8 +27,9 @@
 #ifndef LOOP_HPP_CINARAL_220924_1755
 #define LOOP_HPP_CINARAL_220924_1755
 
+#include "event.hpp"
+#include "integrator.hpp"
 #include "matrix_op.hpp"
-#include "step.hpp"
 #include "types.hpp"
 
 namespace rk4_solver
@@ -50,18 +51,17 @@ namespace rk4_solver
  */
 template <size_t T_DIM, size_t X_DIM, typename T>
 void
-loop(T &obj, OdeFun_T<X_DIM, T> ode_fun, const Real_T t0, const Real_T (&x0)[X_DIM], const Real_T h,
-     Real_T *t, Real_T (&x)[X_DIM])
+loop(Integrator<X_DIM, T> integrator, const Real_T t0, const Real_T (&x0)[X_DIM], Real_T *t,
+     Real_T (&x)[X_DIM])
 {
+	static const Real_T h = integrator.get_step_size();
+
 	matrix_op::replace_row<1>(0, x0, x); //* initialize x
 	*t = t0;                             //* initialize t
 
-	rk4_solver::Integrator<X_DIM, T> integrator;
-
 	for (size_t i = 0; i < T_DIM - 1; ++i) {
-		integrator.step(obj, ode_fun, *t, x, h, i, x); //* update x to the next x
-
-		*t = t0 + (i + 1) * h; //* update t to the next t
+		integrator.step(*t, x, i, x); //* update x to the next x
+		*t = t0 + (i + 1) * h;        //* update t to the next t
 	}
 }
 
@@ -85,23 +85,18 @@ loop(T &obj, OdeFun_T<X_DIM, T> ode_fun, const Real_T t0, const Real_T (&x0)[X_D
  */
 template <size_t T_DIM, size_t X_DIM, typename T>
 size_t
-loop(T &obj, OdeFun_T<X_DIM, T> ode_fun, EventFun_T<X_DIM, T> event_fun, const Real_T t0,
-     const Real_T (&x0)[X_DIM], const Real_T h, Real_T *t, Real_T (&x)[X_DIM])
+loop(Integrator<X_DIM, T> integrator, Event<X_DIM, T> event, const Real_T t0,
+     const Real_T (&x0)[X_DIM], Real_T *t, Real_T (&x)[X_DIM])
 {
+	static const Real_T h = integrator.get_step_size();
+
 	size_t i = 0;
 	matrix_op::replace_row<1>(0, x0, x); //* initialize x
 	*t = t0;                             //* initialize t
 
-	//* check for events at the initial condition
-	bool stop_flag = (obj.*event_fun)(*t, x, i, x);
-	rk4_solver::Integrator<X_DIM, T> integrator;
-
-	for (; !stop_flag && i < T_DIM - 1; ++i) {
-		integrator.step(obj, ode_fun, *t, x, h, i, x); //* update x to the next x
-
-		*t = t0 + (i + 1) * h; //* update t to the next t
-
-		stop_flag = (obj.*event_fun)(*t, x, i, x);
+	for (; i < T_DIM - 1 && !event.check(*t, x, i, x); ++i) {
+		integrator.step(*t, x, i, x); //* update x to the next x
+		*t = t0 + (i + 1) * h;        //* update t to the next t
 	}
 	return i;
 }

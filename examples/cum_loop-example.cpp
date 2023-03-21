@@ -27,10 +27,11 @@ Dynamics dynamics;
 int
 main()
 {
+	rk4_solver::Integrator<x_dim, Dynamics> integrator(dynamics, &Dynamics::ode_fun, h);
 	Real_T t_arr[t_dim];
 	Real_T x_arr[t_dim * x_dim];
 	//* integration loop with cumulatively saved data arrays
-	rk4_solver::cum_loop<t_dim>(dynamics, &Dynamics::ode_fun, t0, x0, h, t_arr, x_arr);
-	
+	rk4_solver::cum_loop<t_dim>(integrator, t0, x0, t_arr, x_arr);
+
 	return 0;
 }

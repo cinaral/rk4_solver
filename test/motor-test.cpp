@@ -75,9 +75,11 @@ main()
 	Real_T x[x_dim];
 	Real_T t_arr[t_dim];
 	Real_T x_arr[t_dim * x_dim];
-	rk4_solver::loop<t_dim>(dynamics, &Dynamics::ode_fun, t_init, x_init, time_step, &t, x);
-	rk4_solver::cum_loop<t_dim>(dynamics, &Dynamics::ode_fun, t_init, x_init, time_step, t_arr,
-	                            x_arr);
+	rk4_solver::Integrator<x_dim, Dynamics> integrator(dynamics, &Dynamics::ode_fun, time_step);
+
+	rk4_solver::loop<t_dim>(integrator, t_init, x_init, &t, x);
+	integrator.reset_accumulator();
+	rk4_solver::cum_loop<t_dim>(integrator, t_init, x_init, t_arr, x_arr);
 
 	//* 3. write the test data
 	matrix_rw::write<t_dim, 1>(dat_prefix + test_config::t_arr_fname, t_arr);
@@ -98,9 +100,11 @@ main()
 		}
 	}
 
-	if (max_error < error_thres && max_loop_error < std::numeric_limits<Real_T>::epsilon()) {
+	if (max_error < error_thres && max_loop_error <= std::numeric_limits<Real_T>::epsilon()) {
 		return 0;
 	} else {
+		printf("max_error = %.3g\n", max_error);
+		printf("max_loop_error = %.3g\n", max_loop_error);
 		return 1;
 	}
 }

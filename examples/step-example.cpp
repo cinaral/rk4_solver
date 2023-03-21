@@ -1,4 +1,4 @@
-#include "rk4_solver/step.hpp"
+#include "rk4_solver/integrator.hpp"
 
 using rk4_solver::Real_T;
 using rk4_solver::size_t;
@@ -26,10 +26,9 @@ Dynamics dynamics;
 int
 main()
 {
+	rk4_solver::Integrator<x_dim, Dynamics> integrator(dynamics, &Dynamics::ode_fun, h);
 	Real_T x_next[x_dim];
-	//* integration step
-	rk4_solver::Integrator<x_dim, Dynamics> rk4;
-	rk4.step(dynamics, &Dynamics::ode_fun, t, x, h, i, x_next);
-	
+	integrator.step(t, x, i, x_next); //* integration step
+
 	return 0;
 }

@@ -35,50 +35,46 @@ Some of them require reference solutions which is provided in this repository wi
 
 # 3. Usage
 
-For a single integration step, call ```rk4_solver::step(...)```:
+For integration, create an integrator object first:
 ```Cpp
-template <size_t T_DIM, size_t X_DIM, typename T>
-void 
-loop(
-	T &obj,
-	OdeFun_T<T, X_DIM> ode_fun,
-	const Real_T t0,
-	const Real_T (&x0)[X_DIM],
-	const Real_T h,
-	Real_T *t,
-	Real_T (&x)[X_DIM]
-);
+rk4_solver::Integrator<X_DIM, T> integrator(T &obj, OdeFun_T<X_DIM, T> ode_fun, const Real_T step_size, const Real_T t0 = 0);
 ```
 
-For an integration loop, call ```rk4_solver::loop(...)```:
+For a single integration step, call ```Integrator::step(...)```:
 ```Cpp
-template <size_t T_DIM, size_t X_DIM, typename T>
+void
+step(
+	const Real_T t, 
+	const Real_T (&x)[X_DIM], 
+	const size_t i, 
+	Real_T (&x_next)[X_DIM]
+);
+```
+If you want to loop, call ```rk4_solver::loop(...)```:
+```Cpp
 void
 loop(
-	T &obj,
-	OdeFun_T<T, X_DIM> ode_fun,
+	Integrator integrator, 
 	const Real_T t0,
-	const Real_T (&x0)[X_DIM],
-	const Real_T h,
-	Real_T *t,
+	const Real_T (&x0)[X_DIM], 
+	Real_T *t, 
 	Real_T (&x)[X_DIM]
 );
 ```
 
-If you want to use events with your integration loop, you may do so by using an event function:
-
+If you need events, you want an event object:
+```Cpp
+	rk4_solver::Event<X_DIM, T> event(T &obj, EventFun_T<X_DIM, T> event_fun);
+```
 **WARNING**: This is a fixed-step size method and therefore the event detection will be approximate within the time step size.
 ```Cpp
-template <size_t T_DIM, size_t X_DIM, typename T>
 size_t
 loop(
-	T &obj,
-	OdeFun_T<T, X_DIM> ode_fun,
-	EventFun_T<T, X_DIM> event_fun,
+	Integrator integrator, 
+	Event event, 
 	const Real_T t0,
-	const Real_T (&x0)[X_DIM],
-	const Real_T h,
-	Real_T *t,
+	const Real_T (&x0)[X_DIM], 
+	Real_T *t, 
 	Real_T (&x)[X_DIM]
 );
 ```
@@ -87,38 +83,28 @@ loop(
 
 ```OdeFun_T``` and ```EventFun_T``` are function pointers defined in [types.hpp](include/rk4_solver/types.hpp):  
 ```Cpp
-template <size_t X_DIM, typename T>
 using OdeFun_T = void (T::*)(const Real_T t, const Real_T (&x)[X_DIM], const size_t i, Real_T (&dt_x)[X_DIM]);
-
-template <size_t X_DIM, typename T>
 using EventFun_T = bool (T::*)(const Real_T t, const Real_T (&x)[X_DIM], const size_t i, Real_T (&x_plus)[X_DIM]);
-
 ```
 Where ```i < T_DIM``` is the current time step for the time step size ```h```. ```i``` is provided for time index dependent inputs such as pre-computed discrete control input.
 
 You may use cumulative integration loop functions with or without the event function to save the integration value at every time step:
 ```Cpp
-template <size_t T_DIM, size_t X_DIM, typename T>
 void
-cum_loop(	
-	T &obj, 	
-	OdeFun_T<T, X_DIM> ode_fun, 
+cum_loop(
+	Integrator integrator, 
 	const Real_T t0,
 	const Real_T (&x0)[X_DIM], 
-	const Real_T h, 
 	Real_T (&t_arr)[T_DIM], 
 	Real_T (&x_arr)[T_DIM * X_DIM]
 );
 
-template <size_t T_DIM, size_t X_DIM, typename T>
 size_t
-cum_loop(	
-	T &obj, 
-	OdeFun_T<T, X_DIM> ode_fun, 
-	EventFun_T<T, X_DIM> event_fun, 
+cum_loop(
+	Integrator integrator, 
+	Event event, 
 	const Real_T t0,
 	const Real_T (&x0)[X_DIM], 
-	const Real_T h, 
 	Real_T (&t_arr)[T_DIM], 
 	Real_T (&x_arr)[T_DIM * X_DIM]
 );
@@ -137,7 +123,7 @@ The MATLAB tests are optional, and the scripts under ```test/matlab/``` can be u
 
 ## 5.1. Example 1: Single integration step
 ```Cpp
-#include "rk4_solver/step.hpp"
+#include "rk4_solver/integrator.hpp"
 //...
 void Dynamics::ode_fun(const Real_T, const Real_T x[], const size_t, Real_T dt_x[])
 {
@@ -150,9 +136,9 @@ Dynamics dynamics;
 return 0;
 int main()
 {
-	//* integration step
-	rk4_solver::Integrator<x_dim, Dynamics> rk4;
-	rk4.step(dynamics, &Dynamics::ode_fun, t, x, h, i, x_next);
+	rk4_solver::Integrator<x_dim, Dynamics> integrator(dynamics, &Dynamics::ode_fun, h);
+	Real_T x_next[x_dim];
+	integrator.step(t, x, i, x_next); //* integration step
 	//...
 }
 ```
@@ -172,12 +158,15 @@ Dynamics dynamics;
 
 int main()
 {
+	rk4_solver::Integrator<x_dim, Dynamics> integrator(dynamics, &Dynamics::ode_fun, h);
+	Real_T t_arr[t_dim];
+	Real_T x_arr[t_dim * x_dim];
 	//* integration loop with cumulatively saved data arrays
-	rk4_solver::cum_loop<t_dim>(dynamics, &Dynamics::ode_fun, t0, x0, h, t_arr, x_arr);
+	rk4_solver::cum_loop<t_dim>(integrator, t0, x0, t_arr, x_arr);
 	//...
 }
 ```
-See [loop-example.cpp](./examples/loop-example.cpp) for details.
+See [cum_loop-example.cpp](./examples/cum_loop-example.cpp) for details.
 
 
 ## 5.3. Example 3: Events
@@ -207,8 +196,12 @@ Dynamics dynamics;
 int
 main()
 {
+	rk4_solver::Integrator<x_dim, Dynamics> integrator(dynamics, &Dynamics::ode_fun, h);
+	rk4_solver::Event<x_dim, Dynamics> event(dynamics, &Dynamics::event_fun);
+	Real_T t;
+	Real_T x[x_dim];
 	//* integration loop with events
-	rk4_solver::loop<t_dim>(dynamics, &Dynamics::ode_fun, &Dynamics::event_fun, t0, x0, h, &t, x);
+	rk4_solver::loop<t_dim>(integrator, event, t0, x0, &t, x);
 	//...
 }
 ```
@@ -226,7 +219,7 @@ The benchmark test is a 3rd order linear system compiled using g++ with ```-O3``
 | -----------------------------------------------------: | :-----------------------------: | :----------------------------------------: |
 |                                       None *(Default)* |              18.6               |                    33.3                    |
 |                             ```USE_SINGLE_PRECISION``` |              18.6               |                    36.1                    |
-|                                  ```DO_NOT_USE_HEAP``` |              22.8               |                    28.9                    |
+|                                  ```DO_NOT_USE_HEAP``` |              18.6               |                    25.6                    |
 | ```DO_NOT_USE_HEAP``` *and* ```USE_SINGLE_PRECISION``` |              22.3               |                    28.6                    |
 
 
