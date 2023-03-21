@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.13)
 
 project(
 	rk4_solver
-	VERSION 1.2.1
+	VERSION 1.3.0
 	LANGUAGES CXX
 )
 
