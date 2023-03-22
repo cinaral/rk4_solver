@@ -6,9 +6,9 @@
 	- [3.2. Integration loop](#32-integration-loop)
 	- [3.3. Integration loop with intermediate values](#33-integration-loop-with-intermediate-values)
 - [4. Examples](#4-examples)
-	- [4.1. Example 1: Single integration step](#41-example-1-single-integration-step)
-	- [4.2. Example 2: Integration loop](#42-example-2-integration-loop)
-	- [4.3. Example 3: Events](#43-example-3-events)
+	- [4.1. Single integration step](#41-single-integration-step)
+	- [4.2. Integration loop](#42-integration-loop)
+	- [4.3. Integration with events](#43-integration-with-events)
 - [5. Benchmarks](#5-benchmarks)
 - [6. Testing](#6-testing)
 
@@ -99,11 +99,12 @@ loop(
 	Real_T (&x)[T_DIM * X_DIM]
 );
 ```
-Where ```i < T_DIM``` is the current time step. 
-
 # 4. Examples
 
-## 4.1. Example 1: Single integration step
+## 4.1. Single integration step
+
+This is a minimum example of a single integration step. The dynamics of the system is defined in the ```Dynamics``` class. The ODE function is defined as a member of ```Dynamics``` and is passed to the integrator as a function pointer. The integrator is then used to integrate the system for a single step.
+
 ```Cpp
 #include "rk4_solver/integrator.hpp"
 //...
@@ -127,7 +128,10 @@ int main()
 See [step-example.cpp](./examples/step-example.cpp) for details.
 
 
-## 4.2. Example 2: Integration loop
+## 4.2. Integration loop
+
+Here is an example of an integration loop where we save all intermediate values.
+
 ```Cpp
 #include "rk4_solver/cum_loop.hpp"
 //...
@@ -144,7 +148,10 @@ int main()
 See [loop-example.cpp](./examples/loop-example.cpp) for details.
 
 
-## 4.3. Example 3: Events
+## 4.3. Integration with events
+
+In this example we discard the intermediate values, and stop at the first ground contact. Ground contact is checked using the current vertical displacement, and the displacement is reset to zero at impact.
+
 ```Cpp
 #include "rk4_solver.hpp"
 //...
@@ -195,7 +202,7 @@ The benchmark test is a 3rd order linear system compiled using g++ with ```-O3``
 | ```DO_NOT_USE_HEAP``` *and* ```USE_SINGLE_PRECISION``` |              18.6               |                    30.7                    |
 
 
-Using the ```USE_SINGLE_PRECISION``` or the ```DO_NOT_USE_HEAP``` flag does not affect the performance meaningfully.
+Using the ```USE_SINGLE_PRECISION``` or the ```DO_NOT_USE_HEAP``` flag does not affect the performance meaningfully. Use them if your target platform can benefit from them, remember to test and benchmark.
 
 **WARNING**: Your stack can easily overflow for large problems with the ```DO_NOT_USE_HEAP``` flag and should be avoided if it is not necessary.
 
@@ -203,4 +210,3 @@ Using the ```USE_SINGLE_PRECISION``` or the ```DO_NOT_USE_HEAP``` flag does not 
 Reference solutions are required for some tests, which are included in ```test/dat/```. [matrix_rw](https://github.com/cinaral/matrix_rw) library is used to read and write from file, the ```*.dat``` files are comma and newline delimited. If you have access to MATLAB, the formatting is compatible with ```writematrix``` and ```readmatrix```.
 
 You may need to generate new reference solutions to update the existing tests or add new tests. [run_test.m](./test/matlab/run_test.m) can be used to (re)generate the reference solutions if you have MATLAB. The MATLAB tests in ```test/matlab/``` are optional, but they can be used to visually verify the results. 
-
