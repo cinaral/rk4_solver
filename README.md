@@ -63,7 +63,7 @@ using EventFun_T = bool (T::*)(const Real_T t, const Real_T (&x)[X_DIM], const s
 **WARNING:** By default, ```Real_T``` is ```double```. Use ```USE_SINGLE_PRECISION``` compiler flag to set to ```float```.
 
 ## 3.1. Single integration step
-Call ```Integrator::step(...)```:
+Call ```step(...)``` to integrate to forward the integration by one step.
 ```Cpp
 void
 step(
@@ -74,7 +74,7 @@ step(
 ```
 
 ## 3.2. Integration loop
-Call ```rk4_solver::loop(...)``` as follows if you want to discard all intermediate values except the final state:
+Call ```rk4_solver::loop(...)``` to loop through the integration steps as follows if you want to discard all intermediate values except the final state:
 ```Cpp
 void
 loop(
@@ -184,7 +184,7 @@ main()
 	//...
 }
 ```
-See [example-event.cpp](./examples/event-example.cpp) for details.
+See [event-example.cpp](./examples/event-example.cpp) for details.
 
 # 5. Benchmarks
 
