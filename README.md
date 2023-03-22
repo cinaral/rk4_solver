@@ -57,8 +57,8 @@ void Events::check(t, x, OUT: x_plus);
 **WARNING**: This is a fixed-step size method and therefore the event detection will be approximate within the time step size.
 ```OdeFun_T``` and ```EventFun_T``` are function pointers defined in [types.hpp](include/rk4_solver/types.hpp):  
 ```Cpp
-using OdeFun_T = void (T::*)(const Real_T t, const Real_T (&x)[X_DIM], const size_t i, Real_T (&dt_x)[X_DIM]);
-using EventFun_T = bool (T::*)(const Real_T t, const Real_T (&x)[X_DIM], const size_t i, Real_T (&x_plus)[X_DIM]);
+using OdeFun_T = void (T::*)(const Real_T t, const Real_T (&x)[X_DIM], Real_T (&dt_x)[X_DIM]);
+using EventFun_T = bool (T::*)(const Real_T t, const Real_T (&x)[X_DIM], Real_T (&x_plus)[X_DIM]);
 ```
 **WARNING:** By default, ```Real_T``` is ```double```. Use ```USE_SINGLE_PRECISION``` compiler flag to set to ```float```.
 
