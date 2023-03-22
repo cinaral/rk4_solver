@@ -185,7 +185,7 @@ There are two benchmark tests:
 1. A step integration loop without final time, and intermediate values are discarded.
 2. A cumulative integration loop with final time, and intermediate values are saved.
 
-The benchmark test is a 3rd order linear system compiled using g++ with ```-O3``` optimization level. A desktop Intel i7-9700K at 3.60 GHz processor with 32 GB of memory was used to obtain the following samples: 
+The benchmark test is a 3rd order linear system compiled using g++ with ```-O3``` optimization level. A desktop Intel i7-9700K at 3.60 GHz processor with 32 GB of memory was used to obtain the following sample benchmarks: 
 
 |                                                  Flags | Loop (million steps per second) | Cumulative Loop (million steps per second) |
 | -----------------------------------------------------: | :-----------------------------: | :----------------------------------------: |
@@ -195,7 +195,7 @@ The benchmark test is a 3rd order linear system compiled using g++ with ```-O3``
 | ```DO_NOT_USE_HEAP``` *and* ```USE_SINGLE_PRECISION``` |              18.6               |                    30.7                    |
 
 
-Using ```USE_SINGLE_PRECISION``` or the ```DO_NOT_USE_HEAP``` flag does not affect the performance meaningfully.
+Using the ```USE_SINGLE_PRECISION``` or the ```DO_NOT_USE_HEAP``` flag does not affect the performance meaningfully.
 
 **WARNING**: Your stack can easily overflow for large problems with the ```DO_NOT_USE_HEAP``` flag and should be avoided if it is not necessary.
 
