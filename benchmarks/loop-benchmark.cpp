@@ -34,8 +34,8 @@ int
 main()
 {
 #ifdef DO_NOT_USE_HEAP
-	Real_T(t_arr)[t_dim];
-	Real_T(x_arr)[t_dim * x_dim];
+	Real_T t_arr[t_dim];
+	Real_T x_arr[t_dim * x_dim];
 #else
 	Real_T(&t_arr)[t_dim] = *(Real_T(*)[t_dim]) new Real_T[t_dim];
 	Real_T(&x_arr)[t_dim * x_dim] = *(Real_T(*)[t_dim * x_dim]) new Real_T[t_dim * x_dim];
