@@ -58,14 +58,14 @@ int
 main()
 {
 	//* 1. read the reference data
-	Real_T x_arr_ref[t_dim * x_dim];
-	matrix_rw::read<t_dim, x_dim>(ref_dat_prefix + test_config::x_arr_ref_fname, x_arr_ref);
+	Real_T x_arr_ref[t_dim][x_dim];
+	matrix_rw::read(ref_dat_prefix + test_config::x_arr_ref_fname, x_arr_ref);
 
 	//* 2. test
 	Real_T t = 0;
 	Real_T x[x_dim];
-	Real_T t_arr[t_dim];
-	Real_T x_arr[t_dim * x_dim];
+	Real_T t_arr[1][t_dim];
+	Real_T x_arr[t_dim][x_dim];
 
 	rk4_solver::Integrator<x_dim, Dynamics> integrator(dynamics, &Dynamics::ode_fun, time_step);
 	rk4_solver::Event<x_dim, Dynamics> event(dynamics, &Dynamics::event_fun);
@@ -73,27 +73,27 @@ main()
 	rk4_solver::loop<t_dim>(integrator, event, t_init, x_init, t, x);
 
 	integrator.reset();
-	rk4_solver::loop<t_dim>(integrator, event, t_init, x_init, t_arr, x_arr);
+	rk4_solver::loop(integrator, event, t_init, x_init, t_arr[0], x_arr);
 
 	//* 3. write the test data
-	matrix_rw::write<t_dim, 1>(dat_prefix + test_config::t_arr_fname, t_arr);
-	matrix_rw::write<t_dim, x_dim>(dat_prefix + test_config::x_arr_fname, x_arr);
+	matrix_rw::write(dat_prefix + test_config::t_arr_fname, t_arr);
+	matrix_rw::write(dat_prefix + test_config::x_arr_fname, x_arr);
 
 	//* 4. verify the results
-	Real_T x_0_arr[t_dim * 1];
-	Real_T x_0_arr_ref[t_dim * 1];
+	Real_T x_0_arr[1][t_dim];
+	Real_T x_0_arr_ref[1][t_dim];
 
 	for (size_t i = 0; i < t_dim; ++i) {
-		const Real_T(&x)[x_dim] = *matrix_op::select_row<t_dim, x_dim>(i, x_arr);
-		const Real_T(&x_ref)[x_dim] = *matrix_op::select_row<t_dim, x_dim>(i, x_arr_ref);
-		x_0_arr[i] = x[verify_idx];
-		x_0_arr_ref[i] = x_ref[verify_idx];
+		const Real_T(&x)[x_dim] = x_arr[i];
+		const Real_T(&x_ref)[x_dim] = x_arr_ref[i];
+		x_0_arr[0][i] = x[verify_idx];
+		x_0_arr_ref[0][i] = x_ref[verify_idx];
 	}
-	Real_T max_error = test_config::compute_max_error<t_dim, 1>(x_0_arr, x_0_arr_ref);
+	Real_T max_error = test_config::compute_max_error(x_0_arr, x_0_arr_ref);
 
 	//* loop vs cum_loop sanity check
 	Real_T max_loop_error = 0.;
-	const Real_T(&x_final)[x_dim] = *matrix_op::select_row<t_dim, x_dim>(t_dim - 1, x_arr);
+	const Real_T(&x_final)[x_dim] = x_arr[t_dim - 1];
 
 	for (size_t i = 0; i < x_dim; ++i) {
 		const Real_T error = std::abs(x_final[i] - x[i]);

@@ -53,13 +53,13 @@ const std::string x_arr_ref_fname = "x_arr_ref.dat";        //* file name for th
 
 template <size_t T_DIM, size_t X_DIM>
 Real_T
-compute_max_error(const Real_T (&arr)[T_DIM * X_DIM], const Real_T (&arr_ref)[T_DIM * X_DIM])
+compute_max_error(const Real_T (&arr)[T_DIM][X_DIM], const Real_T (&arr_ref)[T_DIM][X_DIM])
 {
 	Real_T max_error = 0.;
 
 	for (size_t i = 0; i < T_DIM; ++i) {
-		const Real_T(&a)[X_DIM] = *matrix_op::select_row<T_DIM, X_DIM>(i, arr);
-		const Real_T(&a_ref)[X_DIM] = *matrix_op::select_row<T_DIM, X_DIM>(i, arr_ref);
+		const Real_T(&a)[X_DIM] = arr[i];
+		const Real_T(&a_ref)[X_DIM] = arr_ref[i];
 
 		for (size_t j = 0; j < X_DIM; ++j) {
 			const Real_T error = std::abs(a[j] - a_ref[j]);

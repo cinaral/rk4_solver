@@ -34,7 +34,9 @@ main()
 {
 	Real_T t = t_init;
 	Real_T x[x_dim];
-	matrix_op::replace_row<1>(0, x_init, x); //* initialize x
+	for (size_t i = 0; i < x_dim; ++i) {
+		x[i] = x_init[i];
+	}
 
 	printf("Integrating 3rd order linear ODE for %zu ms... ", benchmark_duration_ms);
 	auto sample_tp = std::chrono::high_resolution_clock::now();

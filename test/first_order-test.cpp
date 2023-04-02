@@ -41,31 +41,31 @@ main()
 	//* 2. test
 	Real_T t = 0;
 	Real_T x[x_dim];
-	Real_T t_arr[t_dim];
-	Real_T x_arr[t_dim * x_dim];
+	Real_T t_arr[1][t_dim];
+	Real_T x_arr[t_dim][x_dim];
 
 	rk4_solver::Integrator<x_dim, Dynamics> integrator(dynamics, &Dynamics::ode_fun, time_step);
 	rk4_solver::loop<t_dim>(integrator, t_init, x_init, t, x);
 
 	integrator.reset();
-	rk4_solver::loop<t_dim>(integrator, t_init, x_init, t_arr, x_arr);
+	rk4_solver::loop(integrator, t_init, x_init, t_arr[0], x_arr);
 
 	//* 3. write the test data
-	matrix_rw::write<t_dim, 1>(dat_prefix + test_config::t_arr_fname, t_arr);
-	matrix_rw::write<t_dim, x_dim>(dat_prefix + test_config::x_arr_fname, x_arr);
+	matrix_rw::write(dat_prefix + test_config::t_arr_fname, t_arr);
+	matrix_rw::write(dat_prefix + test_config::x_arr_fname, x_arr);
 
 	//* 4. verify the results
-	Real_T x_arr_ref[t_dim * x_dim];
+	Real_T x_arr_ref[t_dim][x_dim];
 
 	for (size_t i = 0; i < t_dim; ++i) {
-		Real_T x_ref[x_dim] = {std::exp(a_const * t_arr[i])};
-		matrix_op::replace_row<t_dim, x_dim>(i, x_ref, x_arr_ref);
+		Real_T x_ref[x_dim] = {std::exp(a_const * t_arr[0][i])};
+		matrix_op::replace_row(i, x_ref, x_arr_ref);
 	}
-	Real_T max_error = test_config::compute_max_error<t_dim, x_dim>(x_arr, x_arr_ref);
+	Real_T max_error = test_config::compute_max_error(x_arr, x_arr_ref);
 
 	//* cumulative loop sanity check
 	Real_T max_loop_error = 0.;
-	const Real_T(&x_final)[x_dim] = *matrix_op::select_row<t_dim, x_dim>(t_dim - 1, x_arr);
+	const Real_T(&x_final)[x_dim] = x_arr[t_dim - 1];
 
 	for (size_t i = 0; i < x_dim; ++i) {
 		const Real_T error = std::abs(x_final[i] - x[i]);

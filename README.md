@@ -96,7 +96,7 @@ loop(
 	const Real_T t_init,
 	const Real_T (&x0)[X_DIM], 
 	Real_T (&t)[T_DIM], 
-	Real_T (&x)[T_DIM * X_DIM]
+	Real_T (&x)[T_DIM][X_DIM]
 );
 ```
 # 4. Examples
@@ -139,9 +139,9 @@ int main()
 {
 	rk4_solver::Integrator<x_dim, Dynamics> integrator(dynamics, &Dynamics::ode_fun, time_step);
 	Real_T t_arr[t_dim];
-	Real_T x_arr[t_dim * x_dim];
+	Real_T x_arr[t_dim][x_dim];
 	//* save the intermediate values
-	rk4_solver::loop<t_dim>(integrator, t_init, x_init, t_arr, x_arr);
+	rk4_solver::loop(integrator, t_init, x_init, t_arr, x_arr);
 	//...
 }
 ```

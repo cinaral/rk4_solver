@@ -50,8 +50,11 @@ void
 loop(Integrator<X_DIM, T> integrator, const Real_T &t_init, const Real_T (&x_init)[X_DIM],
      Real_T &t, Real_T (&x)[X_DIM])
 {
-	t = t_init;                              //* initialize t
-	matrix_op::replace_row<1>(0, x_init, x); //* initialize x
+	t = t_init; //* initialize t
+
+	for (size_t i = 0; i < X_DIM; ++i) {
+		x[i] = x_init[i]; //* initialize x
+	}
 
 	for (size_t i = 0; i < T_DIM - 1; ++i) {
 		integrator.step(t, x, t, x); //* update t, x to the next t, x
@@ -72,7 +75,7 @@ loop(Integrator<X_DIM, T> integrator, const Real_T &t_init, const Real_T (&x_ini
 template <size_t T_DIM, size_t X_DIM, typename T>
 void
 loop(Integrator<X_DIM, T> integrator, const Real_T &t_init, const Real_T (&x_init)[X_DIM],
-     Real_T (&t_arr)[T_DIM], Real_T (&x_arr)[T_DIM * X_DIM])
+     Real_T (&t_arr)[T_DIM], Real_T (&x_arr)[T_DIM][X_DIM])
 {
 	t_arr[0] = t_init;                               //* initialize t
 	matrix_op::replace_row<T_DIM>(0, x_init, x_arr); //* initialize x
@@ -82,7 +85,7 @@ loop(Integrator<X_DIM, T> integrator, const Real_T &t_init, const Real_T (&x_ini
 
 	for (size_t i = 0; i < T_DIM - 1; ++i) {
 		const Real_T t = t_arr[i];
-		const Real_T(&x)[X_DIM] = *matrix_op::select_row<T_DIM, X_DIM>(i, x_arr);
+		const Real_T(&x)[X_DIM] = x_arr[i];
 		integrator.step(t, x, t_next, x_next); //* update t, x to the next t, x
 		t_arr[i + 1] = t_next;
 		matrix_op::replace_row<T_DIM>(i + 1, x_next, x_arr);
@@ -107,13 +110,18 @@ size_t
 loop(Integrator<X_DIM, T> integrator, Event<X_DIM, T> event, const Real_T &t_init,
      const Real_T (&x_init)[X_DIM], Real_T &t, Real_T (&x)[X_DIM], bool halt_on_event = false)
 {
-	t = t_init;                              //* initialize t
-	matrix_op::replace_row<1>(0, x_init, x); //* initialize x
+	t = t_init; //* initialize t
+
+	for (size_t i = 0; i < X_DIM; ++i) {
+		x[i] = x_init[i]; //* initialize x
+	}
 	Real_T x_plus[X_DIM];
 
 	for (size_t i = 0; i < T_DIM - 1; ++i) {
 		if (event.check(t, x, x_plus)) {
-			matrix_op::replace_row<1>(0, x_plus, x);
+			for (size_t j = 0; j < X_DIM; ++j) {
+				x[j] = x_plus[j];
+			}
 
 			if (halt_on_event) {
 				break;
@@ -140,7 +148,7 @@ loop(Integrator<X_DIM, T> integrator, Event<X_DIM, T> event, const Real_T &t_ini
 template <size_t T_DIM, size_t X_DIM, typename T>
 size_t
 loop(Integrator<X_DIM, T> integrator, Event<X_DIM, T> event, const Real_T &t_init,
-     const Real_T (&x_init)[X_DIM], Real_T (&t_arr)[T_DIM], Real_T (&x_arr)[T_DIM * X_DIM],
+     const Real_T (&x_init)[X_DIM], Real_T (&t_arr)[T_DIM], Real_T (&x_arr)[T_DIM][X_DIM],
      bool halt_on_event = false)
 {
 	t_arr[0] = t_init;                               //* initialize t
@@ -151,7 +159,7 @@ loop(Integrator<X_DIM, T> integrator, Event<X_DIM, T> event, const Real_T &t_ini
 
 	for (size_t i = 0; i < T_DIM - 1; ++i) {
 		const Real_T t = t_arr[i];
-		const Real_T(&x)[X_DIM] = *matrix_op::select_row<T_DIM, X_DIM>(i, x_arr);
+		const Real_T(&x)[X_DIM] = x_arr[i];
 
 		if (event.check(t, x, x_plus)) {
 			integrator.step(t, x_plus, t_next, x_next);

@@ -1,3 +1,4 @@
 * text=auto
 *.m linguist-language=MATLAB
+*.sh linguist-detectable=false
 CMakeLists.txt linguist-detectable=false

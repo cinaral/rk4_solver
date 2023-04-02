@@ -2,15 +2,15 @@ cmake_minimum_required(VERSION 3.13)
 
 project(
 	rk4_solver
-	VERSION 1.3.0
+	VERSION 1.4.0
 	LANGUAGES CXX
 )
 
 #* dependencies
 include(FetchContent)
 
-set(matrix_op_VERSION 1.0.7) #* matrix_op, used for basic matrix operations
-set(matrix_rw_VERSION 1.0.5) #* matrix_rw, used for testing
+set(matrix_op_VERSION 1.1.0) #* matrix_op, used for basic matrix operations
+set(matrix_rw_VERSION 1.1.0) #* matrix_rw, used for testing
 
 FetchContent_Declare(
 	matrix_op 

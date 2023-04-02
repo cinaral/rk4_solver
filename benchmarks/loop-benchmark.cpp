@@ -38,7 +38,7 @@ main()
 	Real_T x_arr[t_dim * x_dim];
 #else
 	Real_T(&t_arr)[t_dim] = *(Real_T(*)[t_dim]) new Real_T[t_dim];
-	Real_T(&x_arr)[t_dim * x_dim] = *(Real_T(*)[t_dim * x_dim]) new Real_T[t_dim * x_dim];
+	Real_T(&x_arr)[t_dim][x_dim] = *(Real_T(*)[t_dim][x_dim]) new Real_T[t_dim][x_dim];
 #endif
 
 	printf("Cumulatively integrating 3rd order linear ODE for %.3g steps... ",
@@ -53,7 +53,7 @@ main()
 	const auto since_sample_ns =
 	    std::chrono::duration_cast<std::chrono::nanoseconds>(now_tp - start_tp);
 
-	const Real_T(&x_final)[x_dim] = *matrix_op::select_row<t_dim, x_dim>(t_dim - 1, x_arr);
+	const Real_T(&x_final)[x_dim] = x_arr[t_dim - 1];
 
 	printf("Done.\nx at t = %.3g s: [%.3g; %.3g; %.3g]\n", t_arr[t_dim - 1], x_final[0],
 	       x_final[1], x_final[2]);
